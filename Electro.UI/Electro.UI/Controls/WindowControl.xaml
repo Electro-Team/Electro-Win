@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="Electro.UI.Controls.WindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Electro.UI.Controls"
+             mc:Ignorable="d" 
+            WindowChrome.IsHitTestVisibleInChrome="True">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Button Grid.Column="2" x:Name="CloseButton" Click="CloseButton_Click" 
+                Style="{StaticResource HeaderButtonStyle}" >
+            <Path
+                Data="{StaticResource Close}"
+                Fill="{StaticResource ElectroGreyColorBrush}"
+                Stretch="Uniform"
+                Width="12"
+                RenderOptions.BitmapScalingMode="Fant"
+                Margin="10" />
+            <Button.ToolTip>
+                <ToolTip Content="Close"
+						 Placement="Mouse" />
+            </Button.ToolTip>
+        </Button>
+        <Button Grid.Column="1" x:Name="MaximizeButton" Click="MaximizeButton_Maximize"
+				MouseEnter="MaximizeButton_MouseEnter"  
+                Style="{StaticResource HeaderButtonStyle}">
+            <Path
+                Data="{StaticResource Maximize}"
+                Fill="{StaticResource ElectroGreyColorBrush}"
+                Width="12"
+                Stretch="Uniform"
+                RenderOptions.BitmapScalingMode="Fant"
+                Margin="10" />
+        </Button>
+        <Button x:Name="MinimizeButton" Click="MinimizeButton_Minimize"
+                Style="{StaticResource HeaderButtonStyle}">
+            <Path
+                Data="{StaticResource Minimize}"
+                Fill="{StaticResource ElectroGreyColorBrush}"
+                Stretch="Uniform"
+                Width="12"
+                RenderOptions.BitmapScalingMode="Fant"
+                Margin="10" />
+            <Button.ToolTip>
+                <ToolTip Content="Minimize"
+						 Placement="Mouse" />
+            </Button.ToolTip>
+        </Button>
+    </Grid>
+</UserControl>

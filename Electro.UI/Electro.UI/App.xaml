@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Electro.UI"
+             xmlns:Theme="clr-namespace:Electro.Theme;assembly=Electro.Theme"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source="pack://application:,,,/Electro.Theme;component/Theme.xaml"/>
     </Application.Resources>
 </Application>

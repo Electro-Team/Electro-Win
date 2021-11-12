@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Electro.Theme.Style">
+    <Color x:Key="MoreDarkPurpleColor">#610d88</Color>
+    <Color x:Key="DarkPurpleColor">#8713bd</Color>
+    <Color x:Key="PurpleColor">#AA14F0</Color>
+    <Color x:Key="LightPurpleColor">#BC8CF2</Color>
+    <Color x:Key="MoreDarkElectroGreyColor">#292d33</Color>
+    <Color x:Key="DarkElectroGreyColor">#474d57</Color>
+    <Color x:Key="ElectroGreyColor">#EEEEEE</Color>
+
+    <SolidColorBrush x:Key="MoreDarkPurpleColorBrush" Color="{StaticResource MoreDarkPurpleColor}"/>
+    <SolidColorBrush x:Key="DarkPurpleColorBrush" Color="{StaticResource DarkPurpleColor}"/>
+    <SolidColorBrush x:Key="PurpleColorBrush" Color="{StaticResource PurpleColor}"/>
+    <SolidColorBrush x:Key="LightPurpleColorBrush" Color="{StaticResource LightPurpleColor}"/>
+    <SolidColorBrush x:Key="MoreDarkElectroGreyColorBrush" Color="{StaticResource MoreDarkElectroGreyColor}"/>
+    <SolidColorBrush x:Key="DarkElectroGreyColorBrush" Color="{StaticResource DarkElectroGreyColor}"/>
+    <SolidColorBrush x:Key="ElectroGreyColorBrush" Color="{StaticResource ElectroGreyColor}"/>
+</ResourceDictionary>
