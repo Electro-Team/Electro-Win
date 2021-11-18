@@ -41,7 +41,7 @@ namespace Electro.UI.ViewModels.DNS
             nic = "";
             foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
             {
-                if (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
+                if (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
                 {
 
                     foreach (IPAddress dnsAdress in ni.GetIPProperties().DnsAddresses)
