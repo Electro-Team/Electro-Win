@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Electro.UI.Controls
 {
@@ -20,6 +10,7 @@ namespace Electro.UI.Controls
     /// </summary>
     public partial class WindowControl : UserControl
     {
+        
         public bool CloseItem
         {
             get { return (bool)GetValue(CloseItemProperty); }
@@ -38,7 +29,7 @@ namespace Electro.UI.Controls
             if (control.CloseItem)
             {
                 control.CloseButton.Visibility = Visibility.Visible;
-                control.MaximizeButton.Visibility = Visibility.Hidden;
+                control.MinimizeToTrayButton.Visibility = Visibility.Hidden;
                 control.MinimizeButton.Visibility = Visibility.Hidden;
             }
         }
@@ -53,17 +44,10 @@ namespace Electro.UI.Controls
             Window parentWindow = Window.GetWindow(this);
             parentWindow?.Close();
         }
-        private void MaximizeButton_Maximize(object sender, RoutedEventArgs e)
+        private void MinimizeToTrayButton_MinimizeToTray(object sender, RoutedEventArgs e)
         {
             Window parentWindow = Window.GetWindow(this);
-            if (parentWindow.WindowState == WindowState.Maximized)
-            {
-                parentWindow.WindowState = WindowState.Normal;
-            }
-            else if (parentWindow.WindowState == WindowState.Normal)
-            {
-                parentWindow.WindowState = WindowState.Maximized;
-            }
+            parentWindow.Hide();
         }
         private void MinimizeButton_Minimize(object sender, RoutedEventArgs e)
         {
@@ -71,22 +55,14 @@ namespace Electro.UI.Controls
             parentWindow.WindowState = WindowState.Minimized;
         }
 
-        private void MaximizeButton_MouseEnter(object sender, MouseEventArgs e)
+        private void MinimizeToTrayButton_MouseEnter(object sender, MouseEventArgs e)
         {
             Window parentWindow = Window.GetWindow(this);
-            if (parentWindow.WindowState == WindowState.Maximized)
-            {
-                ToolTip restore = new ToolTip
-                {
-                    Content = String.Format("Restore")
-                };
-                (sender as Button).ToolTip = restore;
-            }
-            else if (parentWindow.WindowState == WindowState.Normal)
+            if (parentWindow.WindowState == WindowState.Normal)
             {
                 ToolTip maximize = new ToolTip
                 {
-                    Content = String.Format("Maximize")
+                    Content = String.Format("Minimize To Tray")
                 };
                 (sender as Button).ToolTip = maximize;
             }

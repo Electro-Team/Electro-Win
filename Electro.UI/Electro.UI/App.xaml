@@ -3,8 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Electro.UI"
              xmlns:Theme="clr-namespace:Electro.Theme;assembly=Electro.Theme"
+             xmlns:converters="clr-namespace:Electro.UI.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Electro.Theme;component/Theme.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Electro.Theme;component/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

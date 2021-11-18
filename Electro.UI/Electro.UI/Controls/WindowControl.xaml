@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Electro.UI.Controls"
+             xmlns:tools="clr-namespace:Electro.UI.Tools"
              mc:Ignorable="d" 
             WindowChrome.IsHitTestVisibleInChrome="True">
     <Grid>
@@ -26,19 +27,25 @@
 						 Placement="Mouse" />
             </Button.ToolTip>
         </Button>
-        <Button Grid.Column="1" x:Name="MaximizeButton" Click="MaximizeButton_Maximize"
-				MouseEnter="MaximizeButton_MouseEnter"  
+        <tools:NotifyIconWrapper NotifyRequest="{Binding NotifyRequest}"/>
+        <Button Grid.Column="0" x:Name="MinimizeToTrayButton" 
+				Command="{Binding NotifyCommand}"
+                Click="MinimizeToTrayButton_MinimizeToTray"
+                MouseEnter="MinimizeToTrayButton_MouseEnter"  
                 Style="{StaticResource HeaderButtonStyle}">
             <Path
-                Data="{StaticResource Maximize}"
+                Data="{StaticResource MinimizeToTray}"
                 Fill="{StaticResource ElectroGreyColorBrush}"
+                Stroke="{StaticResource ElectroGreyColorBrush}"
+                StrokeThickness="0.7"
                 Width="12"
                 Stretch="Uniform"
                 RenderOptions.BitmapScalingMode="Fant"
                 Margin="10" />
         </Button>
         <Button x:Name="MinimizeButton" Click="MinimizeButton_Minimize"
-                Style="{StaticResource HeaderButtonStyle}">
+                Style="{StaticResource HeaderButtonStyle}"
+                Grid.Column="1">
             <Path
                 Data="{StaticResource Minimize}"
                 Fill="{StaticResource ElectroGreyColorBrush}"

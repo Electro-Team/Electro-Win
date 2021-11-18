@@ -10,11 +10,13 @@
         <Grid>
             <ToggleButton VerticalAlignment="Center"
                           HorizontalAlignment="Center"
+                          x:Name="DNSButton"
                           BorderThickness="5"
                           BorderBrush="{StaticResource ElectroGreyColorBrush}"
                           Background="Transparent"
                           Padding="30"
-                          Style="{StaticResource DNSToggleButtonStyle}">
+                          Style="{StaticResource DNSToggleButtonStyle}"
+                          Click="DNSButton_OnClick">
                 <Path
                     Data="{StaticResource ELogo}"
                     x:Name="ELogo"
@@ -30,30 +32,6 @@
                                       Color="Black"
                                       />
                 </ToggleButton.Effect>
-                <!--<ToggleButton.Triggers>
-                    <EventTrigger RoutedEvent="ToggleButton.MouseEnter">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Fill).(SolidColorBrush.Color)"
-                                                              Storyboard.TargetName="ELogo">
-                                    <EasingColorKeyFrame KeyTime="00:00:00.2"
-                                                         Value="Black" />
-                                </ColorAnimationUsingKeyFrames>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                    <EventTrigger RoutedEvent="ToggleButton.Checked">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Fill).(SolidColorBrush.Color)"
-                                                              Storyboard.TargetName="ELogo">
-                                    <EasingColorKeyFrame KeyTime="00:00:00.2"
-                                                         Value="{StaticResource ElectroGreyColor}" />
-                                </ColorAnimationUsingKeyFrames>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>-->
-                <!--</ToggleButton.Triggers>-->
             </ToggleButton>
         </Grid>
     </Border>

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Electro.UI.ViewModels.DNS;
 
 namespace Electro.UI.Views
 {
@@ -23,6 +24,18 @@ namespace Electro.UI.Views
         public DNSControl()
         {
             InitializeComponent();
+        }
+
+        private void DNSButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (DNSButton.IsChecked.Value)
+            {
+                (DataContext as DNSViewModel).SetDnsCommand.Execute(null);
+            }
+            else
+            {
+                (DataContext as DNSViewModel).UnsetDnsCommand.Execute(null);
+            }
         }
     }
 }

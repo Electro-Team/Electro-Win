@@ -116,4 +116,12 @@
             <ScaleTransform ScaleY="-1"/>
         </PathGeometry.Transform>
     </PathGeometry>
+    <PathGeometry x:Key="MinimizeToTray"
+                          Figures="M26 3864 c-20 -21 -26 -36 -26 -73 l0 -46 1258 -1257 1257 -1258 45
+        0 45 0 1257 1258 1258 1257 0 46 c0 65 -34 99 -99 99 l-46 0 -1207 -1207
+        -1208 -1208 -1208 1208 -1207 1207 -46 0 c-37 0 -52 -6 -73 -26z">
+        <PathGeometry.Transform>
+            <ScaleTransform ScaleY="-1"/>
+        </PathGeometry.Transform>
+    </PathGeometry>
 </ResourceDictionary>
