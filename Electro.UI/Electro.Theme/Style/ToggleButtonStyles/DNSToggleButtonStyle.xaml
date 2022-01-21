@@ -63,25 +63,24 @@
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
+                                
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)"
-																	  Storyboard.TargetName="border">
+                                                                      Storyboard.TargetName="border">
                                             <EasingColorKeyFrame KeyTime="00:00:00.2"
-																 Value="{StaticResource MoreDarkPurpleColor}" />
+                                                                 Value="{StaticResource DarkElectroGreyColor}" />
                                         </ColorAnimationUsingKeyFrames>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
                                                                       Storyboard.TargetName="border1">
                                             <EasingColorKeyFrame KeyTime="00:00:00.2"
-                                                                 Value="{StaticResource MoreDarkPurpleColor}" />
+                                                                 Value="{StaticResource DarkElectroGreyColor}" />
                                         </ColorAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Disabled">
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
-														 Duration="0:0"
-														 To="0.2" />
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(ContentPresenter.Content).(Path.Fill)"
+                                                                       Storyboard.TargetName="contentPresenter">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00.2"
+                                                                    Value="{StaticResource MoreDarkElectroGreyColorBrush}"></DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Checked">

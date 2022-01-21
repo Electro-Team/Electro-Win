@@ -15,6 +15,7 @@
                           BorderBrush="{StaticResource ElectroGreyColorBrush}"
                           Background="Transparent"
                           Padding="30"
+                          IsEnabled="{Binding ConfigObtained}"
                           Style="{StaticResource DNSToggleButtonStyle}"
                           Click="DNSButton_OnClick">
                 <Path
