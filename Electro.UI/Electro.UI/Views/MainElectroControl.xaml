@@ -8,19 +8,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TabControl>
-            <TabItem Header="DNS"
-                     BorderThickness="0"
-                     IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=local:MainElectroControl}, 
-                    Path=DataContext.IsServiceOn, Converter={StaticResource InvertBooleanConverter},
-                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <local:DNSControl DataContext="{Binding DnsViewModel}"/>
-            </TabItem>
-            <!--<TabItem Header="Open VPN"
-                     IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=local:MainElectroControl}, 
-                    Path=DataContext.IsServiceOn, Converter={StaticResource InvertBooleanConverter},
-                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            </TabItem>-->
-        </TabControl>
+        <Rectangle RadiusX="2" RadiusY="2"
+                   Width="700"
+                   Height="3"
+                   VerticalAlignment="Top"
+                   Margin="0,0"
+                   Fill="{StaticResource PurpleColorBrush}" />
+        <local:DNSControl DataContext="{Binding DnsViewModel}"/>
     </Grid>
 </UserControl>
