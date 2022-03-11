@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,11 @@ namespace Electro.UI.ViewModels
         private bool isServiceOn;
         private NotifyIconWrapper.NotifyRequestRecord _notifyRequest;
         private RelayCommand notifyCommand;
+        private RelayCommand elTeamSiteCommand;
+        private RelayCommand discordCommand;
+        private RelayCommand telegramCommand;
+        private RelayCommand instagramCommand;
+        private RelayCommand donateCommand;
         private bool _showInTaskbar;
         private WindowState _windowState;
         public MainViewModel()
@@ -26,6 +32,21 @@ namespace Electro.UI.ViewModels
 
         public RelayCommand NotifyCommand => notifyCommand ??
                                              (notifyCommand = new RelayCommand(Notify));
+
+        public RelayCommand ElTeamSiteCommand => elTeamSiteCommand ??
+                                                 (elTeamSiteCommand = new RelayCommand(elTeamSite));
+
+        public RelayCommand DiscordCommand => discordCommand ??
+                                              (discordCommand = new RelayCommand(discord));
+
+        public RelayCommand TelegramCommand => telegramCommand ??
+                                               (telegramCommand = new RelayCommand(telegram));
+
+        public RelayCommand InstagramCommand => instagramCommand ??
+                                                (instagramCommand = new RelayCommand(instagram));
+
+        public RelayCommand DonateCommand => donateCommand ??
+                                             (donateCommand = new RelayCommand(donate));
         public bool IsServiceOn
         {
             get => isServiceOn;
@@ -70,10 +91,16 @@ namespace Electro.UI.ViewModels
         {
             NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
             {
-                Title = "Notify",
-                Text = "App has been minimized!",
+                Title = "Electro",
+                Text = "Electro has been minimized!",
                 Duration = 1000
             };
         }
+
+        private void elTeamSite(object obj) => Process.Start("http://www.elteam.ir");
+        private void discord(object obj) => Process.Start("https://discord.io/elteam");
+        private void telegram(object obj) => Process.Start("tg://resolve?domain=elteam_IR");
+        private void instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
+        private void donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
     }
 }

@@ -87,9 +87,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\DialogHeaderControl.xaml.cs">
+      <DependentUpon>DialogHeaderControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\HeaderControl.xaml.cs">
       <DependentUpon>HeaderControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PowerButton.cs" />
     <Compile Include="Controls\WindowControl.xaml.cs">
       <DependentUpon>WindowControl.xaml</DependentUpon>
     </Compile>
@@ -107,6 +111,13 @@
     <Compile Include="Views\MainElectroControl.xaml.cs">
       <DependentUpon>MainElectroControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ElectroMessageBox.xaml.cs">
+      <DependentUpon>ElectroMessageBox.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Controls\DialogHeaderControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\HeaderControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -132,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainElectroControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ElectroMessageBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

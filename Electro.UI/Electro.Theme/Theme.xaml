@@ -6,6 +6,10 @@
         <ResourceDictionary Source="Style/TabControlStyles/BaseTabControlStyle.xaml"/>
         <ResourceDictionary Source="Style/WindowStyles/MainWindowStyle.xaml"/>
         <ResourceDictionary Source="Style/ButtonStyles/HeadeerButtonStyle.xaml"/>
+        <ResourceDictionary Source="Style/ButtonStyles/GradientButtonStyle.xaml"/>
+        <ResourceDictionary Source="Style/ButtonStyles/MainButtonStyle.xaml"/>
+        <ResourceDictionary Source="Style/ButtonStyles/PowerButtonStyle.xaml"/>
+        <ResourceDictionary Source="Style/ToolTipStyle.xaml"/>
         <ResourceDictionary Source="Assests/PathAndGeometries.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

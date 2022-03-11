@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Electro.UI.Windows;
 
 namespace Electro.UI.Views
 {
@@ -23,6 +24,11 @@ namespace Electro.UI.Views
         public MainElectroControl()
         {
             InitializeComponent();
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            ElectroMessageBox.Show("HELLO MA BOI!");
         }
     }
 }

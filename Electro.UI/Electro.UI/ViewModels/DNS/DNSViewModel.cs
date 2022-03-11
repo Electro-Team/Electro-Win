@@ -8,10 +8,13 @@ using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Electro.UI.Tools;
+using Electro.UI.Windows;
 using Newtonsoft.Json;
+using Timer = System.Timers.Timer;
 
 namespace Electro.UI.ViewModels.DNS
 {
@@ -23,9 +26,11 @@ namespace Electro.UI.ViewModels.DNS
         private string IP;
         private string DNS;
         private bool configObtained;
-        private RelayCommand setDnsCommand;
-        private RelayCommand unsetDnsCommand;
+        private bool isGettingData;
+        private bool isTurnedOn;
+        private RelayCommand configureDnsCommand;
         private MainViewModel _mainViewModel;
+        private Timer timer = new Timer(3000);
         private HttpClient client = new HttpClient();
 
         public bool ConfigObtained
@@ -37,11 +42,28 @@ namespace Electro.UI.ViewModels.DNS
                 OnPropertyChanged();
             }
         }
-        public RelayCommand SetDnsCommand => setDnsCommand ??
-                                             (setDnsCommand = new RelayCommand(setDNS));
 
-        public RelayCommand UnsetDnsCommand => unsetDnsCommand ??
-                                               (unsetDnsCommand = new RelayCommand(unsetDNS));
+        public bool IsGettingData
+        {
+            get => isGettingData;
+            set
+            {
+                isGettingData = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsTurnedOn
+        {
+            get => isTurnedOn;
+            set
+            {
+                isTurnedOn = value;
+                OnPropertyChanged();
+            }
+        }
+        public RelayCommand ConfigureDnsCommand => configureDnsCommand ??
+                                             (configureDnsCommand = new RelayCommand(configureDns));
 
         public DNSViewModel(MainViewModel mainViewModel)
         {
@@ -85,11 +107,33 @@ namespace Electro.UI.ViewModels.DNS
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-
             }
         }
 
-        private async void setDNS(object obj)
+        private async void configureDns(object obj)
+        {
+            if (IsTurnedOn == false)
+            {
+                IsTurnedOn = true;
+                
+                //try
+                //{
+                //    //IsGettingData = true;
+                //    //await setDNS();
+                //    IsTurnedOn = true;
+                //}
+                //catch (Exception e)
+                //{
+                //    ElectroMessageBox.Show("امکان برقراری با سرور وجود ندارد");
+                //}
+            }
+            else
+            {
+                unsetDNS();
+                IsTurnedOn = false;
+            }
+        }
+        private async Task setDNS()
         {
             ConfigObtained = false;
             var config = await getDnsConfig();
@@ -100,7 +144,7 @@ namespace Electro.UI.ViewModels.DNS
             }
             ConfigObtained = true;
         }
-        private void unsetDNS(object obj)
+        private void unsetDNS()
         {
             runArgumentInCMD($"/c netsh interface ipv4 set dnsservers {name} dhcp");
             _mainViewModel.IsServiceOn = false;
@@ -108,9 +152,10 @@ namespace Electro.UI.ViewModels.DNS
 
         private async Task<object> getDnsConfig()
         {
-            string content = await client.GetStringAsync(
-                $"https://elcdn.ir/app/pc/win/etc/settings.json");
-            return JsonConvert.DeserializeObject<JasonDatas.Root>(content);
+            //string content = await client.GetStringAsync(
+            //    $"https://elcdn.ir/app/pc/win/etc/settings.json");
+            //return JsonConvert.DeserializeObject<JasonDatas.Root>(content);
+            return 1;
         }
 
         //public static NetworkInterface GetActiveEthernetOrWifiNetworkInterface()

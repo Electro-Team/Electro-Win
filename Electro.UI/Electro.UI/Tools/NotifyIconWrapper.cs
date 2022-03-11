@@ -26,7 +26,7 @@ namespace Electro.UI.Tools
                     (d, e) =>
                     {
                         var r = (NotifyRequestRecord)e.NewValue;
-                        ((NotifyIconWrapper)d)._notifyIcon?.ShowBalloonTip(r.Duration, r.Title, r.Text, r.Icon);
+                        ((NotifyIconWrapper)d)._notifyIcon?.ShowBalloonTip(r.Duration, r.Title, r.Text, ToolTipIcon.None);
                     }));
 
         private static readonly RoutedEvent OpenSelectedEvent = EventManager.RegisterRoutedEvent("OpenSelected",

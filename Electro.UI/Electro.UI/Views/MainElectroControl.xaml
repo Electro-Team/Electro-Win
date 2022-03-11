@@ -6,14 +6,93 @@
              xmlns:local="clr-namespace:Electro.UI.Views"
              xmlns:ui="clr-namespace:Electro.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="300">
     <Grid>
-        <Rectangle RadiusX="2" RadiusY="2"
-                   Width="700"
-                   Height="3"
-                   VerticalAlignment="Top"
-                   Margin="0,0"
-                   Fill="{StaticResource PurpleColorBrush}" />
+        <Ellipse Margin="-80,-200,-80,180"
+                 Panel.ZIndex="-10"
+                 Fill="{StaticResource EllipseGradientBrush}">
+        </Ellipse>
+        <StackPanel Margin="0,40,0,0">
+            <Path Data="{StaticResource ELogo}"
+                  Stretch="Uniform"
+                  Fill="White"
+                  Width="40"
+                  HorizontalAlignment="Center"
+                  />
+            <TextBlock Text="E l e c t r o"
+                       Foreground="White"
+                       HorizontalAlignment="Center"></TextBlock>
+        </StackPanel>
         <local:DNSControl DataContext="{Binding DnsViewModel}"/>
+        <StackPanel VerticalAlignment="Bottom"
+                    Margin="19"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <Button Style="{StaticResource GradientButtonStyle}"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Margin="0,0,15,0"
+                    Command="{Binding InstagramCommand}"
+                    ToolTip="Electro Instagram">
+                <Button.Content>
+                    <Path Data="{StaticResource Instagram}"
+                          Stretch="Uniform"
+                          Fill="White"
+                          Margin="5,0"></Path>
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource GradientButtonStyle}"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Margin="0,0,15,0"
+                    Command="{Binding TelegramCommand}"
+                    ToolTip="Electro Telegram">
+                <Button.Content>
+                    <Path Data="{StaticResource Telegram}"
+                          Stretch="Uniform"
+                          Fill="White"
+                          Margin="5,0"></Path>
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource GradientButtonStyle}"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Margin="0,0,15,0"
+                    Command="{Binding DonateCommand}"
+                    ToolTip="Donate us!">
+                <Button.Content>
+                    <Path Data="{StaticResource Donate}"
+                          Stroke="White"
+                          Stretch="Uniform"
+                          Fill="White"
+                          Margin="5,0"></Path>
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource GradientButtonStyle}"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Margin="0,0,15,0"
+                    Command="{Binding ElTeamSiteCommand}"
+                    ToolTip="Electro site">
+                <Button.Content>
+                    <Path Data="{StaticResource Site}"
+                          Stretch="Uniform"
+                          Fill="White"
+                          Margin="5,0"></Path>
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource GradientButtonStyle}"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding DiscordCommand}"
+                    ToolTip="Join our discord server">
+                <Button.Content>
+                    <Path Data="{StaticResource Discord}"
+                          Stretch="Uniform"
+                          Fill="White"
+                          Margin="3,0"></Path>
+                </Button.Content>
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

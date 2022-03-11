@@ -4,36 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Electro.UI.Views"
+             xmlns:controls="clr-namespace:Electro.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Border>
         <Grid>
-            <ToggleButton VerticalAlignment="Center"
+            <controls:PowerButton VerticalAlignment="Center"
                           HorizontalAlignment="Center"
-                          x:Name="DNSButton"
-                          BorderThickness="5"
-                          BorderBrush="{StaticResource ElectroGreyColorBrush}"
-                          Background="Transparent"
-                          Padding="30"
-                          IsEnabled="{Binding ConfigObtained}"
-                          Style="{StaticResource DNSToggleButtonStyle}"
-                          Click="DNSButton_OnClick">
-                <Path
-                    Data="{StaticResource ELogo}"
-                    x:Name="ELogo"
-                    Fill="{StaticResource ElectroGreyColorBrush}"
-                    Stretch="Uniform"
-                    Width="50"
-                    RenderOptions.BitmapScalingMode="Fant"
-                    Margin="10" />
-                <ToggleButton.Effect>
-                    <DropShadowEffect ShadowDepth="0" 
-                                      Opacity="0.1" 
-                                      BlurRadius="10" 
-                                      Color="Black"
-                                      />
-                </ToggleButton.Effect>
-            </ToggleButton>
+                          Width="150"
+                          Height="150"
+                          Command="{Binding ConfigureDnsCommand}"
+                          Style="{StaticResource PowerButtonStyle}"
+                          IsGettingData="{Binding IsGettingData}"
+                          IsTurnedOn="{Binding IsTurnedOn, Mode=TwoWay}">
+            </controls:PowerButton>
         </Grid>
     </Border>
 </UserControl>

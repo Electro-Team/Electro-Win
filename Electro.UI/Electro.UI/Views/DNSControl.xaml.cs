@@ -25,17 +25,5 @@ namespace Electro.UI.Views
         {
             InitializeComponent();
         }
-
-        private void DNSButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (DNSButton.IsChecked.Value)
-            {
-                (DataContext as DNSViewModel).SetDnsCommand.Execute(null);
-            }
-            else
-            {
-                (DataContext as DNSViewModel).UnsetDnsCommand.Execute(null);
-            }
-        }
     }
 }
