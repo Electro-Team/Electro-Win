@@ -111,7 +111,7 @@ namespace Electro.UI.ViewModels.DNS
                 try
                 {
                     IsGettingData = true;
-                    SetDNS(dns);
+                    await SetDNS(dns);
                     IsTurnedOn = true;
                 }
                 catch (Exception e)
@@ -121,7 +121,7 @@ namespace Electro.UI.ViewModels.DNS
             }
             else
             {
-                UnsetDNS();
+                await UnsetDNS();
                 IsTurnedOn = false;
             }
         }
@@ -150,18 +150,21 @@ namespace Electro.UI.ViewModels.DNS
             return 1;
         }
 
-        public static NetworkInterface GetActiveEthernetOrWifiNetworkInterface()
+        public static async Task<NetworkInterface> GetActiveEthernetOrWifiNetworkInterface()
         {
-            var Nic = NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(
+            return await Task.Run(() =>
+            {
+                var Nic = NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(
                 a => a.OperationalStatus == OperationalStatus.Up &&
                      (a.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || a.NetworkInterfaceType == NetworkInterfaceType.Ethernet) &&
                      a.GetIPProperties().GatewayAddresses.Any(g => g.Address.AddressFamily.ToString() == "InterNetwork"));
 
-            return Nic;
+                return Nic;
+            });
         }
-        public void SetDNS(string[] DnsString)
+        public async Task SetDNS(string[] DnsString)
         {
-            var CurrentInterface = GetActiveEthernetOrWifiNetworkInterface();
+            var CurrentInterface = await GetActiveEthernetOrWifiNetworkInterface();
             if (CurrentInterface == null) return;
 
             ManagementClass objMC = new ManagementClass("Win32_NetworkAdapterConfiguration");
@@ -183,9 +186,9 @@ namespace Electro.UI.ViewModels.DNS
                 }
             }
         }
-        public void UnsetDNS()
+        public async Task UnsetDNS()
         {
-            var CurrentInterface = GetActiveEthernetOrWifiNetworkInterface();
+            var CurrentInterface = await GetActiveEthernetOrWifiNetworkInterface();
             if (CurrentInterface == null) return;
 
             ManagementClass objMC = new ManagementClass("Win32_NetworkAdapterConfiguration");
