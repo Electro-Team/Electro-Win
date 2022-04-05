@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
+using AutoUpdaterDotNET;
 using Electro.UI.Tools;
 using Electro.UI.ViewModels.DNS;
 
@@ -25,9 +23,10 @@ namespace Electro.UI.ViewModels
         private WindowState _windowState;
         public MainViewModel()
         {
+            
             dnsViewModel = new DNSViewModel(this);
         }
-
+        
         public DNSViewModel DnsViewModel => dnsViewModel;
 
         public RelayCommand NotifyCommand => notifyCommand ??
@@ -102,5 +101,6 @@ namespace Electro.UI.ViewModels
         private void telegram(object obj) => Process.Start("tg://resolve?domain=elteam_IR");
         private void instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
         private void donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
+        
     }
 }

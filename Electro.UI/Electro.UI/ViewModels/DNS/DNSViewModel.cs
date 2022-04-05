@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading;
+using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
+using AutoUpdaterDotNET;
 using Electro.UI.Tools;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
-using Timer = System.Timers.Timer;
+using Newtonsoft.Json.Linq;
 
 namespace Electro.UI.ViewModels.DNS
 {
@@ -22,6 +22,7 @@ namespace Electro.UI.ViewModels.DNS
     {
         private static string PrimaryDNS = "185.231.182.126";
         private static string SecondaryDNS = "37.152.182.112";
+        private static string[] dns = {PrimaryDNS, SecondaryDNS};
         private string name;
         private string IP;
         private string DNS;
@@ -30,7 +31,6 @@ namespace Electro.UI.ViewModels.DNS
         private bool isTurnedOn;
         private RelayCommand configureDnsCommand;
         private MainViewModel _mainViewModel;
-        private Timer timer = new Timer(3000);
         private HttpClient client = new HttpClient();
 
         public bool ConfigObtained
@@ -67,6 +67,7 @@ namespace Electro.UI.ViewModels.DNS
 
         public DNSViewModel(MainViewModel mainViewModel)
         {
+            
             this._mainViewModel = mainViewModel;
             networkInfos(out IP, out DNS, out name);
             ConfigObtained = true;
@@ -74,6 +75,7 @@ namespace Electro.UI.ViewModels.DNS
 
         private void networkInfos(out string ip, out string dns, out string nic)  // To get current wifi config
         {
+
             ip = "";
             dns = "";
             nic = "";
@@ -90,7 +92,7 @@ namespace Electro.UI.ViewModels.DNS
             }
 
         }
-       
+       /*
         private void runArgumentInCMD(string arg)
         {
             try
@@ -108,32 +110,30 @@ namespace Electro.UI.ViewModels.DNS
             {
                 MessageBox.Show(ex.Message);
             }
-        }
+        }*/
 
         private async void configureDns(object obj)
         {
             if (IsTurnedOn == false)
-            {
-                IsTurnedOn = true;
-                
-                //try
-                //{
-                //    //IsGettingData = true;
-                //    //await setDNS();
-                //    IsTurnedOn = true;
-                //}
-                //catch (Exception e)
-                //{
-                //    ElectroMessageBox.Show("امکان برقراری با سرور وجود ندارد");
-                //}
+            {                
+                try
+                {
+                    IsGettingData = true;
+                    await SetDNS(dns);
+                    IsTurnedOn = true;
+                }
+                catch (Exception e)
+                {
+                    ElectroMessageBox.Show(e.ToString());
+                }
             }
             else
             {
-                unsetDNS();
+                await UnsetDNS();
                 IsTurnedOn = false;
             }
         }
-        private async Task setDNS()
+        /*private async Task setDNS()
         {
             ConfigObtained = false;
             var config = await getDnsConfig();
@@ -148,71 +148,74 @@ namespace Electro.UI.ViewModels.DNS
         {
             runArgumentInCMD($"/c netsh interface ipv4 set dnsservers {name} dhcp");
             _mainViewModel.IsServiceOn = false;
-        }
+        }*/
 
         private async Task<object> getDnsConfig()
         {
             //string content = await client.GetStringAsync(
-            //    $"https://elcdn.ir/app/pc/win/etc/settings.json");
+            //    $\"https://elcdn.ir/app/pc/win/etc/settings.json");
             //return JsonConvert.DeserializeObject<JasonDatas.Root>(content);
             return 1;
         }
 
-        //public static NetworkInterface GetActiveEthernetOrWifiNetworkInterface()
-        //{
-        //    var Nic = NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(
-        //        a => a.OperationalStatus == OperationalStatus.Up &&
-        //             (a.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || a.NetworkInterfaceType == NetworkInterfaceType.Ethernet) &&
-        //             a.GetIPProperties().GatewayAddresses.Any(g => g.Address.AddressFamily.ToString() == "InterNetwork"));
+        public static async Task<NetworkInterface> GetActiveEthernetOrWifiNetworkInterface()
+        {
+            return await Task.Run(() =>
+            {
+                var Nic = NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(
+                a => a.OperationalStatus == OperationalStatus.Up &&
+                     (a.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || a.NetworkInterfaceType == NetworkInterfaceType.Ethernet) &&
+                     a.GetIPProperties().GatewayAddresses.Any(g => g.Address.AddressFamily.ToString() == "InterNetwork"));
 
-        //    return Nic;
-        //}
-        //public void SetDNS(string[] DnsString)
-        //{
-        //    var CurrentInterface = GetActiveEthernetOrWifiNetworkInterface();
-        //    if (CurrentInterface == null) return;
+                return Nic;
+            });
+        }
+        public async Task SetDNS(string[] DnsString)
+        {
+            var CurrentInterface = await GetActiveEthernetOrWifiNetworkInterface();
+            if (CurrentInterface == null) return;
 
-        //    ManagementClass objMC = new ManagementClass("Win32_NetworkAdapterConfiguration");
-        //    ManagementObjectCollection objMOC = objMC.GetInstances();
+            ManagementClass objMC = new ManagementClass("Win32_NetworkAdapterConfiguration");
+            ManagementObjectCollection objMOC = objMC.GetInstances();
 
-        //    foreach (ManagementObject objMO in objMOC)
-        //    {
-        //        if ((bool)objMO["IPEnabled"])
-        //        {
-        //            if (objMO["Caption"].ToString().Contains(CurrentInterface.Description))
-        //            {
-        //                ManagementBaseObject objdns = objMO.GetMethodParameters("SetDNSServerSearchOrder");
-        //                if (objdns != null)
-        //                {
-        //                    objdns["DNSServerSearchOrder"] = DnsString;
-        //                    ManagementBaseObject setDNS = objMO.InvokeMethod("SetDNSServerSearchOrder", objdns, null);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-        //public void UnsetDNS()
-        //{
-        //    var CurrentInterface = GetActiveEthernetOrWifiNetworkInterface();
-        //    if (CurrentInterface == null) return;
+            foreach (ManagementObject objMO in objMOC)
+            {
+                if ((bool)objMO["IPEnabled"])
+                {
+                    if (objMO["Caption"].ToString().Contains(CurrentInterface.Description))
+                    {
+                        ManagementBaseObject objdns = objMO.GetMethodParameters("SetDNSServerSearchOrder");
+                        if (objdns != null)
+                        {
+                            objdns["DNSServerSearchOrder"] = DnsString;
+                            ManagementBaseObject setDNS = objMO.InvokeMethod("SetDNSServerSearchOrder", objdns, null);
+                        }
+                    }
+                }
+            }
+        }
+        public async Task UnsetDNS()
+        {
+            var CurrentInterface = await GetActiveEthernetOrWifiNetworkInterface();
+            if (CurrentInterface == null) return;
 
-        //    ManagementClass objMC = new ManagementClass("Win32_NetworkAdapterConfiguration");
-        //    ManagementObjectCollection objMOC = objMC.GetInstances();
-        //    foreach (ManagementObject objMO in objMOC)
-        //    {
-        //        if ((bool)objMO["IPEnabled"])
-        //        {
-        //            if (objMO["Caption"].ToString().Contains(CurrentInterface.Description))
-        //            {
-        //                ManagementBaseObject objdns = objMO.GetMethodParameters("SetDNSServerSearchOrder");
-        //                if (objdns != null)
-        //                {
-        //                    objdns["DNSServerSearchOrder"] = null;
-        //                    objMO.InvokeMethod("SetDNSServerSearchOrder", objdns, null);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+            ManagementClass objMC = new ManagementClass("Win32_NetworkAdapterConfiguration");
+            ManagementObjectCollection objMOC = objMC.GetInstances();
+            foreach (ManagementObject objMO in objMOC)
+            {
+                if ((bool)objMO["IPEnabled"])
+                {
+                    if (objMO["Caption"].ToString().Contains(CurrentInterface.Description))
+                    {
+                        ManagementBaseObject objdns = objMO.GetMethodParameters("SetDNSServerSearchOrder");
+                        if (objdns != null)
+                        {
+                            objdns["DNSServerSearchOrder"] = null;
+                            objMO.InvokeMethod("SetDNSServerSearchOrder", objdns, null);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
