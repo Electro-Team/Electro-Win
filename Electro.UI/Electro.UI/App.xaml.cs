@@ -82,7 +82,7 @@ namespace Electro.UI
                 }
                 catch(Exception ex)
                 {
-                    ElectroMessageBox.Show("Connection to update server failed !");
+                    ElectroMessageBox.Show("Connection to update server failed !\n" + ex.Message.ToString());
                     // Application.current.shutdown(); maybe ?
                 }
             }
