@@ -17,16 +17,18 @@ using Electro.UI.Tools;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Timer = System.Timers.Timer;
 
 namespace Electro.UI.ViewModels.DNS
 {
     public class DNSViewModel : BaseModel
     {
+<<<<<<< HEAD
         private static string[] dnses;
         private static string[] before_electro_dns;
         HashSet<string> before_electro_dns_temp = new HashSet<string>();
         private static string version = "0.0.0.1";
+=======
+>>>>>>> f4026ff9d0bf6cd277a68e5bcca91f99d0c5dd6e
         private static string PrimaryDNS = "185.231.182.126";
         private static string SecondaryDNS = "37.152.182.112";
         private static string[] dns = {PrimaryDNS, SecondaryDNS};
@@ -38,7 +40,6 @@ namespace Electro.UI.ViewModels.DNS
         private bool isTurnedOn;
         private RelayCommand configureDnsCommand;
         private MainViewModel _mainViewModel;
-        private Timer timer = new Timer(3000);
         private HttpClient client = new HttpClient();
 
         public bool ConfigObtained
