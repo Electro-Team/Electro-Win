@@ -20,13 +20,12 @@ namespace Electro.UI
         private static string version = "0.0.0.1";
         void App_Startup(object sender, StartupEventArgs e)
         {
-            bool startMinimized = false;
             for (int i = 0; i != e.Args.Length; ++i)
             {
                 if (e.Args[i] == "update")
                 {
-                        while(true)
-                        {
+                    while (true)
+                    {
                         Process[] processes = Process.GetProcessesByName("Electro");
                         if (processes.Length <= 0)
                         {
@@ -36,7 +35,7 @@ namespace Electro.UI
                             Process.Start("Electro.exe remove_" + src.ToString());
                             Application.Current.Shutdown();
                         }
-                        }
+                    }
                 }
                 if (e.Args[i].StartsWith("remove_"))
                 {
@@ -82,16 +81,12 @@ namespace Electro.UI
                 }
                 catch(Exception ex)
                 {
-                    ElectroMessageBox.Show("Connection to update server failed !" + Environment.NewLine + ex.Message.ToString());
-                    // Application.current.shutdown(); maybe ?
+                    ElectroMessageBox.Show("Connection to update server failed !" + Environment.NewLine + ex.Message);
+                    Application.Current.Shutdown();
                 }
             }
 
             MainWindow mainWindow = new MainWindow();
-            if (startMinimized)
-            {
-                mainWindow.WindowState = WindowState.Minimized;
-            }
             mainWindow.Show();
         }
     }

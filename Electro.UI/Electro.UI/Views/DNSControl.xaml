@@ -16,6 +16,7 @@
                           Command="{Binding ConfigureDnsCommand}"
                           Style="{StaticResource PowerButtonStyle}"
                           IsGettingData="{Binding IsGettingData}"
+                          IsHitTestVisible="{Binding IsGettingData, Converter={StaticResource InvertBooleanConverter}}"
                           IsTurnedOn="{Binding IsTurnedOn, Mode=TwoWay}">
             </controls:PowerButton>
         </Grid>

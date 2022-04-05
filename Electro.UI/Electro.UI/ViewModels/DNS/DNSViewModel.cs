@@ -10,7 +10,6 @@ using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using AutoUpdaterDotNET;
 using Electro.UI.Tools;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
@@ -23,14 +22,10 @@ namespace Electro.UI.ViewModels.DNS
         private static string PrimaryDNS = "185.231.182.126";
         private static string SecondaryDNS = "37.152.182.112";
         private static string[] dns = {PrimaryDNS, SecondaryDNS};
-        private string name;
-        private string IP;
-        private string DNS;
         private bool configObtained;
         private bool isGettingData;
         private bool isTurnedOn;
         private RelayCommand configureDnsCommand;
-        private MainViewModel _mainViewModel;
         private HttpClient client = new HttpClient();
 
         public bool ConfigObtained
@@ -65,66 +60,25 @@ namespace Electro.UI.ViewModels.DNS
         public RelayCommand ConfigureDnsCommand => configureDnsCommand ??
                                              (configureDnsCommand = new RelayCommand(configureDns));
 
-        public DNSViewModel(MainViewModel mainViewModel)
-        {
-            
-            this._mainViewModel = mainViewModel;
-            networkInfos(out IP, out DNS, out name);
-            ConfigObtained = true;
-        }
-
-        private void networkInfos(out string ip, out string dns, out string nic)  // To get current wifi config
-        {
-
-            ip = "";
-            dns = "";
-            nic = "";
-            var s = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                if (ni.OperationalStatus == OperationalStatus.Up)
-                {
-                    if (ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet || ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
-                    { 
-                        nic = ni.Name;
-                    }
-                }
-            }
-
-        }
-       /*
-        private void runArgumentInCMD(string arg)
-        {
-            try
-            {
-                ProcessStartInfo psi = new ProcessStartInfo("cmd.exe");
-                psi.CreateNoWindow = true;
-                psi.UseShellExecute = true;
-                psi.WindowStyle = ProcessWindowStyle.Hidden;
-                psi.Verb = "runas";
-                psi.Arguments = arg;
-                Process.Start(psi);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }*/
-
         private async void configureDns(object obj)
         {
             if (IsTurnedOn == false)
-            {                
+            {
                 try
                 {
                     IsGettingData = true;
-                    await SetDNS(dns);
+                    var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings.json");
+                    var objects = JsonConvert.DeserializeObject<Rootobject>(data);
+                    await SetDNS(objects?.dns.electro);
                     IsTurnedOn = true;
                 }
                 catch (Exception e)
                 {
-                    ElectroMessageBox.Show(e.ToString());
+                    ElectroMessageBox.Show("Error Getting Server Data!");
+                }
+                finally
+                {
+                    IsGettingData = false;
                 }
             }
             else
@@ -133,31 +87,6 @@ namespace Electro.UI.ViewModels.DNS
                 IsTurnedOn = false;
             }
         }
-        /*private async Task setDNS()
-        {
-            ConfigObtained = false;
-            var config = await getDnsConfig();
-            if (config != null)
-            {
-                runArgumentInCMD($"/c netsh interface ipv4 add dnsserver {name} {(config as JasonDatas.Root)?.dns.electro[0].DNS1} index=1 & netsh interface ipv4 add dnsserver {name} {(config as JasonDatas.Root)?.dns.electro[1].DNS2} index=2");
-                _mainViewModel.IsServiceOn = true;
-            }
-            ConfigObtained = true;
-        }
-        private void unsetDNS()
-        {
-            runArgumentInCMD($"/c netsh interface ipv4 set dnsservers {name} dhcp");
-            _mainViewModel.IsServiceOn = false;
-        }*/
-
-        private async Task<object> getDnsConfig()
-        {
-            //string content = await client.GetStringAsync(
-            //    $\"https://elcdn.ir/app/pc/win/etc/settings.json");
-            //return JsonConvert.DeserializeObject<JasonDatas.Root>(content);
-            return 1;
-        }
-
         public static async Task<NetworkInterface> GetActiveEthernetOrWifiNetworkInterface()
         {
             return await Task.Run(() =>

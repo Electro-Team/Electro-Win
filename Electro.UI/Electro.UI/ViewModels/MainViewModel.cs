@@ -24,7 +24,7 @@ namespace Electro.UI.ViewModels
         public MainViewModel()
         {
             
-            dnsViewModel = new DNSViewModel(this);
+            dnsViewModel = new DNSViewModel();
         }
         
         public DNSViewModel DnsViewModel => dnsViewModel;
