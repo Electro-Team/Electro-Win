@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Management;
 using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,6 +23,9 @@ namespace Electro.UI.ViewModels.DNS
 {
     public class DNSViewModel : BaseModel
     {
+        private static string[] dnses;
+        private static string[] before_electro_dns;
+        HashSet<string> before_electro_dns_temp = new HashSet<string>();
         private static string version = "0.0.0.1";
         private static string PrimaryDNS = "185.231.182.126";
         private static string SecondaryDNS = "37.152.182.112";
@@ -122,6 +127,21 @@ namespace Electro.UI.ViewModels.DNS
                 try
                 {
                     IsGettingData = true;
+                    dnses = GetDnsAdresses(true, false).Select(ip => ip.ToString()).ToArray();
+                    int tmp_counter = 0;
+                    if (dnses.Length > 0)
+                    {
+                        foreach (string dns in dnses)
+                        {
+                            if (tmp_counter > 1)
+                            {
+                                ElectroMessageBox.Show(dns);
+                                before_electro_dns_temp.Add(dns);
+                            }
+                            tmp_counter += 1;
+                        }
+                    }
+                    before_electro_dns = before_electro_dns_temp.ToArray();
                     await SetDNS(dns);
                     IsTurnedOn = true;
                 }
@@ -132,8 +152,15 @@ namespace Electro.UI.ViewModels.DNS
             }
             else
             {
-                await UnsetDNS();
-                IsTurnedOn = false;
+                if (before_electro_dns.Length != 0)
+                {
+                    await SetDNS(before_electro_dns);
+                }
+                else
+                {
+                    await UnsetDNS();
+                }
+                   IsTurnedOn = false;
             }
         }
         /*private async Task setDNS()
@@ -196,6 +223,29 @@ namespace Electro.UI.ViewModels.DNS
                     }
                 }
             }
+        }
+        public static IPAddress[] GetDnsAdresses(bool ip4Wanted, bool ip6Wanted)
+        {
+            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+            HashSet<IPAddress> dnsAddresses = new HashSet<IPAddress>();
+
+            foreach (NetworkInterface networkInterface in interfaces)
+            {
+                if (networkInterface.OperationalStatus == OperationalStatus.Up)
+                {
+                    IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
+
+                    foreach (IPAddress forAddress in ipProperties.DnsAddresses)
+                    {
+                        if ((ip4Wanted && forAddress.AddressFamily == AddressFamily.InterNetwork) || (ip6Wanted && forAddress.AddressFamily == AddressFamily.InterNetworkV6))
+                        {
+                            dnsAddresses.Add(forAddress);
+                        }
+                    }
+                }
+            }
+
+            return dnsAddresses.ToArray();
         }
         public async Task UnsetDNS()
         {
