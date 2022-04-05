@@ -23,16 +23,10 @@ namespace Electro.UI.ViewModels
         private WindowState _windowState;
         public MainViewModel()
         {
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(120);
-            timer.Tick += timer_Tick;
-            timer.Start();
+            
             dnsViewModel = new DNSViewModel(this);
         }
-        void timer_Tick(object sender, EventArgs e)
-        {
-            AutoUpdater.Start("https://elteam.ir/updates.xml");
-        }
+        
         public DNSViewModel DnsViewModel => dnsViewModel;
 
         public RelayCommand NotifyCommand => notifyCommand ??
