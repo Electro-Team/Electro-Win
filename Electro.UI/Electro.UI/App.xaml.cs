@@ -5,9 +5,11 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
-
+using Electro.UI.Windows;
+using Newtonsoft.Json.Linq;
 namespace Electro.UI
 {
     /// <summary>
@@ -15,6 +17,7 @@ namespace Electro.UI
     /// </summary>
     public partial class App : Application
     {
+        private static string version = "0.0.0.1";
         void App_Startup(object sender, StartupEventArgs e)
         {
             bool startMinimized = false;
@@ -46,6 +49,41 @@ namespace Electro.UI
                             File.Delete(process_name + ".exe");
                         }
                     }
+                }
+                string[] files = Directory.GetFiles(@"C:\File", "*.txt");
+                foreach (var file in files)
+                {
+                    if (file.Contains("update_"))
+                    {
+                        Process.Start(file + " update");
+                        Application.Current.Shutdown();
+                    }
+                }
+                try
+                {
+                    WebRequest webRequest = WebRequest.Create("https://elcdn.ir/app/pc/win/etc/settings.json");
+                    HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse();
+                    if (response.StatusDescription == "OK")
+                    {
+                        Stream dataStream = response.GetResponseStream();
+                        StreamReader reader = new StreamReader(dataStream);
+                        string responseFromServer = reader.ReadToEnd();
+                        var data = JObject.Parse(responseFromServer);
+                        if (data["lastVersion"].ToString() != version)
+                        {
+                            if (!File.Exists(@"update" + @"_" + data["lastVersion"].ToString() + @".exe"))
+                            {
+                                WebClient webClient = new WebClient();
+                                UriBuilder uriBuilder = new UriBuilder(data["downloadPath"].ToString());
+                                webClient.DownloadFileAsync(uriBuilder.Uri, @"update" + @"_" + data["lastVersion"].ToString() + @".exe");
+                            }
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    ElectroMessageBox.Show("Connection to update server failed !" + Environment.NewLine + ex.Message.ToString());
+                    // Application.current.shutdown(); maybe ?
                 }
             }
 

@@ -15,13 +15,11 @@ using Electro.UI.Tools;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Timer = System.Timers.Timer;
 
 namespace Electro.UI.ViewModels.DNS
 {
     public class DNSViewModel : BaseModel
     {
-        private static string version = "0.0.0.1";
         private static string PrimaryDNS = "185.231.182.126";
         private static string SecondaryDNS = "37.152.182.112";
         private static string[] dns = {PrimaryDNS, SecondaryDNS};
@@ -33,7 +31,6 @@ namespace Electro.UI.ViewModels.DNS
         private bool isTurnedOn;
         private RelayCommand configureDnsCommand;
         private MainViewModel _mainViewModel;
-        private Timer timer = new Timer(3000);
         private HttpClient client = new HttpClient();
 
         public bool ConfigObtained
@@ -75,42 +72,10 @@ namespace Electro.UI.ViewModels.DNS
             networkInfos(out IP, out DNS, out name);
             ConfigObtained = true;
         }
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            WebRequest webRequest = WebRequest.Create("https://elcdn.ir/app/pc/win/etc/settings.json");
-            HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse();
-            if (response.StatusDescription == "OK")
-            {
-                Stream dataStream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(dataStream);
-                string responseFromServer = reader.ReadToEnd();
-                var data = JObject.Parse(responseFromServer);
-                ElectroMessageBox.Show(data["lastVersion"].ToString());
-                if (data["lastVersion"].ToString() != version)
-                {
-                    if (!File.Exists(@"update" + @"_" + data["lastVersion"].ToString() + @".exe")) {
-                        WebClient webClient = new WebClient();
-                        UriBuilder uriBuilder = new UriBuilder(data["downloadPath"].ToString());
-                        webClient.DownloadFileAsync(uriBuilder.Uri, @"update" + @"_" + data["lastVersion"].ToString() + @".exe");
-                    }
-                }
-            }
-        }
+
         private void networkInfos(out string ip, out string dns, out string nic)  // To get current wifi config
         {
-            string[] files = Directory.GetFiles(@"C:\File", "*.txt");
-            foreach (var file in files)
-            {
-                if (file.Contains("update_"))
-                {
-                    Process.Start(file + " update");
-                    Application.Current.Shutdown();
-                }
-            }
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
-            dispatcherTimer.Start();
+
             ip = "";
             dns = "";
             nic = "";
