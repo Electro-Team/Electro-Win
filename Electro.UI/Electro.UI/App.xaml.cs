@@ -20,71 +20,89 @@ namespace Electro.UI
         private static string version = "0.0.0.1";
         void App_Startup(object sender, StartupEventArgs e)
         {
+            
             for (int i = 0; i != e.Args.Length; ++i)
             {
                 if (e.Args[i] == "update")
                 {
                     while (true)
                     {
-                        Process[] processes = Process.GetProcessesByName("Electro");
+                        Process[] processes = Process.GetProcessesByName("Electro.UI.exe");
+                        ElectroMessageBox.Show(processes.Length.ToString());
                         if (processes.Length <= 0)
                         {
-                            File.Delete("Electro.exe");
+                            File.Delete("Electro.UI.exe");
                             string src = Process.GetCurrentProcess().MainModule.FileName;
-                            File.Copy(src, "Electro.exe");
-                            Process.Start("Electro.exe remove_" + src.ToString());
+                            File.Copy(src, "Electro.UI.exe");
+                            var p = new System.Diagnostics.Process();
+                            p.StartInfo.FileName = "cmd.exe";
+                            p.StartInfo.Arguments = "/c " + "Electro.UI.exe remove_" + src.ToString();
+                            p.StartInfo.RedirectStandardOutput = true;
+                            p.StartInfo.UseShellExecute = false;
+                            p.StartInfo.CreateNoWindow = true;
+                            p.Start();
                             Application.Current.Shutdown();
                         }
                     }
                 }
-                if (e.Args[i].StartsWith("remove_"))
+                else if (e.Args[i].StartsWith("remove_"))
                 {
-                    string process_name = e.Args[i].Split('_')[1].Replace(".exe", "");
-                    while (true)
-                    {
-                        Process[] processes = Process.GetProcessesByName(process_name);
-                        if (processes.Length <= 0)
-                        {
-                            File.Delete(process_name + ".exe");
-                        }
-                    }
+                    string process_name = (e.Args[i].Split('_')[1] + "_" + e.Args[i].Split('_')[2]);
+                    System.Threading.Thread.Sleep(5000);
+                    FileInfo f = new FileInfo(process_name);
+                    f.Delete();
+
                 }
-                string[] files = Directory.GetFiles(@"C:\File", "*.txt");
-                foreach (var file in files)
+            }
+            string[] files = Directory.GetFiles(@".", "*.exe");
+            foreach (var file in files)
+            {
+                if (file.Contains("update_"))
                 {
-                    if (file.Contains("update_"))
-                    {
-                        Process.Start(file + " update");
-                        Application.Current.Shutdown();
-                    }
+                    var p = new System.Diagnostics.Process();
+                    p.StartInfo.FileName = "cmd.exe";
+                    p.StartInfo.Arguments = "/c " + file + " update";
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.CreateNoWindow = true;
+                    p.Start();
+                    Application.Current.Shutdown();
                 }
-                try
+            }
+            try
+            {
+                WebRequest webRequest = WebRequest.Create("https://elcdn.ir/app/pc/win/etc/settings.json");
+                HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse();
+                if (response.StatusDescription == "OK")
                 {
-                    WebRequest webRequest = WebRequest.Create("https://elcdn.ir/app/pc/win/etc/settings.json");
-                    HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse();
-                    if (response.StatusDescription == "OK")
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    string responseFromServer = reader.ReadToEnd();
+                    var data = JObject.Parse(responseFromServer);
+                    if (data["lastVersion"].ToString() != version)
                     {
-                        Stream dataStream = response.GetResponseStream();
-                        StreamReader reader = new StreamReader(dataStream);
-                        string responseFromServer = reader.ReadToEnd();
-                        var data = JObject.Parse(responseFromServer);
-                        if (data["lastVersion"].ToString() != version)
+                        if (!File.Exists(@"update" + @"_" + data["lastVersion"].ToString() + @".exe"))
                         {
-                            if (!File.Exists(@"update" + @"_" + data["lastVersion"].ToString() + @".exe"))
+                            WebClient webClient = new WebClient();
+                            UriBuilder uriBuilder = new UriBuilder(data["downloadPath"].ToString());
+                            if (!data["downloadPath"].ToString().EndsWith(".exe"))
                             {
-                                WebClient webClient = new WebClient();
-                                UriBuilder uriBuilder = new UriBuilder(data["downloadPath"].ToString());
+                                
+                            }
+                            else
+                            {
                                 webClient.DownloadFileAsync(uriBuilder.Uri, @"update" + @"_" + data["lastVersion"].ToString() + @".exe");
                             }
                         }
                     }
                 }
-                catch(Exception ex)
-                {
-                    ElectroMessageBox.Show("Connection to update server failed !" + Environment.NewLine + ex.Message);
-                    Application.Current.Shutdown();
-                }
             }
+            catch(Exception ex)
+            {
+                ElectroMessageBox.Show("Connection to update server failed !" + Environment.NewLine + ex.Message);
+                Application.Current.Shutdown();
+            }
+            
 
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
