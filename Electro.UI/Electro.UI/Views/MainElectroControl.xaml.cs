@@ -25,10 +25,5 @@ namespace Electro.UI.Views
         {
             InitializeComponent();
         }
-
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            ElectroMessageBox.Show("HELLO MA BOI!");
-        }
     }
 }

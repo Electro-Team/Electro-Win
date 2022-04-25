@@ -21,87 +21,87 @@ namespace Electro.UI
         void App_Startup(object sender, StartupEventArgs e)
         {
             
-            for (int i = 0; i != e.Args.Length; ++i)
-            {
-                if (e.Args[i] == "update")
-                {
-                    while (true)
-                    {
-                        Process[] processes = Process.GetProcessesByName("Electro.UI.exe");
-                        ElectroMessageBox.Show(processes.Length.ToString());
-                        if (processes.Length <= 0)
-                        {
-                            File.Delete("Electro.UI.exe");
-                            string src = Process.GetCurrentProcess().MainModule.FileName;
-                            File.Copy(src, "Electro.UI.exe");
-                            var p = new System.Diagnostics.Process();
-                            p.StartInfo.FileName = "cmd.exe";
-                            p.StartInfo.Arguments = "/c " + "Electro.UI.exe remove_" + src.ToString();
-                            p.StartInfo.RedirectStandardOutput = true;
-                            p.StartInfo.UseShellExecute = false;
-                            p.StartInfo.CreateNoWindow = true;
-                            p.Start();
-                            Application.Current.Shutdown();
-                        }
-                    }
-                }
-                else if (e.Args[i].StartsWith("remove_"))
-                {
-                    string process_name = (e.Args[i].Split('_')[1] + "_" + e.Args[i].Split('_')[2]);
-                    System.Threading.Thread.Sleep(5000);
-                    FileInfo f = new FileInfo(process_name);
-                    f.Delete();
+            //for (int i = 0; i != e.Args.Length; ++i)
+            //{
+            //    if (e.Args[i] == "update")
+            //    {
+            //        while (true)
+            //        {
+            //            Process[] processes = Process.GetProcessesByName("Electro.UI.exe");
+            //            ElectroMessageBox.Show(processes.Length.ToString());
+            //            if (processes.Length <= 0)
+            //            {
+            //                File.Delete("Electro.UI.exe");
+            //                string src = Process.GetCurrentProcess().MainModule.FileName;
+            //                File.Copy(src, "Electro.UI.exe");
+            //                var p = new System.Diagnostics.Process();
+            //                p.StartInfo.FileName = "cmd.exe";
+            //                p.StartInfo.Arguments = "/c " + "Electro.UI.exe remove_" + src.ToString();
+            //                p.StartInfo.RedirectStandardOutput = true;
+            //                p.StartInfo.UseShellExecute = false;
+            //                p.StartInfo.CreateNoWindow = true;
+            //                p.Start();
+            //                Application.Current.Shutdown();
+            //            }
+            //        }
+            //    }
+            //    else if (e.Args[i].StartsWith("remove_"))
+            //    {
+            //        string process_name = (e.Args[i].Split('_')[1] + "_" + e.Args[i].Split('_')[2]);
+            //        System.Threading.Thread.Sleep(5000);
+            //        FileInfo f = new FileInfo(process_name);
+            //        f.Delete();
 
-                }
-            }
-            string[] files = Directory.GetFiles(@".", "*.exe");
-            foreach (var file in files)
-            {
-                if (file.Contains("update_"))
-                {
-                    var p = new System.Diagnostics.Process();
-                    p.StartInfo.FileName = "cmd.exe";
-                    p.StartInfo.Arguments = "/c " + file + " update";
-                    p.StartInfo.RedirectStandardOutput = true;
-                    p.StartInfo.UseShellExecute = false;
-                    p.StartInfo.CreateNoWindow = true;
-                    p.Start();
-                    Application.Current.Shutdown();
-                }
-            }
-            try
-            {
-                WebRequest webRequest = WebRequest.Create("https://elcdn.ir/app/pc/win/etc/settings.json");
-                HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse();
-                if (response.StatusDescription == "OK")
-                {
-                    Stream dataStream = response.GetResponseStream();
-                    StreamReader reader = new StreamReader(dataStream);
-                    string responseFromServer = reader.ReadToEnd();
-                    var data = JObject.Parse(responseFromServer);
-                    if (data["lastVersion"].ToString() != version)
-                    {
-                        if (!File.Exists(@"update" + @"_" + data["lastVersion"].ToString() + @".exe"))
-                        {
-                            WebClient webClient = new WebClient();
-                            UriBuilder uriBuilder = new UriBuilder(data["downloadPath"].ToString());
-                            if (!data["downloadPath"].ToString().EndsWith(".exe"))
-                            {
+            //    }
+            //}
+            //string[] files = Directory.GetFiles(@".", "*.exe");
+            //foreach (var file in files)
+            //{
+            //    if (file.Contains("update_"))
+            //    {
+            //        var p = new System.Diagnostics.Process();
+            //        p.StartInfo.FileName = "cmd.exe";
+            //        p.StartInfo.Arguments = "/c " + file + " update";
+            //        p.StartInfo.RedirectStandardOutput = true;
+            //        p.StartInfo.UseShellExecute = false;
+            //        p.StartInfo.CreateNoWindow = true;
+            //        p.Start();
+            //        Application.Current.Shutdown();
+            //    }
+            //}
+            //try
+            //{
+            //    WebRequest webRequest = WebRequest.Create("https://elcdn.ir/app/pc/win/etc/settings.json");
+            //    HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse();
+            //    if (response.StatusDescription == "OK")
+            //    {
+            //        Stream dataStream = response.GetResponseStream();
+            //        StreamReader reader = new StreamReader(dataStream);
+            //        string responseFromServer = reader.ReadToEnd();
+            //        var data = JObject.Parse(responseFromServer);
+            //        if (data["lastVersion"].ToString() != version)
+            //        {
+            //            if (!File.Exists(@"update" + @"_" + data["lastVersion"].ToString() + @".exe"))
+            //            {
+            //                WebClient webClient = new WebClient();
+            //                UriBuilder uriBuilder = new UriBuilder(data["downloadPath"].ToString());
+            //                if (!data["downloadPath"].ToString().EndsWith(".exe"))
+            //                {
                                 
-                            }
-                            else
-                            {
-                                webClient.DownloadFileAsync(uriBuilder.Uri, @"update" + @"_" + data["lastVersion"].ToString() + @".exe");
-                            }
-                        }
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                ElectroMessageBox.Show("Connection to update server failed !" + Environment.NewLine + ex.Message);
-                Application.Current.Shutdown();
-            }
+            //                }
+            //                else
+            //                {
+            //                    webClient.DownloadFileAsync(uriBuilder.Uri, @"update" + @"_" + data["lastVersion"].ToString() + @".exe");
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //catch(Exception ex)
+            //{
+            //    ElectroMessageBox.Show("Connection to update server failed !" + Environment.NewLine + ex.Message);
+            //    Application.Current.Shutdown();
+            //}
             
 
             MainWindow mainWindow = new MainWindow();

@@ -25,8 +25,9 @@ namespace Electro.UI.ViewModels
         {
             
             dnsViewModel = new DNSViewModel();
+            dnsViewModel.ServiceUpdated += ServiceUpdated;
         }
-        
+
         public DNSViewModel DnsViewModel => dnsViewModel;
 
         public RelayCommand NotifyCommand => notifyCommand ??
@@ -95,7 +96,24 @@ namespace Electro.UI.ViewModels
                 Duration = 1000
             };
         }
-
+        private void ServiceUpdated(bool isTurnedOn)
+        {
+            string description;
+            if (isTurnedOn)
+            {
+                description = "DNS service turned on.";
+            }
+            else
+            {
+                description = "DNS service turned off.";
+            }
+            NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
+            {
+                Title = "Electro",
+                Text = description,
+                Duration = 1000
+            };
+        }
         private void elTeamSite(object obj) => Process.Start("http://www.elteam.ir");
         private void discord(object obj) => Process.Start("https://discord.io/elteam");
         private void telegram(object obj) => Process.Start("tg://resolve?domain=elteam_IR");

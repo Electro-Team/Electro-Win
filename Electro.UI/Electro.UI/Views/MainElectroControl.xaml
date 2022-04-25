@@ -23,6 +23,11 @@
                        Foreground="White"
                        HorizontalAlignment="Center"></TextBlock>
         </StackPanel>
+        <Image Source="/Electro.Theme;component/Images/World Electro.png"
+               VerticalAlignment="Top"
+               RenderOptions.BitmapScalingMode="Fant"
+               Height="500"
+               Margin="-52,-6,-58,0"/>
         <local:DNSControl DataContext="{Binding DnsViewModel}"/>
         <StackPanel VerticalAlignment="Bottom"
                     Margin="19"

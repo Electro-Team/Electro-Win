@@ -10,7 +10,7 @@
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="Electro" 
         MinHeight="450" MinWidth="300"
         MaxHeight="450" MaxWidth="300"
         Style="{StaticResource BaseWindowStyle}">

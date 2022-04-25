@@ -28,6 +28,7 @@ namespace Electro.UI.ViewModels.DNS
         private RelayCommand configureDnsCommand;
         private HttpClient client = new HttpClient();
 
+        public Action<bool> ServiceUpdated;
         public bool ConfigObtained
         {
             get => configObtained;
@@ -86,6 +87,7 @@ namespace Electro.UI.ViewModels.DNS
                 await UnsetDNS();
                 IsTurnedOn = false;
             }
+            ServiceUpdated?.Invoke(IsTurnedOn);
         }
         public static async Task<NetworkInterface> GetActiveEthernetOrWifiNetworkInterface()
         {
