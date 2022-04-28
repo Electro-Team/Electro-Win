@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Net.NetworkInformation;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Threading;
 using Electro.UI.Tools;
 using Electro.UI.Windows;
@@ -22,11 +24,17 @@ namespace Electro.UI.ViewModels.DNS
         private static string PrimaryDNS = "185.231.182.126";
         private static string SecondaryDNS = "37.152.182.112";
         private static string[] dns = {PrimaryDNS, SecondaryDNS};
+        private string serviceText;
         private bool configObtained;
         private bool isGettingData;
         private bool isTurnedOn;
         private RelayCommand configureDnsCommand;
         private HttpClient client = new HttpClient();
+
+        public DNSViewModel()
+        {
+            serviceText = "Service Off";
+        }
 
         public Action<bool> ServiceUpdated;
         public bool ConfigObtained
@@ -58,6 +66,19 @@ namespace Electro.UI.ViewModels.DNS
                 OnPropertyChanged();
             }
         }
+
+        public string ServiceText
+        {
+            get
+            {
+                return serviceText;
+            }
+            set
+            {
+                serviceText = value;
+                OnPropertyChanged();
+            }
+        }
         public RelayCommand ConfigureDnsCommand => configureDnsCommand ??
                                              (configureDnsCommand = new RelayCommand(configureDns));
 
@@ -72,6 +93,7 @@ namespace Electro.UI.ViewModels.DNS
                     var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                     await SetDNS(objects?.dns.electro);
                     IsTurnedOn = true;
+                    ServiceText = "Service On";
                 }
                 catch (Exception e)
                 {
@@ -86,6 +108,7 @@ namespace Electro.UI.ViewModels.DNS
             {
                 await UnsetDNS();
                 IsTurnedOn = false;
+                ServiceText = "Service Off";
             }
             ServiceUpdated?.Invoke(IsTurnedOn);
         }
@@ -147,6 +170,26 @@ namespace Electro.UI.ViewModels.DNS
                     }
                 }
             }
+        }
+        private static List<string> GetDnsAdress()
+        {
+            NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            List<string> addresses = new List<string>();
+            foreach (NetworkInterface networkInterface in networkInterfaces)
+            {
+                if (networkInterface.OperationalStatus == OperationalStatus.Up)
+                {
+                    IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
+                    IPAddressCollection dnsAddresses = ipProperties.DnsAddresses;
+
+                    foreach (IPAddress dnsAdress in dnsAddresses)
+                    {
+                        addresses.Add(dnsAdress.ToString());
+                    }
+                }
+            }
+
+            return addresses;
         }
     }
 }

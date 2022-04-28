@@ -20,4 +20,12 @@ namespace Electro.UI.Tools
         public string[] google { get; set; }
     }
 
+
+
+    public class Version
+    {
+        public string lastVersion { get; set; }
+        public string downloadPath { get; set; }
+    }
+
 }

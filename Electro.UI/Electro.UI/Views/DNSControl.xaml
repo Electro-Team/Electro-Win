@@ -19,6 +19,11 @@
                           IsHitTestVisible="{Binding IsGettingData, Converter={StaticResource InvertBooleanConverter}}"
                           IsTurnedOn="{Binding IsTurnedOn, Mode=TwoWay}">
             </controls:PowerButton>
+            <TextBlock Margin="0,350,0,0"
+                       HorizontalAlignment="Center"
+                       Text="{Binding ServiceText}"
+                       FontWeight="Bold"
+                       Foreground="Azure"></TextBlock>
         </Grid>
     </Border>
 </UserControl>

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Electro.UI", "Electro.UI\El
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Electro.Theme", "Electro.Theme\Electro.Theme.csproj", "{0F58737E-E2CD-430E-B2A2-D8A3F3BB40AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Electro.Updater", "Electro.Updater\Electro.Updater.csproj", "{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0F58737E-E2CD-430E-B2A2-D8A3F3BB40AA}.Debug|Any CPU.Build.0 = Debug|x64
 		{0F58737E-E2CD-430E-B2A2-D8A3F3BB40AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F58737E-E2CD-430E-B2A2-D8A3F3BB40AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}.Debug|Any CPU.Build.0 = Debug|x64
+		{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

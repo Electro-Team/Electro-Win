@@ -5,17 +5,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8EFECE29-B4D4-4B85-B5CB-89117BA678FD}</ProjectGuid>
+    <ProjectGuid>{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Electro.UI</RootNamespace>
-    <AssemblyName>Electro.UI</AssemblyName>
+    <RootNamespace>Electro.Updater</RootNamespace>
+    <AssemblyName>Electro.Updater</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
@@ -28,8 +27,9 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -73,33 +73,14 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>ELogo.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
+    <ApplicationIcon>UpdaterIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoUpdater.NET, Version=1.7.0.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autoupdater.NET.Official.1.7.0\lib\net45\AutoUpdater.NET.dll</HintPath>
-    </Reference>
     <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
-    </Reference>
-    <Reference Include="Eco.Handles, Version=7.0.0.13915, Culture=neutral, PublicKeyToken=46a833be9e90de8c, processorArchitecture=MSIL">
-      <HintPath>..\packages\EcoCore.7.0.0.13915\lib\net40\Eco.Handles.dll</HintPath>
-    </Reference>
-    <Reference Include="Eco.Interfaces, Version=7.0.0.13915, Culture=neutral, PublicKeyToken=46a833be9e90de8c, processorArchitecture=MSIL">
-      <HintPath>..\packages\EcoCore.7.0.0.13915\lib\net40\Eco.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Eco.LinqExtender, Version=7.0.0.13915, Culture=neutral, PublicKeyToken=46a833be9e90de8c, processorArchitecture=MSIL">
-      <HintPath>..\packages\EcoCore.7.0.0.13915\lib\net40\Eco.LinqExtender.dll</HintPath>
-    </Reference>
-    <Reference Include="MDriven.Net.Http, Version=7.0.0.13915, Culture=neutral, PublicKeyToken=46a833be9e90de8c, processorArchitecture=MSIL">
-      <HintPath>..\packages\EcoCore.7.0.0.13915\lib\net40\MDriven.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
@@ -109,7 +90,6 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
@@ -131,7 +111,6 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
       <Private>True</Private>
@@ -173,7 +152,6 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Management" />
     <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
       <Private>True</Private>
@@ -210,7 +188,6 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
@@ -236,8 +213,6 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -252,6 +227,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
@@ -259,60 +235,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\DialogHeaderControl.xaml.cs">
-      <DependentUpon>DialogHeaderControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\HeaderControl.xaml.cs">
-      <DependentUpon>HeaderControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\MessageBoxDialogHeaderControl.xaml.cs">
-      <DependentUpon>MessageBoxDialogHeaderControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\MessageBoxWindowControl.xaml.cs">
-      <DependentUpon>MessageBoxWindowControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PowerButton.cs" />
-    <Compile Include="Controls\WindowControl.xaml.cs">
-      <DependentUpon>WindowControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Converters\InvertBooleanConverter.cs" />
-    <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Tools\BaseModel.cs" />
-    <Compile Include="Tools\JasonDatas.cs" />
-    <Compile Include="Tools\NotifyIconWrapper.cs" />
-    <Compile Include="Tools\RelayCommand.cs" />
-    <Compile Include="ViewModels\DNS\DNSViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="Views\DNSControl.xaml.cs">
-      <DependentUpon>DNSControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MainElectroControl.xaml.cs">
-      <DependentUpon>MainElectroControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ElectroMessageBox.xaml.cs">
-      <DependentUpon>ElectroMessageBox.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Controls\DialogHeaderControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\HeaderControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\MessageBoxDialogHeaderControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\MessageBoxWindowControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\WindowControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="UpdaterMainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -320,22 +243,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="UpdaterMainWindow.xaml.cs">
+      <DependentUpon>UpdaterMainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\DNSControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MainElectroControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\ElectroMessageBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -366,16 +277,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Electro.Theme\Electro.Theme.csproj">
       <Project>{0f58737e-e2cd-430e-b2a2-d8a3f3bb40aa}</Project>
       <Name>Electro.Theme</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="ELogo.ico" />
+    <ProjectReference Include="..\Electro.UI\Electro.UI.csproj">
+      <Project>{8efece29-b4d4-4b85-b5cb-89117ba678fd}</Project>
+      <Name>Electro.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -388,6 +297,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UpdaterIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('..\packages\Fody.6.5.5\build\Fody.targets')" />
