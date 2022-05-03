@@ -11,5 +11,7 @@
         <ResourceDictionary Source="Style/ButtonStyles/PowerButtonStyle.xaml"/>
         <ResourceDictionary Source="Style/ToolTipStyle.xaml"/>
         <ResourceDictionary Source="Assests/PathAndGeometries.xaml"/>
+        <ResourceDictionary Source="Style/ToggleButtonStyles/PathImageToggleButtonStyle.xaml"/>
+        <ResourceDictionary Source="Style/CheckBoxStyles/BaseCheckBoxStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -6,6 +6,7 @@ using System.Management;
 using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -37,28 +38,38 @@ namespace Electro.UI
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            HttpClient client = new HttpClient();
-
-            var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/version.json");
-            var objects = JsonConvert.DeserializeObject<Version>(data);
-            if (objects != null)
+            try
             {
-                if (!objects.lastVersion.Equals(version))
+                this.IsHitTestVisible = false;
+                HttpClient client = new HttpClient();
+
+                var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/version.json");
+                var objects = JsonConvert.DeserializeObject<Version>(data);
+                if (objects != null)
                 {
-                    try
+                    this.IsHitTestVisible = true;
+                    if (!objects.lastVersion.Equals(Assembly.GetEntryAssembly()?.GetName().Version.ToString()))
                     {
-                        var p = new Process();
-                        p.StartInfo.FileName = "Electro.Updater.exe";
-                        p.StartInfo.Arguments = "update";
-                        p.Start();
-                        Application.Current.Shutdown();
-                    }
-                    catch (Exception exception)
-                    {
-                        ElectroMessageBox.Show("Electro Updater file does not exist!", "Warning");
-                        Application.Current.Shutdown();
+                        try
+                        {
+                            var p = new Process();
+                            p.StartInfo.FileName = "Electro.Updater.exe";
+                            p.StartInfo.Arguments = "update";
+                            p.Start();
+                            Application.Current.Shutdown();
+                        }
+                        catch (Exception exception)
+                        {
+                            ElectroMessageBox.Show("Electro Updater file does not exist!", "Warning");
+                            Application.Current.Shutdown();
+                        }
                     }
                 }
+            }
+            catch (Exception exception)
+            {
+                ElectroMessageBox.Show("Could not connect to server!", "Error");
+                Application.Current.Shutdown();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using AutoUpdaterDotNET;
@@ -20,12 +21,21 @@ namespace Electro.UI.ViewModels
         private RelayCommand instagramCommand;
         private RelayCommand donateCommand;
         private bool _showInTaskbar;
+        private bool isStartup;
         private WindowState _windowState;
         public MainViewModel()
         {
             
             dnsViewModel = new DNSViewModel();
             dnsViewModel.ServiceUpdated += ServiceUpdated;
+            //Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine
+            //    .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            //Assembly curAssembly = Assembly.GetExecutingAssembly();
+            //var appValue = key?.GetValue(curAssembly.GetName().Name);
+            //if (appValue != null)
+            //{
+            //    isStartup = true;
+            //}
         }
 
         public DNSViewModel DnsViewModel => dnsViewModel;
@@ -77,6 +87,30 @@ namespace Electro.UI.ViewModels
             }
         }
 
+        public bool IsStartup
+        {
+            get => isStartup;
+            set
+            {
+                isStartup = value;
+                if (isStartup)
+                {
+                    Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine
+                        .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                    Assembly curAssembly = Assembly.GetExecutingAssembly();
+                    key?.SetValue(curAssembly.GetName().Name, curAssembly.Location);
+                }
+                else
+                {
+                    Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine
+                        .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                    Assembly curAssembly = Assembly.GetExecutingAssembly();
+                    key?.DeleteValue(curAssembly.GetName().Name);
+                }
+
+                OnPropertyChanged();
+            }
+        }
         public NotifyIconWrapper.NotifyRequestRecord NotifyRequest
         {
             get => _notifyRequest;
@@ -116,7 +150,7 @@ namespace Electro.UI.ViewModels
         }
         private void elTeamSite(object obj) => Process.Start("http://www.elteam.ir");
         private void discord(object obj) => Process.Start("https://discord.io/elteam");
-        private void telegram(object obj) => Process.Start("tg://resolve?domain=elteam_IR");
+        private void telegram(object obj) => Process.Start("https://t.me/elteam_IR");
         private void instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
         private void donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
         

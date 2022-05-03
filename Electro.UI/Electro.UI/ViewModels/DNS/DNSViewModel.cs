@@ -30,10 +30,12 @@ namespace Electro.UI.ViewModels.DNS
         private bool isTurnedOn;
         private RelayCommand configureDnsCommand;
         private HttpClient client = new HttpClient();
+        private static string[] currentDns;
 
         public DNSViewModel()
         {
             serviceText = "Service Off";
+            load();
         }
 
         public Action<bool> ServiceUpdated;
@@ -82,6 +84,31 @@ namespace Electro.UI.ViewModels.DNS
         public RelayCommand ConfigureDnsCommand => configureDnsCommand ??
                                              (configureDnsCommand = new RelayCommand(configureDns));
 
+        private async void load()
+        {
+            try
+            {
+                var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings.json");
+                var objects = JsonConvert.DeserializeObject<Rootobject>(data);
+                var dnsAddress = await GetDnsAddress();
+
+                List<string> electroList = objects.dns.electro.ToList();
+                if (!electroList.SequenceEqual(dnsAddress))
+                {
+                    currentDns = new string[dnsAddress.Count];
+                    for (int i = 0; i < dnsAddress.Count; i++)
+                    {
+                        currentDns[i] = dnsAddress[i];
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ElectroMessageBox.Show("Could not connect to server!", "Error");
+                Application.Current.Shutdown();
+            }
+        }
+
         private async void configureDns(object obj)
         {
             if (IsTurnedOn == false)
@@ -91,7 +118,7 @@ namespace Electro.UI.ViewModels.DNS
                     IsGettingData = true;
                     var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings.json");
                     var objects = JsonConvert.DeserializeObject<Rootobject>(data);
-                    await SetDNS(objects?.dns.electro);
+                    await SetDNS1(objects?.dns.electro);
                     IsTurnedOn = true;
                     ServiceText = "Service On";
                 }
@@ -106,7 +133,7 @@ namespace Electro.UI.ViewModels.DNS
             }
             else
             {
-                await UnsetDNS();
+                await UnsetDNS1();
                 IsTurnedOn = false;
                 ServiceText = "Service Off";
             }
@@ -120,7 +147,6 @@ namespace Electro.UI.ViewModels.DNS
                 a => a.OperationalStatus == OperationalStatus.Up &&
                      (a.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || a.NetworkInterfaceType == NetworkInterfaceType.Ethernet) &&
                      a.GetIPProperties().GatewayAddresses.Any(g => g.Address.AddressFamily.ToString() == "InterNetwork"));
-
                 return Nic;
             });
         }
@@ -141,6 +167,7 @@ namespace Electro.UI.ViewModels.DNS
                         ManagementBaseObject objdns = objMO.GetMethodParameters("SetDNSServerSearchOrder");
                         if (objdns != null)
                         {
+                            ElectroMessageBox.Show($"{objdns["DNSServerSearchOrder"]}");
                             objdns["DNSServerSearchOrder"] = DnsString;
                             ManagementBaseObject setDNS = objMO.InvokeMethod("SetDNSServerSearchOrder", objdns, null);
                         }
@@ -164,32 +191,84 @@ namespace Electro.UI.ViewModels.DNS
                         ManagementBaseObject objdns = objMO.GetMethodParameters("SetDNSServerSearchOrder");
                         if (objdns != null)
                         {
-                            objdns["DNSServerSearchOrder"] = null;
+                            ElectroMessageBox.Show($"{objdns["DNSServerSearchOrder"]}");
+                            objdns["DNSServerSearchOrder"] = currentDns?.ToArray();
                             objMO.InvokeMethod("SetDNSServerSearchOrder", objdns, null);
                         }
                     }
                 }
             }
         }
-        private static List<string> GetDnsAdress()
+        private async Task<List<string>> GetDnsAddress()
         {
-            NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            NetworkInterface networkInterface = await GetActiveEthernetOrWifiNetworkInterface();
             List<string> addresses = new List<string>();
-            foreach (NetworkInterface networkInterface in networkInterfaces)
-            {
-                if (networkInterface.OperationalStatus == OperationalStatus.Up)
-                {
-                    IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
-                    IPAddressCollection dnsAddresses = ipProperties.DnsAddresses;
+            IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
+            IPAddressCollection dnsAddresses = ipProperties.DnsAddresses;
 
-                    foreach (IPAddress dnsAdress in dnsAddresses)
+            foreach (IPAddress dnsAddress in dnsAddresses)
+            {
+                addresses.Add(dnsAddress.ToString());
+            }
+            return addresses;
+        }
+
+        public async Task SetDNS1(string[] Dns)
+        {
+            NetworkInterface networkInterface = await GetActiveEthernetOrWifiNetworkInterface();
+            if (networkInterface == null)
+                return;
+            foreach (ManagementObject instance in new ManagementClass("Win32_NetworkAdapterConfiguration").GetInstances())
+            {
+                if ((bool)instance["IPEnabled"] && instance["Description"].ToString().Equals(networkInterface.Description))
+                {
+                    ManagementBaseObject methodParameters = instance.GetMethodParameters("SetDNSServerSearchOrder");
+                    if (methodParameters != null)
                     {
-                        addresses.Add(dnsAdress.ToString());
+                        methodParameters["DNSServerSearchOrder"] = (object)Dns;
+                        instance.InvokeMethod("SetDNSServerSearchOrder", methodParameters, (InvokeMethodOptions)null);
                     }
                 }
             }
-
-            return addresses;
+        }
+        public async Task UnsetDNS1()
+        {
+            NetworkInterface networkInterface = await GetActiveEthernetOrWifiNetworkInterface();
+            if (networkInterface == null)
+                return;
+            foreach (ManagementObject instance in new ManagementClass("Win32_NetworkAdapterConfiguration").GetInstances())
+            {
+                if ((bool)instance["IPEnabled"] && instance["Description"].ToString().Equals(networkInterface.Description))
+                {
+                    ManagementBaseObject methodParameters = instance.GetMethodParameters("SetDNSServerSearchOrder");
+                    if (methodParameters != null)
+                    {
+                        methodParameters["DNSServerSearchOrder"] = currentDns;
+                        instance.InvokeMethod("SetDNSServerSearchOrder", methodParameters, (InvokeMethodOptions)null);
+                    }
+                }
+            }
+        }
+        public static void UnsetDnsEvent()
+        {
+            var networkInterface = NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(
+                a => a.OperationalStatus == OperationalStatus.Up &&
+                     (a.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || a.NetworkInterfaceType == NetworkInterfaceType.Ethernet) &&
+                     a.GetIPProperties().GatewayAddresses.Any(g => g.Address.AddressFamily.ToString() == "InterNetwork"));
+            if (networkInterface == null)
+                return;
+            foreach (ManagementObject instance in new ManagementClass("Win32_NetworkAdapterConfiguration").GetInstances())
+            {
+                if ((bool)instance["IPEnabled"] && instance["Description"].ToString().Equals(networkInterface.Description))
+                {
+                    ManagementBaseObject methodParameters = instance.GetMethodParameters("SetDNSServerSearchOrder");
+                    if (methodParameters != null)
+                    {
+                        methodParameters["DNSServerSearchOrder"] = currentDns;
+                        instance.InvokeMethod("SetDNSServerSearchOrder", methodParameters, (InvokeMethodOptions)null);
+                    }
+                }
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
+using Electro.UI.ViewModels.DNS;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -23,6 +24,12 @@ namespace Electro.UI
     {
         private void App_Startup(object sender, StartupEventArgs e)
         {
+            var runningInstances = System.Diagnostics.Process.GetProcessesByName(
+                    System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+            if (runningInstances.Length > 1)
+            {
+                Environment.Exit(0);
+            }
             //for (int i = 0; i != e.Args.Length; ++i)
             //{
             //    if (e.Args[i] == "update")
@@ -127,6 +134,11 @@ namespace Electro.UI
 
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            DNSViewModel.UnsetDnsEvent();
         }
     }
 }

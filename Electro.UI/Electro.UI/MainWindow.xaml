@@ -7,19 +7,21 @@
         xmlns:views="clr-namespace:Electro.UI.Views"
         xmlns:controls="clr-namespace:Electro.UI.Controls"
         xmlns:viewModels="clr-namespace:Electro.UI.ViewModels"
-        ResizeMode="CanResize"
+        ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="Electro" 
         MinHeight="450" MinWidth="300"
         MaxHeight="450" MaxWidth="300"
-        Style="{StaticResource BaseWindowStyle}">
+        Style="{StaticResource BaseWindowStyle}"
+        ContextMenu="{x:Null}">
     <Window.Resources>
         <viewModels:MainViewModel x:Key="MainViewModel"/>
     </Window.Resources>
     <Grid DataContext="{StaticResource MainViewModel}">
-        <controls:WindowControl  VerticalAlignment="Top" HorizontalAlignment="Right"
-                                 Panel.ZIndex="10"/>
+        <controls:HeaderControl  VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                                 Panel.ZIndex="10"
+                                 />
         <views:MainElectroControl/>
     </Grid>
 </Window>

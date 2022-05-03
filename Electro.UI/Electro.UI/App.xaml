@@ -4,7 +4,8 @@
              xmlns:local="clr-namespace:Electro.UI"
              xmlns:Theme="clr-namespace:Electro.Theme;assembly=Electro.Theme"
              xmlns:converters="clr-namespace:Electro.UI.Converters"
-             Startup="App_Startup">
+             Startup="App_Startup"
+             Exit="Application_Exit">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -6,20 +6,43 @@
              xmlns:local="clr-namespace:Electro.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="{StaticResource MoreDarkElectroGreyColorBrush}">
+    <Grid>
          <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
             <ColumnDefinition Width="Auto"/>
          </Grid.ColumnDefinitions>
-        <Path
-            Data="{StaticResource Electro}"
-            Fill="{StaticResource ElectroGreyColorBrush}"
-            Stretch="Uniform"
-            Height="25"
-            Width="50"
-            RenderOptions.BitmapScalingMode="Fant"
-            Margin="-30,0,0,0" />
+        <ToggleButton
+            WindowChrome.IsHitTestVisibleInChrome="True"
+            Visibility="Collapsed"
+            HorizontalAlignment="Left"
+            x:Name="MoreToggleButton"
+            ToolTip="More"
+            IsHitTestVisible="{Binding ElementName=Popup,
+                                        Path=IsOpen,
+                                        Converter={StaticResource InvertBooleanConverter}}"
+            Style="{StaticResource PathImageToggleButtonStyle}">
+            <ToggleButton.Content>
+                <Path Data="{StaticResource MoreIcon}"
+                      Height="15"
+                      Stretch="Uniform"
+                      Fill="White"
+                      Margin="10,0"/>
+            </ToggleButton.Content>
+        </ToggleButton>
+        <Popup StaysOpen="False"
+               x:Name="Popup"
+               IsOpen="{Binding ElementName=MoreToggleButton, Path=IsChecked}"
+               PlacementTarget="{Binding ElementName=MoreToggleButton}"
+               Placement="Bottom">
+            <Border Background="{StaticResource DarkElectroGreyColorBrush}">
+                <Grid>
+                    <CheckBox Content="Windows Startup"
+                              Margin="5"
+                              IsChecked="{Binding IsStartup, Mode=TwoWay}"/>
+                </Grid>
+            </Border>
+        </Popup>
         <local:WindowControl Grid.Column="3"
                              WindowChrome.IsHitTestVisibleInChrome="True"/>
     </Grid>
