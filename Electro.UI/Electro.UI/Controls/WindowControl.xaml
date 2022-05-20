@@ -13,7 +13,10 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Column="2" x:Name="CloseButton" Click="CloseButton_Click" 
+        <Button Grid.Column="2" x:Name="CloseButton"
+                Command="{Binding NotifyCommand}"
+                Click="MinimizeToTrayButton_MinimizeToTray"
+                MouseEnter="MinimizeToTrayButton_MouseEnter"  
                 Style="{StaticResource HeaderButtonStyle}" >
             <Path
                 Data="{StaticResource Close}"
@@ -29,6 +32,7 @@
         </Button>
         <tools:NotifyIconWrapper NotifyRequest="{Binding NotifyRequest}"/>
         <Button Grid.Column="0" x:Name="MinimizeToTrayButton" 
+                Visibility="Collapsed"
 				Command="{Binding NotifyCommand}"
                 Click="MinimizeToTrayButton_MinimizeToTray"
                 MouseEnter="MinimizeToTrayButton_MouseEnter"  

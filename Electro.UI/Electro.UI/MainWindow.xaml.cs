@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Electro.UI.ViewModels;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
 using Version = Electro.UI.Tools.Version;
@@ -47,7 +48,6 @@ namespace Electro.UI
                 var objects = JsonConvert.DeserializeObject<Version>(data);
                 if (objects != null)
                 {
-                    this.IsHitTestVisible = true;
                     if (!objects.lastVersion.Equals(Assembly.GetEntryAssembly()?.GetName().Version.ToString()))
                     {
                         try
@@ -55,6 +55,7 @@ namespace Electro.UI
                             var p = new Process();
                             p.StartInfo.FileName = "Electro.Updater.exe";
                             p.StartInfo.Arguments = "update";
+                            p.StartInfo.UseShellExecute = true;
                             p.Start();
                             Application.Current.Shutdown();
                         }
@@ -65,6 +66,7 @@ namespace Electro.UI
                         }
                     }
                 }
+                this.IsHitTestVisible = true;
             }
             catch (Exception exception)
             {

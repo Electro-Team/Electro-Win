@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Electro.UI.Windows;
 
 namespace Electro.UI.Controls
 {
@@ -41,8 +42,13 @@ namespace Electro.UI.Controls
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Window parentWindow = Window.GetWindow(this);
-            parentWindow?.Close();
+            var result = ElectroMessageBox.Show("Electro Service will be turned off.\nAre you willing to exit?",
+                "Warning", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                Window parentWindow = Window.GetWindow(this);
+                parentWindow?.Close();
+            }
         }
         private void MinimizeToTrayButton_MinimizeToTray(object sender, RoutedEventArgs e)
         {
@@ -62,7 +68,7 @@ namespace Electro.UI.Controls
             {
                 ToolTip maximize = new ToolTip
                 {
-                    Content = String.Format("Minimize To Tray")
+                    Content = String.Format("Close")
                 };
                 (sender as Button).ToolTip = maximize;
             }

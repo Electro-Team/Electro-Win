@@ -25,7 +25,6 @@ namespace Electro.UI.ViewModels
         private WindowState _windowState;
         public MainViewModel()
         {
-            
             dnsViewModel = new DNSViewModel();
             dnsViewModel.ServiceUpdated += ServiceUpdated;
             //Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine
@@ -93,20 +92,20 @@ namespace Electro.UI.ViewModels
             set
             {
                 isStartup = value;
-                if (isStartup)
-                {
-                    Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine
-                        .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                    Assembly curAssembly = Assembly.GetExecutingAssembly();
-                    key?.SetValue(curAssembly.GetName().Name, curAssembly.Location);
-                }
-                else
-                {
-                    Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine
-                        .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                    Assembly curAssembly = Assembly.GetExecutingAssembly();
-                    key?.DeleteValue(curAssembly.GetName().Name);
-                }
+                //if (isStartup)
+                //{
+                //    Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine
+                //        .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                //    Assembly curAssembly = Assembly.GetExecutingAssembly();
+                //    key?.SetValue(curAssembly.GetName().Name, curAssembly.Location);
+                //}
+                //else
+                //{
+                //    Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine
+                //        .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                //    Assembly curAssembly = Assembly.GetExecutingAssembly();
+                //    key?.DeleteValue(curAssembly.GetName().Name);
+                //}
 
                 OnPropertyChanged();
             }
@@ -126,7 +125,7 @@ namespace Electro.UI.ViewModels
             NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
             {
                 Title = "Electro",
-                Text = "Electro has been minimized!",
+                Text = "Electro is still running!",
                 Duration = 1000
             };
         }

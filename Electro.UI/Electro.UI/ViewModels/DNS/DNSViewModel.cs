@@ -92,9 +92,16 @@ namespace Electro.UI.ViewModels.DNS
                 var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                 var dnsAddress = await GetDnsAddress();
 
-                List<string> electroList = objects.dns.electro.ToList();
-                if (!electroList.SequenceEqual(dnsAddress))
+                if (dnsAddress != null)
                 {
+                    List<string> electroList = objects.dns.electro.ToList();
+                    foreach (string dns in electroList)
+                    {
+                        if (dnsAddress.Any(s => s == dns))
+                        {
+                            return;
+                        }
+                    }
                     currentDns = new string[dnsAddress.Count];
                     for (int i = 0; i < dnsAddress.Count; i++)
                     {
@@ -104,8 +111,9 @@ namespace Electro.UI.ViewModels.DNS
             }
             catch (Exception e)
             {
-                ElectroMessageBox.Show("Could not connect to server!", "Error");
-                Application.Current.Shutdown();
+                //TODO: MainWindow LoadedEvent and this method runs together which shows 2 messageBoxes at the same time if there is no connection. a better way must be provided to solve this issue.
+                //ElectroMessageBox.Show("Could not connect to server!", "Error");
+                //Application.Current.Shutdown();
             }
         }
 
@@ -205,7 +213,15 @@ namespace Electro.UI.ViewModels.DNS
             List<string> addresses = new List<string>();
             IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
             IPAddressCollection dnsAddresses = ipProperties.DnsAddresses;
+            IPAddressCollection dhcpAddressCollection = ipProperties.DhcpServerAddresses;
 
+            foreach (var dns in dnsAddresses)
+            {
+                if (dhcpAddressCollection.Any(s => Equals(s, dns)))
+                {
+                    return null;
+                }
+            }
             foreach (IPAddress dnsAddress in dnsAddresses)
             {
                 addresses.Add(dnsAddress.ToString());
