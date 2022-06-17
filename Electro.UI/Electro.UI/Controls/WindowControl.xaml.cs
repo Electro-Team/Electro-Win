@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Electro.UI.ViewModels;
 using Electro.UI.Windows;
 
 namespace Electro.UI.Controls
@@ -53,7 +54,14 @@ namespace Electro.UI.Controls
         private void MinimizeToTrayButton_MinimizeToTray(object sender, RoutedEventArgs e)
         {
             Window parentWindow = Window.GetWindow(this);
-            parentWindow.Hide();
+            if (((parentWindow.Content as Grid).DataContext as MainViewModel).DnsViewModel.IsTurnedOn)
+            {
+                parentWindow.Hide();
+            }
+            else
+            {
+                parentWindow?.Close();
+            }
         }
         private void MinimizeButton_Minimize(object sender, RoutedEventArgs e)
         {

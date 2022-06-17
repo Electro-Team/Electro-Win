@@ -32,6 +32,7 @@ namespace Electro.UI.ViewModels.DNS
         private HttpClient client = new HttpClient();
         private static string[] currentDns;
 
+
         public DNSViewModel()
         {
             serviceText = "Service Off";
@@ -114,6 +115,32 @@ namespace Electro.UI.ViewModels.DNS
                 //TODO: MainWindow LoadedEvent and this method runs together which shows 2 messageBoxes at the same time if there is no connection. a better way must be provided to solve this issue.
                 //ElectroMessageBox.Show("Could not connect to server!", "Error");
                 //Application.Current.Shutdown();
+                try
+                {
+                    var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json");
+                    var objects = JsonConvert.DeserializeObject<Rootobject>(data);
+                    var dnsAddress = await GetDnsAddress();
+
+                    if (dnsAddress != null)
+                    {
+                        List<string> electroList = objects.dns.electro.ToList();
+                        foreach (string dns in electroList)
+                        {
+                            if (dnsAddress.Any(s => s == dns))
+                            {
+                                return;
+                            }
+                        }
+                        currentDns = new string[dnsAddress.Count];
+                        for (int i = 0; i < dnsAddress.Count; i++)
+                        {
+                            currentDns[i] = dnsAddress[i];
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                }
             }
         }
 
@@ -132,7 +159,18 @@ namespace Electro.UI.ViewModels.DNS
                 }
                 catch (Exception e)
                 {
-                    ElectroMessageBox.Show("Error Getting Server Data!");
+                    try
+                    {
+                        var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json");
+                        var objects = JsonConvert.DeserializeObject<Rootobject>(data);
+                        await SetDNS1(objects?.dns.electro);
+                        IsTurnedOn = true;
+                        ServiceText = "Service On";
+                    }
+                    catch (Exception exception)
+                    {
+                        ElectroMessageBox.Show("Error Getting Server Data!");
+                    }
                 }
                 finally
                 {

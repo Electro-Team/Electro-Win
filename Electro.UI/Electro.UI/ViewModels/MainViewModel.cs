@@ -122,12 +122,15 @@ namespace Electro.UI.ViewModels
 
         private void Notify(object obj)
         {
-            NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
+            if (DnsViewModel.IsTurnedOn)
             {
-                Title = "Electro",
-                Text = "Electro is still running!",
-                Duration = 1000
-            };
+                NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
+                {
+                    Title = "Electro",
+                    Text = "Electro is still running!",
+                    Duration = 1000
+                };
+            }
         }
         private void ServiceUpdated(bool isTurnedOn)
         {
