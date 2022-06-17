@@ -89,6 +89,10 @@ namespace Electro.UI.ViewModels.DNS
             try
             {
                 var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings.json");
+                if (data==null)
+                 {
+                   data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json"); 
+                 }
                 var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                 var dnsAddress = await GetDnsAddress();
 
@@ -125,6 +129,10 @@ namespace Electro.UI.ViewModels.DNS
                 {
                     IsGettingData = true;
                     var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings.json");
+                    if (data==null)
+                     {
+                         data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json"); 
+                     }
                     var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                     await SetDNS1(objects?.dns.electro);
                     IsTurnedOn = true;
