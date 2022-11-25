@@ -35,7 +35,7 @@ namespace Electro.UI.ViewModels.DNS
 
         public DNSViewModel()
         {
-            serviceText = "Service Off";
+            serviceText = "● Not Connected";
             load();
         }
 
@@ -56,6 +56,10 @@ namespace Electro.UI.ViewModels.DNS
             set
             {
                 isGettingData = value;
+                if (value)
+                {
+                    ServiceText = "● Connecting...";
+                }
                 OnPropertyChanged();
             }
         }
@@ -91,9 +95,9 @@ namespace Electro.UI.ViewModels.DNS
             {
                 var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings.json");
                 if (data==null)
-                 {
+                {
                    data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json"); 
-                 }
+                }
                 var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                 var dnsAddress = await GetDnsAddress();
 
@@ -157,13 +161,13 @@ namespace Electro.UI.ViewModels.DNS
                     IsGettingData = true;
                     var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings.json");
                     if (data==null)
-                     {
+                    {
                          data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json"); 
-                     }
+                    }
                     var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                     await SetDNS1(objects?.dns.electro);
                     IsTurnedOn = true;
-                    ServiceText = "Service On";
+                    ServiceText = "● Connected";
                 }
                 catch (Exception e)
                 {
@@ -173,7 +177,7 @@ namespace Electro.UI.ViewModels.DNS
                         var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                         await SetDNS1(objects?.dns.electro);
                         IsTurnedOn = true;
-                        ServiceText = "Service On";
+                        ServiceText = "● Connected";
                     }
                     catch (Exception exception)
                     {
@@ -189,7 +193,7 @@ namespace Electro.UI.ViewModels.DNS
             {
                 await UnsetDNS1();
                 IsTurnedOn = false;
-                ServiceText = "Service Off";
+                ServiceText = "● Not Connected";
             }
             ServiceUpdated?.Invoke(IsTurnedOn);
         }

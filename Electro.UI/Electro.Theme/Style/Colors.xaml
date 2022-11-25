@@ -15,6 +15,13 @@
     <Color x:Key="PowerContentYellowColor">#e8cf00</Color>
     <Color x:Key="PowerContentGreenColor">#1be800</Color>
 
+    <Color x:Key="MainLightBackgroundColor2">#464448</Color>
+    <Color x:Key="MainDarkBackgroundColor2">#222224</Color>
+    <Color x:Key="PowerContentGreenColor2">#00EC97</Color>
+    <Color x:Key="PowerContentYellowColor2">#E5B537</Color>
+    <Color x:Key="PowerContentWhiteColor2">#DADADA</Color>
+
+
     <SolidColorBrush x:Key="MoreDarkPurpleColorBrush" Color="{StaticResource MoreDarkPurpleColor}"/>
     <SolidColorBrush x:Key="DarkPurpleColorBrush" Color="{StaticResource DarkPurpleColor}"/>
     <SolidColorBrush x:Key="PurpleColorBrush" Color="{StaticResource PurpleColor}"/>
@@ -28,6 +35,12 @@
     <SolidColorBrush x:Key="MainDarkBackgroundColorBrush" Color="{StaticResource MainDarkBackgroundColor}"/>
     <SolidColorBrush x:Key="PowerContentYellowColorBrush" Color="{StaticResource PowerContentYellowColor}"/>
     <SolidColorBrush x:Key="PowerContentGreenColorBrush" Color="{StaticResource PowerContentGreenColor}"/>
+
+    <SolidColorBrush x:Key="MainLightBackgroundColorBrush2" Color="{StaticResource MainLightBackgroundColor2}"/>
+    <SolidColorBrush x:Key="MainDarkBackgroundColorBrush2" Color="{StaticResource MainDarkBackgroundColor2}"/>
+    <SolidColorBrush x:Key="PowerContentYellowColorBrush2" Color="{StaticResource PowerContentYellowColor2}"/>
+    <SolidColorBrush x:Key="PowerContentGreenColorBrush2" Color="{StaticResource PowerContentGreenColor2}"/>
+    <SolidColorBrush x:Key="PowerContentWhiteColorBrush2" Color="{StaticResource PowerContentWhiteColor2}"/>
 
     <LinearGradientBrush x:Key="MainBackgroundGradientBrush"
                          StartPoint="0,0"
@@ -52,5 +65,12 @@
                          EndPoint="0,1">
         <GradientStop Color="{StaticResource MoreDarkPurpleColor}" Offset="0.6"/>
         <GradientStop Color="{StaticResource MainLightBackgroundColor}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="MainBackgroundGradientBrush2"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <GradientStop Color="{StaticResource MainLightBackgroundColor2}" Offset="-0.5"/>
+        <GradientStop Color="{StaticResource MainDarkBackgroundColor2}" Offset="1"/>
     </LinearGradientBrush>
 </ResourceDictionary>

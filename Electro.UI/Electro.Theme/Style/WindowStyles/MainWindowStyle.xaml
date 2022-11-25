@@ -181,7 +181,7 @@
 
 
     <Style TargetType="Window" x:Key="BaseWindowStyle">
-        <Setter Property="Background" Value="{StaticResource MainBackgroundGradientBrush}">
+        <Setter Property="Background" Value="{StaticResource MainBackgroundGradientBrush2}">
         </Setter>
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>

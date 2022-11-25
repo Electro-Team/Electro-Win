@@ -11,8 +11,8 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="Electro" 
-        MinHeight="450" MinWidth="300"
-        MaxHeight="450" MaxWidth="300"
+        Height="520"
+        Width="250"
         Style="{StaticResource BaseWindowStyle}"
         ContextMenu="{x:Null}">
     <Window.Resources>
