@@ -12,6 +12,7 @@
 				Value="Transparent" />
         <Setter Property="BorderThickness" 
                 Value="0"/>
+        <Setter Property="Cursor" Value="Hand"></Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -36,7 +37,8 @@
                                     <VisualTransition GeneratedDuration="0:0:0.1"  />
                                 </VisualStateGroup.Transitions>
                                 <VisualState x:Name="Normal"/>
-                                <VisualState x:Name="MouseOver">
+                               
+                                <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="border" 
                                                          Storyboard.TargetProperty="Opacity"

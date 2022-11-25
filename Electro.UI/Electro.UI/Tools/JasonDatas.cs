@@ -28,4 +28,5 @@ namespace Electro.UI.Tools
         public string downloadPath { get; set; }
     }
 
+
 }
