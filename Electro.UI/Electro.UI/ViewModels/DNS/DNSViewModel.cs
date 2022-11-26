@@ -16,6 +16,8 @@ using Electro.UI.Tools;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using DotRas;
+using System.Runtime.InteropServices;
 
 namespace Electro.UI.ViewModels.DNS
 {
@@ -31,8 +33,13 @@ namespace Electro.UI.ViewModels.DNS
         private RelayCommand configureDnsCommand;
         private HttpClient client = new HttpClient();
         private static string[] currentDns;
+        private static bool _isOpenVpn = false;
 
-
+        private RasDialer _dialer = new RasDialer();
+        private RasHandle _handle;
+        private string _ConnectionName = "Electro2";
+        private string _username = "Electro";
+        private string _password = "ElectroPW";
         public DNSViewModel()
         {
             serviceText = "● Not Connected";
@@ -125,6 +132,7 @@ namespace Electro.UI.ViewModels.DNS
                 //Application.Current.Shutdown();
                 try
                 {
+
                     var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json");
                     var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                     var dnsAddress = await GetDnsAddress();
@@ -151,7 +159,81 @@ namespace Electro.UI.ViewModels.DNS
                 }
             }
         }
+        private void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
+        {
+            string output = outLine.Data;
 
+            if (output != null)
+            {
+                if (output.Contains("Initialization Sequence Completed"))
+                {
+                    IsGettingData = false;
+
+                    IsTurnedOn = true;
+                    ServiceText = "● Connected";
+                }
+                else if (output.ToLower().Contains("error") || output.Contains("Could not determine IPv4/IPv6 protocol"))
+                {
+                    IsGettingData = false;
+
+                    IsTurnedOn = false;
+                    ServiceText = "● Error";
+                    var openVpnProcess = Process.GetProcesses().
+                        Where(pr => pr.ProcessName == "openvpn");
+
+                    foreach (var process in openVpnProcess)
+                    {
+                        process.Kill();
+                    }
+                }
+            }
+        }
+        public async Task WriteAsync(string data, string filePath)
+        {
+            using (var sw = new StreamWriter(filePath))
+            {
+                await sw.WriteAsync(data);
+            }
+        }
+        private async void Dialer_DialCompleted(object sender, DialCompletedEventArgs e)
+        {
+            if (e.TimedOut || e.Error != null)
+            {
+                string pathToConfig = AppContext.BaseDirectory + "//profile.ovpn";
+                
+                var openVpnProfile = client.GetStringAsync("https://elcdn.ir/app/vpn/appvpn.ovpn");
+                await WriteAsync(openVpnProfile.Result, pathToConfig);
+                string arguments = "--config \"" + pathToConfig + "\" --block-outside-dns";
+                ProcessStartInfo openVpnStartInfo = new ProcessStartInfo
+                {
+                    Arguments = arguments,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    FileName = AppContext.BaseDirectory + "/Openvpn/openvpn.exe",
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                };
+                Process openVpn = new Process
+                {
+                    StartInfo = openVpnStartInfo,
+                    EnableRaisingEvents = true
+                };
+                openVpn.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+                openVpn.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
+                openVpn.Start();
+                openVpn.BeginOutputReadLine();
+                openVpn.BeginErrorReadLine();
+                _isOpenVpn = true;
+            }
+            else if (e.Connected)
+            {
+                IsGettingData = false;
+
+                IsTurnedOn = true;
+                ServiceText = "● Connected";
+            }
+        }
         private async void configureDns(object obj)
         {
             if (IsTurnedOn == false)
@@ -160,42 +242,63 @@ namespace Electro.UI.ViewModels.DNS
                 {
                     IsGettingData = true;
                     var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings.json");
-                    if (data==null)
+                    if (data == null)
                     {
-                         data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json"); 
+                        data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json");
                     }
                     var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                     await SetDNS1(objects?.dns.electro);
-                    IsTurnedOn = true;
-                    ServiceText = "● Connected";
+                    var ServerIp = await client.GetStringAsync("https://elcdn.ir/app/vpn/pptpip.txt");
+                    using (RasPhoneBook PhoneBook = new RasPhoneBook())
+                    {
+                        PhoneBook.Open(RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers));
+                        RasEntry Entry;
+
+                        if (PhoneBook.Entries.Contains(_ConnectionName))
+                        {
+                            PhoneBook.Entries.Remove(_ConnectionName);
+                        }
+
+                        Entry = RasEntry.CreateVpnEntry(_ConnectionName, ServerIp, RasVpnStrategy.PptpOnly, RasDevice.GetDeviceByName("(PPTP)", RasDeviceType.Vpn));
+
+                        Entry.Options.PreviewDomain = false;
+                        Entry.Options.ShowDialingProgress = false;
+                        Entry.Options.PromoteAlternates = false;
+                        Entry.Options.DoNotNegotiateMultilink = false;
+                        Entry.Options.RequirePap = true;
+                        Entry.Options.RequireChap = true;
+                        Entry.Options.RequireMSChap2 = true;
+                        Entry.Options.RequireEncryptedPassword = false;
+                        PhoneBook.Entries.Add(Entry);
+                        
+
+
+                        _dialer.EntryName = _ConnectionName;
+                        _dialer.PhoneBookPath = RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers);
+                        _dialer.Credentials = new NetworkCredential(_username, _password);
+                        _dialer.DialCompleted -= Dialer_DialCompleted;
+                        _dialer.DialCompleted += Dialer_DialCompleted;
+                        _handle = _dialer.DialAsync();
+                    }
+                    
                 }
                 catch (Exception e)
                 {
-                    try
-                    {
-                        var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings.json");
-                        var objects = JsonConvert.DeserializeObject<Rootobject>(data);
-                        await SetDNS1(objects?.dns.electro);
-                        IsTurnedOn = true;
-                        ServiceText = "● Connected";
-                    }
-                    catch (Exception exception)
-                    {
-                        ElectroMessageBox.Show("Error Getting Server Data!");
-                    }
+                    
+                    ElectroMessageBox.Show(e.ToString());
                 }
                 finally
                 {
-                    IsGettingData = false;
                 }
             }
             else
             {
                 await UnsetDNS1();
+                UnsetDNS();
                 IsTurnedOn = false;
                 ServiceText = "● Not Connected";
             }
-            ServiceUpdated?.Invoke(IsTurnedOn);
+            //ServiceUpdated?.Invoke(IsTurnedOn);
         }
         public static async Task<NetworkInterface> GetActiveEthernetOrWifiNetworkInterface()
         {
@@ -233,28 +336,46 @@ namespace Electro.UI.ViewModels.DNS
                 }
             }
         }
-        public async Task UnsetDNS()
+        public void UnsetDNS()
         {
-            var CurrentInterface = await GetActiveEthernetOrWifiNetworkInterface();
-            if (CurrentInterface == null) return;
-
-            ManagementClass objMC = new ManagementClass("Win32_NetworkAdapterConfiguration");
-            ManagementObjectCollection objMOC = objMC.GetInstances();
-            foreach (ManagementObject objMO in objMOC)
+            if (!_isOpenVpn)
             {
-                if ((bool)objMO["IPEnabled"])
+                if (_dialer.IsBusy)
                 {
-                    if (objMO["Caption"].ToString().Contains(CurrentInterface.Description))
+                    _dialer.DialAsyncCancel();
+                }
+                else
+                {
+                    if (_handle != null)
                     {
-                        ManagementBaseObject objdns = objMO.GetMethodParameters("SetDNSServerSearchOrder");
-                        if (objdns != null)
+                        RasConnection Connection = RasConnection.GetActiveConnectionByHandle(_handle);
+                        if (Connection != null)
                         {
-                            ElectroMessageBox.Show($"{objdns["DNSServerSearchOrder"]}");
-                            objdns["DNSServerSearchOrder"] = currentDns?.ToArray();
-                            objMO.InvokeMethod("SetDNSServerSearchOrder", objdns, null);
+                            Connection.HangUp();
                         }
                     }
                 }
+
+                using (RasPhoneBook PhoneBook = new RasPhoneBook())
+                {
+                    PhoneBook.Open(RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers));
+
+                    if (PhoneBook.Entries.Contains(_ConnectionName))
+                    {
+                        PhoneBook.Entries.Remove(_ConnectionName);
+                    }
+                }
+            }
+            else
+            {
+                var openVpnProcess = Process.GetProcesses().
+                    Where(pr => pr.ProcessName == "openvpn");
+
+                foreach (var process in openVpnProcess)
+                {
+                    process.Kill();
+                }
+
             }
         }
         private async Task<List<string>> GetDnsAddress()
