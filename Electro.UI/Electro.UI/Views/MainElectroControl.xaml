@@ -118,8 +118,8 @@
             <Button Style="{StaticResource ImageButtonStyle}"
                     Width="200"
                     Height="100"
-                    >
-                <Image Source="http://www.gailperry.com/wp-content/uploads/2016/05/sponsor_art_car_fest.jpg"></Image>
+                    Command="{Binding SponsorCommand}">
+                <Image Source="{Binding SponsorImageUrl, UpdateSourceTrigger=PropertyChanged}"></Image>
             </Button>
         </StackPanel>
     </Grid>

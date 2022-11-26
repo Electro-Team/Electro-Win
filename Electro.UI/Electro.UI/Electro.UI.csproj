@@ -284,6 +284,7 @@
     <Compile Include="Tools\JasonDatas.cs" />
     <Compile Include="Tools\NotifyIconWrapper.cs" />
     <Compile Include="Tools\RelayCommand.cs" />
+    <Compile Include="Tools\SponsorJsonData.cs" />
     <Compile Include="ViewModels\DNS\DNSViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\DNSControl.xaml.cs">
