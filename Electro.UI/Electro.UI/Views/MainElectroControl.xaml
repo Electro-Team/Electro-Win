@@ -36,64 +36,81 @@
             </Image.RenderTransform>
         </Image>
             <local:DNSControl DataContext="{Binding DnsViewModel}"/>
-        <!--<StackPanel VerticalAlignment="Bottom"
-                    Margin="19"
+        <Polygon Points="-100,35 200,35 180,0 -100,0"
+                 Fill="DimGray"
+                 VerticalAlignment="Bottom">
+            <Polygon.Effect>
+                <DropShadowEffect ShadowDepth="10"
+                                  Direction="340"
+                                  BlurRadius="20"
+                                  Opacity="0.5"></DropShadowEffect>
+            </Polygon.Effect>
+        </Polygon>
+        <StackPanel VerticalAlignment="Bottom"
+                    Margin="5,0,0,5"
                     Orientation="Horizontal"
-                    HorizontalAlignment="Center">
-            <Button Style="{StaticResource GradientButtonStyle}"
+                    HorizontalAlignment="Left">
+            <Button Style="{StaticResource NeonButtonStyle}"
                     VerticalContentAlignment="Center"
+                    Width="25"
+                    Height="25"
                     HorizontalContentAlignment="Center"
-                    Margin="0,0,15,0"
+                    Margin="0,0,12,0"
                     Command="{Binding InstagramCommand}"
                     ToolTip="Electro Instagram">
                 <Button.Content>
                     <Path Data="{StaticResource Instagram}"
                           Stretch="Uniform"
-                          Fill="White"
-                          Margin="5,0"></Path>
+                          Margin="2,0"></Path>
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource GradientButtonStyle}"
+            <Button Style="{StaticResource NeonButtonStyle}"
+                    Width="25"
+                    Height="25"
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center"
-                    Margin="0,0,15,0"
+                    Margin="0,0,12,0"
                     Command="{Binding TelegramCommand}"
                     ToolTip="Electro Telegram">
                 <Button.Content>
                     <Path Data="{StaticResource Telegram}"
                           Stretch="Uniform"
                           Fill="White"
-                          Margin="5,0"></Path>
+                          Margin="3,0"></Path>
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource GradientButtonStyle}"
+            <Button Style="{StaticResource NeonButtonStyle}"
+                    Width="25"
+                    Height="25"
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center"
-                    Margin="0,0,15,0"
+                    Margin="0,0,12,0"
                     Command="{Binding DonateCommand}"
                     ToolTip="Donate us!">
                 <Button.Content>
                     <Path Data="{StaticResource Donate}"
-                          Stroke="White"
                           Stretch="Uniform"
-                          Fill="White"
-                          Margin="5,0"></Path>
+                          Margin="3,0"></Path>
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource GradientButtonStyle}"
+            <Button Style="{StaticResource NeonButtonStyle}"
+                    Width="25"
+                    Height="25"
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center"
-                    Margin="0,0,15,0"
+                    Margin="0,0,12,0"
                     Command="{Binding ElTeamSiteCommand}"
                     ToolTip="Electro site">
                 <Button.Content>
                     <Path Data="{StaticResource Site}"
                           Stretch="Uniform"
                           Fill="White"
-                          Margin="5,0"></Path>
+                          Margin="3,0"></Path>
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource GradientButtonStyle}"
+            <Button Style="{StaticResource NeonButtonStyle}"
+                    Width="25"
+                    Height="25"
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center"
                     Command="{Binding DiscordCommand}"
@@ -105,15 +122,15 @@
                           Margin="3,0"></Path>
                 </Button.Content>
             </Button>
-        </StackPanel>-->
+        </StackPanel>
         <StackPanel
             VerticalAlignment="Bottom"
-            Margin="20"
+            Margin="20,40"
             HorizontalAlignment="Center">
             <TextBlock Text="Sponsor"
                        Foreground="White"
                        VerticalAlignment="Center"
-                       Margin="80,0,0,0">
+                       Margin="80,0,0,5">
             </TextBlock>
             <Button Style="{StaticResource ImageButtonStyle}"
                     Width="200"
