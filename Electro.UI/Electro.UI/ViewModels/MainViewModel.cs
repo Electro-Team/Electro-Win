@@ -163,7 +163,7 @@ namespace Electro.UI.ViewModels
                 Duration = 1000
             };
         }
-        private void elTeamSite(object obj) => Process.Start("http://www.elteam.ir");
+        private void elTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
         private void discord(object obj) => Process.Start("https://discord.io/elteam");
         private void telegram(object obj) => Process.Start("https://t.me/elteam_IR");
         private void instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");

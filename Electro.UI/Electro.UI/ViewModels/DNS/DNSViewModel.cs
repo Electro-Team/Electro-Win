@@ -249,43 +249,73 @@ namespace Electro.UI.ViewModels.DNS
                     var objects = JsonConvert.DeserializeObject<Rootobject>(data);
                     await SetDNS1(objects?.dns.electro);
                     var ServerIp = await client.GetStringAsync("https://elcdn.ir/app/vpn/pptpip.txt");
-                    using (RasPhoneBook PhoneBook = new RasPhoneBook())
+                    //using (RasPhoneBook PhoneBook = new RasPhoneBook())
+                    //{
+                    //    PhoneBook.Open(RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers));
+                    //    RasEntry Entry;
+
+                    //    if (PhoneBook.Entries.Contains(_ConnectionName))
+                    //    {
+                    //        PhoneBook.Entries.Remove(_ConnectionName);
+                    //    }
+
+                    //    Entry = RasEntry.CreateVpnEntry(_ConnectionName, ServerIp, RasVpnStrategy.PptpOnly, RasDevice.GetDeviceByName("(PPTP)", RasDeviceType.Vpn));
+
+                    //    Entry.Options.PreviewDomain = false;
+                    //    Entry.Options.ShowDialingProgress = false;
+                    //    Entry.Options.PromoteAlternates = false;
+                    //    Entry.Options.DoNotNegotiateMultilink = false;
+                    //    Entry.Options.RequirePap = true;
+                    //    Entry.Options.RequireChap = true;
+                    //    Entry.Options.RequireMSChap2 = true;
+                    //    Entry.Options.RequireEncryptedPassword = false;
+                    //    PhoneBook.Entries.Add(Entry);
+
+
+
+                    //    _dialer.EntryName = _ConnectionName;
+                    //    _dialer.PhoneBookPath = RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers);
+                    //    _dialer.Credentials = new NetworkCredential(_username, _password);
+                    //    _dialer.DialCompleted -= Dialer_DialCompleted;
+                    //    _dialer.DialCompleted += Dialer_DialCompleted;
+                    //    _handle = _dialer.DialAsync();
+                    //}
+
+                    string pathToConfig = AppContext.BaseDirectory + "//profile.ovpn";
+
+                    var openVpnProfile = client.GetStringAsync("https://elcdn.ir/app/vpn/appvpn.ovpn");
+                    await WriteAsync(openVpnProfile.Result, pathToConfig);
+                    string arguments = "--config \"" + pathToConfig + "\" --block-outside-dns";
+                    ProcessStartInfo openVpnStartInfo = new ProcessStartInfo
                     {
-                        PhoneBook.Open(RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers));
-                        RasEntry Entry;
+                        Arguments = arguments,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        FileName = AppContext.BaseDirectory + "/Openvpn/openvpn.exe",
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                    };
+                    Process openVpn = new Process
+                    {
+                        StartInfo = openVpnStartInfo,
+                        EnableRaisingEvents = true
+                    };
+                    openVpn.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+                    openVpn.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
+                    openVpn.Start();
+                    openVpn.BeginOutputReadLine();
+                    openVpn.BeginErrorReadLine();
+                    _isOpenVpn = true;
 
-                        if (PhoneBook.Entries.Contains(_ConnectionName))
-                        {
-                            PhoneBook.Entries.Remove(_ConnectionName);
-                        }
-
-                        Entry = RasEntry.CreateVpnEntry(_ConnectionName, ServerIp, RasVpnStrategy.PptpOnly, RasDevice.GetDeviceByName("(PPTP)", RasDeviceType.Vpn));
-
-                        Entry.Options.PreviewDomain = false;
-                        Entry.Options.ShowDialingProgress = false;
-                        Entry.Options.PromoteAlternates = false;
-                        Entry.Options.DoNotNegotiateMultilink = false;
-                        Entry.Options.RequirePap = true;
-                        Entry.Options.RequireChap = true;
-                        Entry.Options.RequireMSChap2 = true;
-                        Entry.Options.RequireEncryptedPassword = false;
-                        PhoneBook.Entries.Add(Entry);
-                        
-
-
-                        _dialer.EntryName = _ConnectionName;
-                        _dialer.PhoneBookPath = RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers);
-                        _dialer.Credentials = new NetworkCredential(_username, _password);
-                        _dialer.DialCompleted -= Dialer_DialCompleted;
-                        _dialer.DialCompleted += Dialer_DialCompleted;
-                        _handle = _dialer.DialAsync();
-                    }
-                    
                 }
                 catch (Exception e)
                 {
                     
-                    ElectroMessageBox.Show(e.ToString());
+                    ElectroMessageBox.Show("Connection can not be established.");
+                    IsGettingData = false;
+                    IsTurnedOn = false;
+                    ServiceText = "● Error";
                 }
                 finally
                 {
@@ -455,6 +485,14 @@ namespace Electro.UI.ViewModels.DNS
                         instance.InvokeMethod("SetDNSServerSearchOrder", methodParameters, (InvokeMethodOptions)null);
                     }
                 }
+            }
+
+            var openVpnProcess = Process.GetProcesses().
+                Where(pr => pr.ProcessName == "openvpn");
+
+            foreach (var process in openVpnProcess)
+            {
+                process.Kill();
             }
         }
     }
