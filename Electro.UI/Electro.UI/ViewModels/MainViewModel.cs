@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Reflection;
+using System.Security.Policy;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using AutoUpdaterDotNET;
 using Electro.UI.Tools;
 using Electro.UI.ViewModels.DNS;
+using Newtonsoft.Json;
 
 namespace Electro.UI.ViewModels
 {
@@ -20,21 +24,18 @@ namespace Electro.UI.ViewModels
         private RelayCommand telegramCommand;
         private RelayCommand instagramCommand;
         private RelayCommand donateCommand;
+        private RelayCommand sponsorCommand;
         private bool _showInTaskbar;
         private bool isStartup;
+        private string sponsorImageUrl;
+        private string sponsorLinkUrl;
+        private HttpClient client = new HttpClient();
         private WindowState _windowState;
         public MainViewModel()
         {
             dnsViewModel = new DNSViewModel();
             dnsViewModel.ServiceUpdated += ServiceUpdated;
-            //Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine
-            //    .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            //Assembly curAssembly = Assembly.GetExecutingAssembly();
-            //var appValue = key?.GetValue(curAssembly.GetName().Name);
-            //if (appValue != null)
-            //{
-            //    isStartup = true;
-            //}
+            _ = getSponsorInfo();
         }
 
         public DNSViewModel DnsViewModel => dnsViewModel;
@@ -56,6 +57,9 @@ namespace Electro.UI.ViewModels
 
         public RelayCommand DonateCommand => donateCommand ??
                                              (donateCommand = new RelayCommand(donate));
+
+        public RelayCommand SponsorCommand => sponsorCommand ??
+                                              (sponsorCommand = new RelayCommand(sponsor));
         public bool IsServiceOn
         {
             get => isServiceOn;
@@ -86,6 +90,15 @@ namespace Electro.UI.ViewModels
             }
         }
 
+        public string SponsorImageUrl
+        {
+            get => sponsorImageUrl;
+            set
+            {
+                sponsorImageUrl = value;
+                OnPropertyChanged();
+            }
+        }
         public bool IsStartup
         {
             get => isStartup;
@@ -150,11 +163,34 @@ namespace Electro.UI.ViewModels
                 Duration = 1000
             };
         }
-        private void elTeamSite(object obj) => Process.Start("http://www.elteam.ir");
+        private void elTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
         private void discord(object obj) => Process.Start("https://discord.io/elteam");
         private void telegram(object obj) => Process.Start("https://t.me/elteam_IR");
         private void instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
         private void donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
-        
+
+        private void sponsor(object obj)
+        {
+            Process.Start(sponsorLinkUrl);
+        }
+
+        private async Task getSponsorInfo()
+        {
+            try
+            {
+                var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings2.json");
+                if (data != null)
+                {
+                    var sponsorJsonData = JsonConvert.DeserializeObject<SponsorJsonData>(data);
+                    SponsorImageUrl = sponsorJsonData.adPictureUrl;
+                    sponsorLinkUrl = sponsorJsonData.adLinkUrl;
+                }
+
+            }
+            catch (Exception e)
+            {
+                //logger must add
+            }
+        }
     }
 }

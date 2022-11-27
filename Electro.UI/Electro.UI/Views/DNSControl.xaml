@@ -11,19 +11,42 @@
         <Grid>
             <controls:PowerButton VerticalAlignment="Center"
                           HorizontalAlignment="Center"
-                          Width="150"
-                          Height="150"
+                          Margin="0,0,0,70"
+                          Width="75"
+                          Height="75"
                           Command="{Binding ConfigureDnsCommand}"
-                          Style="{StaticResource PowerButtonStyle}"
+                          Style="{StaticResource PowerButtonStyle2}"
                           IsGettingData="{Binding IsGettingData}"
                           IsHitTestVisible="{Binding IsGettingData, Converter={StaticResource InvertBooleanConverter}}"
                           IsTurnedOn="{Binding IsTurnedOn, Mode=TwoWay}">
             </controls:PowerButton>
-            <TextBlock Margin="0,350,0,0"
+            <TextBlock Margin="0,320,0,0"
+                       x:Name="TextBlockService"
                        HorizontalAlignment="Center"
-                       Text="{Binding ServiceText}"
-                       FontWeight="Bold"
-                       Foreground="Azure"></TextBlock>
+                       Text="{Binding ServiceText}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="White"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsGettingData}" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource PowerContentYellowColorBrush2}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsTurnedOn}" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource PowerContentGreenColorBrush2}"/>
+                            </DataTrigger>
+                            <!--<DataTrigger Binding="{Binding IsTurnedOn}" Value="False">
+                                <Setter Property="Foreground" Value="{StaticResource PowerContentWhiteColorBrush2}"/>
+                            </DataTrigger>-->
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+                <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="20"
+                                      ShadowDepth="0"
+                                      Opacity="0.5"
+                                      Color="{Binding ElementName=TextBlockService, Path=Foreground.(SolidColorBrush.Color)}"/>
+                </TextBlock.Effect>
+            </TextBlock>
         </Grid>
     </Border>
 </UserControl>
