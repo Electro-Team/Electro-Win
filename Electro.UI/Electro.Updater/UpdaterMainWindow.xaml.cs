@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
+using NLog;
 using Version = Electro.UI.Tools.Version;
 
 namespace Electro.Updater
@@ -27,6 +28,7 @@ namespace Electro.Updater
     public partial class UpdaterMainWindow : Window
     {
         private WebClient webClient = new WebClient();
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         public UpdaterMainWindow()
         {
             InitializeComponent();
@@ -55,7 +57,8 @@ namespace Electro.Updater
             }
             catch (Exception exception)
             {
-                ElectroMessageBox.Show($"{exception.Message}\n {exception.StackTrace}");
+                ElectroMessageBox.Show($"Operation failed.");
+                logger.Error(exception);
                 throw;
             }
         }
@@ -85,7 +88,8 @@ namespace Electro.Updater
             }
             catch (Exception exception)
             {
-                ElectroMessageBox.Show($"{exception.Message}\n {exception.StackTrace}");
+                logger.Error(exception);
+                ElectroMessageBox.Show($"Download Operation Failed.");
                 Application.Current.Shutdown();
             }
         }
