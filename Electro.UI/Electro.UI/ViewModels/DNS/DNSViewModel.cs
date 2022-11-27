@@ -181,7 +181,7 @@ namespace Electro.UI.ViewModels.DNS
                         var routeBatch = await client.GetStringAsync("https://elcdn.ir/app/vpn/routes/route12.bat");
                         await WriteAsync(routeBatch, pathToRouteBatch);
                         ProcessStartInfo psi = new ProcessStartInfo();
-                        psi.CreateNoWindow = false;
+                        psi.CreateNoWindow = true;
                         psi.UseShellExecute = false;
                         psi.FileName = @"cmd.exe";
                         psi.Verb = "runas";
