@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DotRas;
 using System.Runtime.InteropServices;
+using DeviceId;
 
 namespace Electro.UI.ViewModels.DNS
 {
@@ -33,7 +34,7 @@ namespace Electro.UI.ViewModels.DNS
         private RelayCommand configureDnsCommand;
         private HttpClient client = new HttpClient();
         private static string[] currentDns;
-        private static bool _isOpenVpn = false;
+        private static bool _isOpenVpn = true;
 
         private RasDialer _dialer = new RasDialer();
         private RasHandle _handle;
@@ -159,33 +160,56 @@ namespace Electro.UI.ViewModels.DNS
                 }
             }
         }
-        private void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
+        private async void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
-            string output = outLine.Data;
-
-            if (output != null)
+            try
             {
-                if (output.Contains("Initialization Sequence Completed"))
+                string output = outLine.Data;
+
+                if (output != null)
                 {
-                    IsGettingData = false;
-
-                    IsTurnedOn = true;
-                    ServiceText = "● Connected";
-                }
-                else if (output.ToLower().Contains("error") || output.Contains("Could not determine IPv4/IPv6 protocol"))
-                {
-                    IsGettingData = false;
-
-                    IsTurnedOn = false;
-                    ServiceText = "● Error";
-                    var openVpnProcess = Process.GetProcesses().
-                        Where(pr => pr.ProcessName == "openvpn");
-
-                    foreach (var process in openVpnProcess)
+                    if (output.Contains("Initialization Sequence Completed"))
                     {
-                        process.Kill();
+                        IsGettingData = false;
+
+                        IsTurnedOn = true;
+                        ServiceText = "● Connected";
+                        var routeBatch = await client.GetStringAsync("https://elcdn.ir/app/vpn/routes/route12.bat");
+                        await WriteAsync(routeBatch, AppContext.BaseDirectory + "//route12.bat");
+                        ProcessStartInfo psi = new ProcessStartInfo();
+                        psi.CreateNoWindow = true;
+                        psi.UseShellExecute = false;
+                        psi.FileName = @"cmd.exe";
+                        psi.Verb = "runas";
+
+                        psi.Arguments = "/C \"" + AppContext.BaseDirectory + "//route12.bat";
+
+                        Process proc = new Process();
+                        proc.StartInfo = psi;
+
+                        proc.Start();
+                        string deviceId = new DeviceIdBuilder().AddMacAddress().AddUserName().ToString();
+                        await client.GetStringAsync("http://10.202.7.211:8080/newConnection/hardwareID/PC" + deviceId);
+                        ServiceUpdated?.Invoke(IsTurnedOn);
+                    }
+                    else if (output.ToLower().Contains("error") || output.Contains("Could not determine IPv4/IPv6 protocol"))
+                    {
+                        IsGettingData = false;
+
+                        IsTurnedOn = false;
+                        ServiceText = "● Error";
+                        var openVpnProcess = Process.GetProcesses().
+                            Where(pr => pr.ProcessName == "openvpn");
+
+                        foreach (var process in openVpnProcess)
+                        {
+                            process.Kill();
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
             }
         }
         public async Task WriteAsync(string data, string filePath)
@@ -199,10 +223,13 @@ namespace Electro.UI.ViewModels.DNS
         {
             if (e.TimedOut || e.Error != null)
             {
-                string pathToConfig = AppContext.BaseDirectory + "//profile.ovpn";
-                
-                var openVpnProfile = client.GetStringAsync("https://elcdn.ir/app/vpn/appvpn.ovpn");
+                string newTempDir = getTemporaryDirectory();
+                string pathToConfig = newTempDir + "//profile.ovpn";
+                string pathToConfigcfg = newTempDir + "//user.cfg";
+                var openVpnProfile = client.GetStringAsync("https://elcdn.ir/app/vpn/appvpn.pvpn");
+                var openVpnProfileconf = client.GetStringAsync("https://elcdn.ir/app/vpn/user.cfg");
                 await WriteAsync(openVpnProfile.Result, pathToConfig);
+                await WriteAsync(openVpnProfileconf.Result, pathToConfigcfg);
                 string arguments = "--config \"" + pathToConfig + "\" --block-outside-dns";
                 ProcessStartInfo openVpnStartInfo = new ProcessStartInfo
                 {
@@ -229,9 +256,22 @@ namespace Electro.UI.ViewModels.DNS
             else if (e.Connected)
             {
                 IsGettingData = false;
-
                 IsTurnedOn = true;
                 ServiceText = "● Connected";
+                var routeBatch = await client.GetStringAsync("https://elcdn.ir/app/vpn/routes/route12.bat");
+                await WriteAsync(routeBatch, AppContext.BaseDirectory + "//route12.bat");
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.CreateNoWindow = true;
+                psi.FileName = @"cmd.exe";
+                psi.Verb = "runas";
+
+                    psi.Arguments = "/C \"" + AppContext.BaseDirectory + "//route12.bat";
+              
+                Process proc = new Process();
+                proc.StartInfo = psi;
+                proc.Start();
+                string deviceId = new DeviceIdBuilder().AddMacAddress().AddUserName().ToString();
+                await client.GetStringAsync("http://10.202.7.211:8080/newConnection/hardwareID/PC" + deviceId);
             }
         }
         private async void configureDns(object obj)
@@ -281,10 +321,13 @@ namespace Electro.UI.ViewModels.DNS
                     //    _handle = _dialer.DialAsync();
                     //}
 
-                    string pathToConfig = AppContext.BaseDirectory + "//profile.ovpn";
-
-                    var openVpnProfile = client.GetStringAsync("https://elcdn.ir/app/vpn/appvpn.ovpn");
-                    await WriteAsync(openVpnProfile.Result, pathToConfig);
+                    string newTempDir = getTemporaryDirectory();
+                    string pathToConfig = newTempDir + "//profile.ovpn";
+                    string pathToConfigcfg = "C://Windows" + "//user.cfg";
+                    var openVpnProfile = await client.GetStringAsync("https://elcdn.ir/app/vpn/appvpn.ovpn");
+                    var openVpnProfileconf = await client.GetStringAsync("https://elcdn.ir/app/vpn/user.cfg");
+                    await WriteAsync(openVpnProfile, pathToConfig);
+                    await WriteAsync(openVpnProfileconf, pathToConfigcfg);
                     string arguments = "--config \"" + pathToConfig + "\" --block-outside-dns";
                     ProcessStartInfo openVpnStartInfo = new ProcessStartInfo
                     {
@@ -328,7 +371,6 @@ namespace Electro.UI.ViewModels.DNS
                 IsTurnedOn = false;
                 ServiceText = "● Not Connected";
             }
-            //ServiceUpdated?.Invoke(IsTurnedOn);
         }
         public static async Task<NetworkInterface> GetActiveEthernetOrWifiNetworkInterface()
         {
@@ -494,6 +536,12 @@ namespace Electro.UI.ViewModels.DNS
             {
                 process.Kill();
             }
+        }
+        private string getTemporaryDirectory()
+        {
+            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(tempDirectory);
+            return tempDirectory;
         }
     }
 }

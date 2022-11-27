@@ -44,7 +44,7 @@ namespace Electro.UI
                 this.IsHitTestVisible = false;
                 HttpClient client = new HttpClient();
 
-                var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/version.json");
+                var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/versionnew.json");
                 var objects = JsonConvert.DeserializeObject<Version>(data);
                 if (objects != null)
                 {
