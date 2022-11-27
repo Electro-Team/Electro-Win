@@ -1,0 +1,27 @@
+﻿<Window x:Class="Electro.Updater.UpdaterMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Electro.Updater"
+        xmlns:viewModels="clr-namespace:Electro.UI.ViewModels;assembly=Electro.UI"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="Electro Updater" Height="60" Width="300"
+        Style="{StaticResource MessageBoxStyle}">
+    <Window.Resources>
+        <viewModels:MainViewModel x:Key="MainViewModel"/>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource MainViewModel}">
+        <StackPanel>
+            <TextBlock x:Name="UpdaterText"
+                       Text="Update in progress..."
+                       Margin="5"
+                       Foreground="White"/>
+            <ProgressBar Margin="5"
+                         Height="20"
+                         IsIndeterminate="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

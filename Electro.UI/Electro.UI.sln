@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Electro.UI", "Electro.UI\Electro.UI.csproj", "{8EFECE29-B4D4-4B85-B5CB-89117BA678FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Electro.Theme", "Electro.Theme\Electro.Theme.csproj", "{0F58737E-E2CD-430E-B2A2-D8A3F3BB40AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Electro.Updater", "Electro.Updater\Electro.Updater.csproj", "{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8EFECE29-B4D4-4B85-B5CB-89117BA678FD}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{8EFECE29-B4D4-4B85-B5CB-89117BA678FD}.Debug|Any CPU.Build.0 = Debug|x64
+		{8EFECE29-B4D4-4B85-B5CB-89117BA678FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EFECE29-B4D4-4B85-B5CB-89117BA678FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F58737E-E2CD-430E-B2A2-D8A3F3BB40AA}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0F58737E-E2CD-430E-B2A2-D8A3F3BB40AA}.Debug|Any CPU.Build.0 = Debug|x64
+		{0F58737E-E2CD-430E-B2A2-D8A3F3BB40AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F58737E-E2CD-430E-B2A2-D8A3F3BB40AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}.Debug|Any CPU.Build.0 = Debug|x64
+		{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F134C781-86F3-429F-9BC2-47AD5F0C1C0E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6A8724D6-F066-4D71-B79E-77B03328CA94}
+	EndGlobalSection
+EndGlobal

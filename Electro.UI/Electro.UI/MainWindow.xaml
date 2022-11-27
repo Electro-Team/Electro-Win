@@ -1,0 +1,27 @@
+﻿<Window x:Class="Electro.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Electro.UI"
+        xmlns:views="clr-namespace:Electro.UI.Views"
+        xmlns:controls="clr-namespace:Electro.UI.Controls"
+        xmlns:viewModels="clr-namespace:Electro.UI.ViewModels"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="Electro" 
+        Height="520"
+        Width="250"
+        Style="{StaticResource BaseWindowStyle}"
+        ContextMenu="{x:Null}">
+    <Window.Resources>
+        <viewModels:MainViewModel x:Key="MainViewModel"/>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource MainViewModel}">
+        <controls:HeaderControl  VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                                 Panel.ZIndex="10"
+                                 />
+        <views:MainElectroControl/>
+    </Grid>
+</Window>
