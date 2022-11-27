@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -168,21 +168,25 @@ namespace Electro.UI.ViewModels.DNS
 
                 if (output != null)
                 {
+                    serviceText = output;
+
                     if (output.Contains("Initialization Sequence Completed"))
                     {
                         IsGettingData = false;
 
                         IsTurnedOn = true;
                         ServiceText = "● Connected";
+                        string newTempDir = getTemporaryDirectory();
+                        string pathToRouteBatch = newTempDir + "//route12.bat";
                         var routeBatch = await client.GetStringAsync("https://elcdn.ir/app/vpn/routes/route12.bat");
-                        await WriteAsync(routeBatch, AppContext.BaseDirectory + "//route12.bat");
+                        await WriteAsync(routeBatch, pathToRouteBatch);
                         ProcessStartInfo psi = new ProcessStartInfo();
                         psi.CreateNoWindow = true;
                         psi.UseShellExecute = false;
                         psi.FileName = @"cmd.exe";
                         psi.Verb = "runas";
 
-                        psi.Arguments = "/C \"" + AppContext.BaseDirectory + "//route12.bat";
+                        psi.Arguments = "/C \"" + pathToRouteBatch + "//route12.bat";
 
                         Process proc = new Process();
                         proc.StartInfo = psi;
@@ -226,9 +230,9 @@ namespace Electro.UI.ViewModels.DNS
                 string newTempDir = getTemporaryDirectory();
                 string pathToConfig = newTempDir + "//profile.ovpn";
                 string pathToConfigcfg = newTempDir + "//user.cfg";
-                var openVpnProfile = client.GetStringAsync("https://elcdn.ir/app/vpn/appvpn.pvpn");
+                var openVpnProfile = await client.GetStringAsync("https://elcdn.ir/app/vpn/appvpn.ovpn");
                 var openVpnProfileconf = client.GetStringAsync("https://elcdn.ir/app/vpn/user.cfg");
-                await WriteAsync(openVpnProfile.Result, pathToConfig);
+                await WriteAsync(openVpnProfile, pathToConfig);
                 await WriteAsync(openVpnProfileconf.Result, pathToConfigcfg);
                 string arguments = "--config \"" + pathToConfig + "\" --block-outside-dns";
                 ProcessStartInfo openVpnStartInfo = new ProcessStartInfo
