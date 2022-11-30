@@ -150,11 +150,11 @@ namespace Electro.UI.ViewModels
             string description;
             if (isTurnedOn)
             {
-                description = "DNS service turned on.";
+                description = "Electro service turned on.";
             }
             else
             {
-                description = "DNS service turned off.";
+                description = "Electro service turned off.";
             }
             NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
             {

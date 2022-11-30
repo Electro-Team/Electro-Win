@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using Electro.UI.ViewModels;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
+using NLog;
 using Version = Electro.UI.Tools.Version;
 
 namespace Electro.UI
@@ -30,6 +31,7 @@ namespace Electro.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private static string version = "1.0.0.0";
         public MainWindow()
         {
@@ -44,7 +46,7 @@ namespace Electro.UI
                 this.IsHitTestVisible = false;
                 HttpClient client = new HttpClient();
 
-                var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/version.json");
+                var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/versionnew.json");
                 var objects = JsonConvert.DeserializeObject<Version>(data);
                 if (objects != null)
                 {
@@ -66,6 +68,11 @@ namespace Electro.UI
                         }
                     }
                 }
+
+                //if (!Properties.Settings.Default.InitializeTAP)
+                //{
+                //    var installed = InstallTapAdapter();
+                //}
                 this.IsHitTestVisible = true;
             }
             catch (Exception exception)
@@ -73,6 +80,104 @@ namespace Electro.UI
                 ElectroMessageBox.Show("Could not connect to server!", "Error");
                 Application.Current.Shutdown();
             }
+        }
+        public bool InstallTapAdapter()
+
+        {
+
+            bool installed = false;
+
+            ProcessStartInfo processInfo = null;
+
+            Process process = null;
+
+            try
+
+            {
+
+                string command = "";
+
+
+
+                command = "tapinstall.exe install \"OemWin2k.inf\" tap0901";
+
+
+
+                processInfo = new ProcessStartInfo("cmd.exe", "/C " + command);
+
+                processInfo.UseShellExecute = false;
+
+                processInfo.RedirectStandardOutput = true;
+
+                processInfo.RedirectStandardError = true;
+
+                processInfo.CreateNoWindow = true;
+                processInfo.WorkingDirectory = "C:\\Program Files\\TAP-Windows\\bin";
+
+
+                process = new Process();
+
+                process.StartInfo = processInfo;
+
+                process.Start();
+
+
+
+                string str = process.StandardOutput.ReadToEnd();
+
+                string err = process.StandardError.ReadToEnd();
+
+                int exitCode = process.ExitCode;
+
+
+
+                if (err.Length > 0)
+
+                    throw new Exception(err);
+
+
+                // Write into logs
+                logger.Info("COMPLETED Installing tap Exit code = " + exitCode);
+
+                if (str.IndexOf("Drivers installed successfully") > -1)
+
+                {
+
+                    installed = true;
+                    // Write into logs  
+                    logger.Info("Tap Adapter Installed Successfully");
+
+                }
+
+
+
+                // Write into logs
+                logger.Info("Finished TAP");
+
+            }
+
+            catch (Exception e)
+
+            {
+                // Write into logs
+                logger.Error("Error Installing Tap Adapter : " + e.Message);
+
+            }
+
+            finally
+
+            {
+                processInfo = null;
+                if (process != null)
+
+                {
+                    process.Close();
+                    process = null;
+                }
+            }
+
+            return installed;
+
         }
     }
 }
