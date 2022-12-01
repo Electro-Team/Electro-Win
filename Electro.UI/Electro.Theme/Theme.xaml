@@ -15,5 +15,6 @@
         <ResourceDictionary Source="Assests/PathAndGeometries.xaml"/>
         <ResourceDictionary Source="Style/ToggleButtonStyles/PathImageToggleButtonStyle.xaml"/>
         <ResourceDictionary Source="Style/CheckBoxStyles/BaseCheckBoxStyle.xaml"/>
+        <ResourceDictionary Source="Style/CheckBoxStyles/SlidingCheckBoxStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

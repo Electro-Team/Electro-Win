@@ -53,7 +53,7 @@ namespace Electro.UI
             }
             }catch(Exception ex)
             {
-
+                logger.Error(ex);
             }
       
            
@@ -64,45 +64,45 @@ namespace Electro.UI
         
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                this.IsHitTestVisible = false;
-                HttpClient client = new HttpClient();
+            //try
+            //{
+            //    this.IsHitTestVisible = false;
+            //    HttpClient client = new HttpClient();
 
-                var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/versionnew.json");
-                var objects = JsonConvert.DeserializeObject<Version>(data);
-                if (objects != null)
-                {
-                   // if (!objects.lastVersion.Equals(Assembly.GetEntryAssembly()?.GetName().Version.ToString()))
-                   // {
-                    //    try
-                     //   {
-                        //    var p = new Process();
-                         //   p.StartInfo.FileName = "Electro.Updater.exe";
-                        //    p.StartInfo.Arguments = "update";
-                          //  p.StartInfo.UseShellExecute = true;
-                           // p.Start();
-                         //   Application.Current.Shutdown();
-                      //  }
-                      //  catch (Exception exception)
-                      //  {
-                        //    ElectroMessageBox.Show("Electro Updater file does not exist!", "Warning");
-                         //   Application.Current.Shutdown();
-                       // }
-                   // }
-                }
+            //    var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/versionnew.json");
+            //    var objects = JsonConvert.DeserializeObject<Version>(data);
+            //    if (objects != null)
+            //    {
+            //       // if (!objects.lastVersion.Equals(Assembly.GetEntryAssembly()?.GetName().Version.ToString()))
+            //       // {
+            //        //    try
+            //         //   {
+            //            //    var p = new Process();
+            //             //   p.StartInfo.FileName = "Electro.Updater.exe";
+            //            //    p.StartInfo.Arguments = "update";
+            //              //  p.StartInfo.UseShellExecute = true;
+            //               // p.Start();
+            //             //   Application.Current.Shutdown();
+            //          //  }
+            //          //  catch (Exception exception)
+            //          //  {
+            //            //    ElectroMessageBox.Show("Electro Updater file does not exist!", "Warning");
+            //             //   Application.Current.Shutdown();
+            //           // }
+            //       // }
+            //    }
 
-                //if (!Properties.Settings.Default.InitializeTAP)
-                //{
-                //    var installed = InstallTapAdapter();
-                //}
-                this.IsHitTestVisible = true;
-            }
-            catch (Exception exception)
-            {
-                ElectroMessageBox.Show("Could not connect to server!", "Error");
-                Application.Current.Shutdown();
-            }
+            //    //if (!Properties.Settings.Default.InitializeTAP)
+            //    //{
+            //    //    var installed = InstallTapAdapter();
+            //    //}
+            //    this.IsHitTestVisible = true;
+            //}
+            //catch (Exception exception)
+            //{
+            //    ElectroMessageBox.Show("Could not connect to server!", "Error");
+            //    Application.Current.Shutdown();
+            //}
         }
         public bool InstallTapAdapter()
 

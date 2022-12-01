@@ -81,6 +81,15 @@ namespace Electro.UI.ViewModels.DNS
             }
         }
 
+        public bool IsOpenVpn
+        {
+            get => _isOpenVpn;
+            set
+            {
+                _isOpenVpn = value;
+                OnPropertyChanged();
+            }
+        }
         public string ServiceText
         {
             get
@@ -175,7 +184,7 @@ namespace Electro.UI.ViewModels.DNS
                         IsGettingData = false;
 
                         IsTurnedOn = true;
-                        _isOpenVpn = true;
+                        IsOpenVpn = true;
                         ServiceText = "● Connected";
                         string newTempDir = getTemporaryDirectory();
                       //  string pathToRouteBatch = newTempDir + "//route12.bat";
@@ -295,7 +304,7 @@ namespace Electro.UI.ViewModels.DNS
                 ServiceUpdated?.Invoke(IsTurnedOn);
             }
 
-            _isOpenVpn = false;
+            IsOpenVpn = false;
         }
         private async void configureDns(object obj)
         {
@@ -354,7 +363,6 @@ namespace Electro.UI.ViewModels.DNS
                     openVpn.BeginOutputReadLine();
                     openVpn.BeginErrorReadLine();
                     
-                    _isOpenVpn = false;
 
                 }
                 catch (Exception e)
@@ -416,7 +424,7 @@ namespace Electro.UI.ViewModels.DNS
         }
         public void UnsetDNS()
         {
-            if (!_isOpenVpn)
+            if (!IsOpenVpn)
             {
                 if (_dialer.IsBusy)
                 {

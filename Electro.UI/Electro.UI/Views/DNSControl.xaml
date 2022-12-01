@@ -9,16 +9,21 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Border>
         <Grid>
+            <CheckBox VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      Margin="0,0,0,300"
+                      IsChecked="{Binding IsOpenVpn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      Style="{StaticResource SlidingCheckBoxStyle}"></CheckBox>
             <controls:PowerButton VerticalAlignment="Center"
-                          HorizontalAlignment="Center"
-                          Margin="0,0,0,70"
-                          Width="75"
-                          Height="75"
-                          Command="{Binding ConfigureDnsCommand}"
-                          Style="{StaticResource PowerButtonStyle2}"
-                          IsGettingData="{Binding IsGettingData}"
-                          IsHitTestVisible="{Binding IsGettingData, Converter={StaticResource InvertBooleanConverter}}"
-                          IsTurnedOn="{Binding IsTurnedOn, Mode=TwoWay}">
+                                  HorizontalAlignment="Center"
+                                  Margin="0,0,0,70"
+                                  Width="75"
+                                  Height="75"
+                                  Command="{Binding ConfigureDnsCommand}"
+                                  Style="{StaticResource PowerButtonStyle2}"
+                                  IsGettingData="{Binding IsGettingData}"
+                                  IsHitTestVisible="{Binding IsGettingData, Converter={StaticResource InvertBooleanConverter}}"
+                                  IsTurnedOn="{Binding IsTurnedOn, Mode=TwoWay}">
             </controls:PowerButton>
             <TextBlock Margin="0,320,0,0"
                        x:Name="TextBlockService"
