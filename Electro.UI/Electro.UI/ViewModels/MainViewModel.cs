@@ -164,10 +164,10 @@ namespace Electro.UI.ViewModels
             };
         }
         private void elTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
-        private void discord(object obj) => Process.Start("https://discord.io/elteam");
-        private void telegram(object obj) => Process.Start("https://t.me/elteam_IR");
-        private void instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
-        private void donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
+        private void discord(object obj) => Process.Start("http://discord.io/elteam");
+        private void telegram(object obj) => Process.Start("http://t.me/elteam_IR");
+        private void instagram(object obj) => Process.Start("http://www.instagram.com/irelectro/");
+        private void donate(object obj) => Process.Start("http://donateon.ir/MaxisAmir");
 
         private void sponsor(object obj)
         {
@@ -178,7 +178,7 @@ namespace Electro.UI.ViewModels
         {
             try
             {
-                var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings2.json");
+                var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings2.json");
                 if (data != null)
                 {
                     var sponsorJsonData = JsonConvert.DeserializeObject<SponsorJsonData>(data);

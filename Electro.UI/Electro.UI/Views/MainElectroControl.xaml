@@ -122,6 +122,7 @@
                           Margin="3,0"></Path>
                 </Button.Content>
             </Button>
+
         </StackPanel>
         <StackPanel
             VerticalAlignment="Bottom"

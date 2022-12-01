@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.NetworkInformation;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Electro.UI.ViewModels.DNS;
@@ -14,6 +16,7 @@ using Electro.UI.Windows;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
+using System.Threading;
 using Version = Electro.UI.Tools.Version;
 
 namespace Electro.UI
@@ -43,7 +46,12 @@ namespace Electro.UI
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            DNSViewModel.UnsetDnsEvent();
+            // Creating thread
+            // Using thread class
+            DNSViewModel dnV=new DNSViewModel();
+            Thread thr = new Thread(new ThreadStart(dnV.UnsetDnsEvent));
+            thr.Start();
+         // DNSViewModel.UnsetDnsEvent();
         }
     }
 }
