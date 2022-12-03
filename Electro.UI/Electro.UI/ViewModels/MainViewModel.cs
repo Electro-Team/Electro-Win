@@ -15,6 +15,7 @@ namespace Electro.UI.ViewModels
 {
     public class MainViewModel : BaseModel
     {
+        private int temp;
         private DNSViewModel dnsViewModel;
         private bool isServiceOn;
         private NotifyIconWrapper.NotifyRequestRecord _notifyRequest;
