@@ -49,7 +49,7 @@ namespace Electro.UI
             // Creating thread
             // Using thread class
             DNSViewModel dnV=new DNSViewModel();
-            Thread thr = new Thread(new ThreadStart(dnV.UnsetDnsEvent));
+            Thread thr = new Thread(new ThreadStart(DNSViewModel.UnsetDnsEvent));
             thr.Start();
          // DNSViewModel.UnsetDnsEvent();
         }

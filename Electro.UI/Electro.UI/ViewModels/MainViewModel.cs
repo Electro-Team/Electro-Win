@@ -1,12 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Http;
-using System.Reflection;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
-using AutoUpdaterDotNET;
 using Electro.UI.Tools;
 using Electro.UI.ViewModels.DNS;
 using Newtonsoft.Json;
@@ -15,9 +11,19 @@ namespace Electro.UI.ViewModels
 {
     public class MainViewModel : BaseModel
     {
-        private DNSViewModel dnsViewModel;
-        private bool isServiceOn;
+        //Fields
+        private readonly DNSViewModel dnsViewModel;
         private NotifyIconWrapper.NotifyRequestRecord _notifyRequest;
+        private bool isServiceOn;
+        private bool _showInTaskbar;
+        private bool isStartup;
+        private string sponsorImageUrl;
+        private string sponsorLinkUrl;
+        private readonly WindowState _windowState;
+        private string selectedService = "OpenVpn";
+        private bool isComboEnabled = true;
+
+        ///Commands
         private RelayCommand notifyCommand;
         private RelayCommand elTeamSiteCommand;
         private RelayCommand discordCommand;
@@ -25,41 +31,111 @@ namespace Electro.UI.ViewModels
         private RelayCommand instagramCommand;
         private RelayCommand donateCommand;
         private RelayCommand sponsorCommand;
-        private bool _showInTaskbar;
-        private bool isStartup;
-        private string sponsorImageUrl;
-        private string sponsorLinkUrl;
-        private HttpClient client = new HttpClient();
-        private WindowState _windowState;
+
+        //Constructor
         public MainViewModel()
         {
             dnsViewModel = new DNSViewModel();
             dnsViewModel.ServiceUpdated += ServiceUpdated;
-            _ = getSponsorInfo();
+            dnsViewModel.IsComboBoxEnabled += IsComboBoxEnabled;
+            _ = GetSponsorInfo();
         }
 
-        public DNSViewModel DnsViewModel => dnsViewModel;
+        #region Private Methods
 
+        #region Command Handler
+        private void Notify(object obj)
+        {
+            if (DnsViewModel.IsTurnedOn)
+            {
+                NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
+                {
+                    Title = "Electro",
+                    Text = "Electro is still running!",
+                    Duration = 1000
+                };
+            }
+        }
+        private void ServiceUpdated(bool isTurnedOn)
+        {
+            string description;
+            if (isTurnedOn)
+            {
+                description = "Electro service turned on.";
+            }
+            else
+            {
+                description = "Electro service turned off.";
+            }
+            NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
+            {
+                Title = "Electro",
+                Text = description,
+                Duration = 1000
+            };
+        }
+        private void IsComboBoxEnabled(bool isComboBoxEnabled)
+            => this.IsComboEnabled = isComboBoxEnabled;
+
+        private void ElTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
+        private void Discord(object obj) => Process.Start("https://discord.io/elteam");
+        private void Telegram(object obj) => Process.Start("https://t.me/elteam_IR");
+        private void Instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
+        private void Donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
+        private void Sponsor(object obj) => Process.Start(sponsorLinkUrl);
+        #endregion
+
+        private async Task GetSponsorInfo()
+        {
+            try
+            {
+                var data = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.SettingsJson2);
+                if (data != null)
+                {
+                    var sponsorJsonData = JsonConvert.DeserializeObject<SponsorJsonData>(data);
+                    SponsorImageUrl = sponsorJsonData.adPictureUrl;
+                    sponsorLinkUrl = sponsorJsonData.adLinkUrl;
+                }
+
+            }
+            catch (Exception e)
+            {
+                //MessageBox.Show(e.Message);
+                //logger must add
+            }
+        }
+        #endregion
+
+        #region Public Methods
+
+        #endregion
+
+        #region Properties(Getter, Setter)
+
+        #region Commands 
         public RelayCommand NotifyCommand => notifyCommand ??
                                              (notifyCommand = new RelayCommand(Notify));
 
         public RelayCommand ElTeamSiteCommand => elTeamSiteCommand ??
-                                                 (elTeamSiteCommand = new RelayCommand(elTeamSite));
+                                                 (elTeamSiteCommand = new RelayCommand(ElTeamSite));
 
         public RelayCommand DiscordCommand => discordCommand ??
-                                              (discordCommand = new RelayCommand(discord));
+                                              (discordCommand = new RelayCommand(Discord));
 
         public RelayCommand TelegramCommand => telegramCommand ??
-                                               (telegramCommand = new RelayCommand(telegram));
+                                               (telegramCommand = new RelayCommand(Telegram));
 
         public RelayCommand InstagramCommand => instagramCommand ??
-                                                (instagramCommand = new RelayCommand(instagram));
+                                                (instagramCommand = new RelayCommand(Instagram));
 
         public RelayCommand DonateCommand => donateCommand ??
-                                             (donateCommand = new RelayCommand(donate));
+                                             (donateCommand = new RelayCommand(Donate));
 
         public RelayCommand SponsorCommand => sponsorCommand ??
-                                              (sponsorCommand = new RelayCommand(sponsor));
+                                              (sponsorCommand = new RelayCommand(Sponsor));
+        #endregion
+
+        public DNSViewModel DnsViewModel => dnsViewModel;
         public bool IsServiceOn
         {
             get => isServiceOn;
@@ -133,64 +209,34 @@ namespace Electro.UI.ViewModels
             }
         }
 
-        private void Notify(object obj)
+        public string SelectedService
         {
-            if (DnsViewModel.IsTurnedOn)
+            get => selectedService;
+            set
             {
-                NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
+                if (selectedService != value)
                 {
-                    Title = "Electro",
-                    Text = "Electro is still running!",
-                    Duration = 1000
-                };
-            }
-        }
-        private void ServiceUpdated(bool isTurnedOn)
-        {
-            string description;
-            if (isTurnedOn)
-            {
-                description = "Electro service turned on.";
-            }
-            else
-            {
-                description = "Electro service turned off.";
-            }
-            NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
-            {
-                Title = "Electro",
-                Text = description,
-                Duration = 1000
-            };
-        }
-        private void elTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
-        private void discord(object obj) => Process.Start("http://discord.io/elteam");
-        private void telegram(object obj) => Process.Start("http://t.me/elteam_IR");
-        private void instagram(object obj) => Process.Start("http://www.instagram.com/irelectro/");
-        private void donate(object obj) => Process.Start("http://donateon.ir/MaxisAmir");
-
-        private void sponsor(object obj)
-        {
-            Process.Start(sponsorLinkUrl);
-        }
-
-        private async Task getSponsorInfo()
-        {
-            try
-            {
-                var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/etc/settings2.json");
-                if (data != null)
-                {
-                    var sponsorJsonData = JsonConvert.DeserializeObject<SponsorJsonData>(data);
-                    SponsorImageUrl = sponsorJsonData.adPictureUrl;
-                    sponsorLinkUrl = sponsorJsonData.adLinkUrl;
+                    dnsViewModel.ChangeModel(value);
+                    selectedService = value;
+                    OnPropertyChanged();
                 }
-
-            }
-            catch (Exception e)
-            {
-                //logger must add
             }
         }
+
+        public IEnumerable<string> ServicesCombo
+                => new string[] { "OpenVpn", "PPTP", "DNS Changer" };
+
+        public bool IsComboEnabled
+        {
+            get => isComboEnabled;
+            set
+            {
+                isComboEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
     }
 }

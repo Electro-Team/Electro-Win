@@ -26,6 +26,7 @@ using AutoUpdaterDotNET;
 using NLog;
 using Version = Electro.UI.Tools.Version;
 using System.IO;
+using Electro.UI.Tools;
 
 namespace Electro.UI
 {
@@ -34,34 +35,35 @@ namespace Electro.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        //Fields
         private static string version = "1.0.0.0";
+
+        //Constructor
         public MainWindow()
         {
-            AutoUpdater.Start("http://elcdn.ir/dl/pc/update.xml");
-            AutoUpdater.ShowSkipButton = false;
-            AutoUpdater.Synchronous = true;
-            AutoUpdater.Mandatory = true;
-            AutoUpdater.UpdateMode = Mode.ForcedDownload;
+            //AutoUpdater.Start("http://elcdn.ir/dl/pc/update.xml");
+            //AutoUpdater.ShowSkipButton = false;
+            //AutoUpdater.Synchronous = true;
+            //AutoUpdater.Mandatory = true;
+            //AutoUpdater.UpdateMode = Mode.ForcedDownload;
             try
             {
-              string path = AppContext.BaseDirectory+@"openVPN\Batch.txt";
-            if (!File.Exists(path))
-            {
-                InstallTapAdapter();
-                File.Create(path);
+                string path = AppContext.BaseDirectory + @"openVPN\Batch.txt";
+                if (!File.Exists(path))
+                {
+                    InstallTapAdapter();
+                    File.Create(path);
+                }
             }
-            }catch(Exception ex)
+            catch (Exception ex)
             {
-                logger.Error(ex);
+                MyLogger.GetInstance().Logger.Error(ex);
             }
-      
-           
-   
             InitializeComponent();
             Loaded += MainWindow_Loaded;
         }
-        
+        #region Private Methods
+
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //try
@@ -104,18 +106,15 @@ namespace Electro.UI
             //    Application.Current.Shutdown();
             //}
         }
+        #region Public Methods
+
+        #endregion
         public bool InstallTapAdapter()
-
         {
-
             bool installed = false;
-
             ProcessStartInfo processInfo = null;
-
             Process proc = new System.Diagnostics.Process();
-
             try
-
             {
                 /*
                 proc.StartInfo.FileName = AppContext.BaseDirectory+"\\openVPN\\Driver\\addtap.bat";
@@ -123,87 +122,42 @@ namespace Electro.UI
                 proc.StartInfo.WorkingDirectory = AppContext.BaseDirectory + "\\openVPN\\Driver";
                 proc.Start();
                 */
-      
-
-
-
-
-
-
-  
-
-
-
-    
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
                 string str = proc.StandardOutput.ReadToEnd();
-
                 string err = proc.StandardError.ReadToEnd();
-
                 int exitCode = proc.ExitCode;
 
-
-
                 if (err.Length > 0)
-
                     throw new Exception(err);
 
-
                 // Write into logs
-                logger.Info("COMPLETED Installing tap Exit code = " + exitCode);
+                MyLogger.GetInstance().Logger.Info("COMPLETED Installing tap Exit code = " + exitCode);
 
                 if (str.IndexOf("Drivers installed successfully") > -1)
 
                 {
-
                     installed = true;
                     // Write into logs  
-                    logger.Info("Tap Adapter Installed Successfully");
-
+                    MyLogger.GetInstance().Logger.Info("Tap Adapter Installed Successfully");
                 }
-
-
-
                 // Write into logs
-                logger.Info("Finished TAP");
-
+                MyLogger.GetInstance().Logger.Info("Finished TAP");
             }
-
             catch (Exception e)
-
             {
                 // Write into logs
-                logger.Error("Error Installing Tap Adapter : " + e.Message);
-
+                MyLogger.GetInstance().Logger.Error("Error Installing Tap Adapter : " + e.Message);
             }
-
             finally
-
             {
                 processInfo = null;
                 if (proc != null)
-
                 {
                     proc.Close();
                     proc = null;
                 }
             }
-
             return installed;
-
-        }
+        } 
+        #endregion
     }
 }

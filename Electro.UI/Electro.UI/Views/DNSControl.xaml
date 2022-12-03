@@ -25,6 +25,7 @@
                                   IsHitTestVisible="{Binding IsGettingData, Converter={StaticResource InvertBooleanConverter}}"
                                   IsTurnedOn="{Binding IsTurnedOn, Mode=TwoWay}">
             </controls:PowerButton>
+            
             <TextBlock Margin="0,320,0,0"
                        x:Name="TextBlockService"
                        HorizontalAlignment="Center"
@@ -52,6 +53,15 @@
                                       Color="{Binding ElementName=TextBlockService, Path=Foreground.(SolidColorBrush.Color)}"/>
                 </TextBlock.Effect>
             </TextBlock>
+
+            <Button Margin="0,220,0,0" Foreground="Transparent" Height="25" Width="60" HorizontalAlignment="Center" Command="{Binding SetDnsCommand}">
+                <TextBlock Text="Set Dns"
+                           HorizontalAlignment="Center"
+                       Foreground="{Binding SetDnsTextColor}"
+                       VerticalAlignment="Center"
+                       >
+                </TextBlock>
+            </Button>
         </Grid>
     </Border>
 </UserControl>
