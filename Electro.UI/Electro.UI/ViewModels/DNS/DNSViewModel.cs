@@ -15,10 +15,12 @@ namespace Electro.UI.ViewModels.DNS
         private bool isTurnedOn;
         private bool isOpenVpn;
         private bool isDnsChanged = false;
+        private bool canChangeServiceType = true;
 
         private IService service;
 
         private DNSController dNSController;
+        // Anti-pattern must remove.
         private Brush setDnsTextColor = Brushes.White;
 
         ///Commands
@@ -43,9 +45,11 @@ namespace Electro.UI.ViewModels.DNS
         {
             if (IsTurnedOn == false)
             {
+                IsOpenVpn = IsOpenVpn;
                 IsGettingData = true;
                 ServiceText = service.ServiceText;
-                IsComboBoxEnabled?.Invoke(false);
+                //IsComboBoxEnabled?.Invoke(false);
+                CanChangeServiceType = false;
                 bool result = await service.Connect();
                 isDnsChanged = true;
                 
@@ -54,6 +58,7 @@ namespace Electro.UI.ViewModels.DNS
                     ElectroMessageBox.Show("Connection can not be established.");
                     IsGettingData = false;
                     IsTurnedOn = false;
+                    CanChangeServiceType = true;
                     ServiceText = "● Error";
                 }
 
@@ -75,30 +80,22 @@ namespace Electro.UI.ViewModels.DNS
             ChangeModel("DNS Changer");
             if (isDnsChanged)
             {
-                IsGettingData = true;
-                ServiceText = service.ServiceText;
-                IsComboBoxEnabled?.Invoke(false);
+                //IsComboBoxEnabled?.Invoke(false);
                 bool result = await service.Connect();
                 isDnsChanged = true;
                 if (!result)
                 {
                     ElectroMessageBox.Show("Connection can not be established.");
-                    IsGettingData = false;
-                    IsTurnedOn = false;
-                    ServiceText = "● Error";
+                    isDnsChanged = false;
                 }
             }
             else
             {
                 service.Dispose();
-                IsTurnedOn = false;
-                ServiceText = "● Not Connected";
                 isDnsChanged = false;
             }
-            if(IsOpenVpn)
-                ChangeModel("OpenVpn");
-            else
-                ChangeModel("PPTP");
+
+            ChangeModel(IsOpenVpn ? "OpenVpn" : "PPTP");
             SetDnsTextColor = isDnsChanged ? Brushes.Green : Brushes.White;
         }
         #endregion
@@ -132,6 +129,7 @@ namespace Electro.UI.ViewModels.DNS
             {
                 if (SuccessfullyCoonected ?? false)
                 {
+                    CanChangeServiceType = false;
                     IsGettingData = false;
                     IsTurnedOn = true;
                     this.ServiceText = serviceText;
@@ -139,6 +137,7 @@ namespace Electro.UI.ViewModels.DNS
                 }
                 else
                 {
+                    CanChangeServiceType = true;
                     IsGettingData = false;
                     IsTurnedOn = false;
                     ServiceUpdated?.Invoke(false);
@@ -146,7 +145,10 @@ namespace Electro.UI.ViewModels.DNS
                 IsComboBoxEnabled?.Invoke(true);
             }
             else
+            {
                 this.ServiceText = serviceText;
+                CanChangeServiceType = true;
+            }
         }
         #endregion
 
@@ -215,6 +217,15 @@ namespace Electro.UI.ViewModels.DNS
             }
         }
 
+        public bool CanChangeServiceType
+        {
+            get => canChangeServiceType;
+            set
+            {
+                canChangeServiceType = value;
+                OnPropertyChanged();
+            }
+        }
         public Brush SetDnsTextColor
         {
             get => setDnsTextColor;

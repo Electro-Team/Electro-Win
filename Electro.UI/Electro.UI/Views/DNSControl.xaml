@@ -12,6 +12,7 @@
             <CheckBox VerticalAlignment="Center"
                       HorizontalAlignment="Center"
                       Margin="0,0,0,300"
+                      IsHitTestVisible="{Binding CanChangeServiceType}"
                       IsChecked="{Binding IsOpenVpn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       Style="{StaticResource SlidingCheckBoxStyle}"></CheckBox>
             <controls:PowerButton VerticalAlignment="Center"
@@ -54,7 +55,13 @@
                 </TextBlock.Effect>
             </TextBlock>
 
-            <Button Margin="0,220,0,0" Foreground="Transparent" Height="25" Width="60" HorizontalAlignment="Center" Command="{Binding SetDnsCommand}">
+            <Button Margin="0,220,0,0" 
+                    Foreground="Transparent" 
+                    Height="25" 
+                    Width="60" 
+                    HorizontalAlignment="Center" 
+                    IsHitTestVisible="{Binding CanChangeServiceType}"
+                    Command="{Binding SetDnsCommand}">
                 <TextBlock Text="Set Dns"
                            HorizontalAlignment="Center"
                        Foreground="{Binding SetDnsTextColor}"
