@@ -15,10 +15,12 @@ namespace Electro.UI.ViewModels.DNS
         private bool isTurnedOn;
         private bool isOpenVpn;
         private bool isDnsChanged = false;
+        private bool canChangeServiceType = true;
 
         private IService service;
 
         private DNSController dNSController;
+        // Anti-pattern must remove.
         private Brush setDnsTextColor = Brushes.White;
 
         ///Commands
@@ -44,6 +46,7 @@ namespace Electro.UI.ViewModels.DNS
         {
             if (IsTurnedOn == false)
             {
+                IsOpenVpn = IsOpenVpn;
                 IsGettingData = true;
                 ServiceText = service.ServiceText;
                 IsEnableToChangeService = false;
@@ -55,6 +58,7 @@ namespace Electro.UI.ViewModels.DNS
                     ElectroMessageBox.Show("Connection can not be established.");
                     IsGettingData = false;
                     IsTurnedOn = false;
+                    CanChangeServiceType = true;
                     ServiceText = "● Error";
                 }
 
@@ -77,6 +81,11 @@ namespace Electro.UI.ViewModels.DNS
             {
                 await dNSController.Connect();
                 isDnsChanged = true;
+                if (!result)
+                {
+                    ElectroMessageBox.Show("Connection can not be established.");
+                    isDnsChanged = false;
+                }
             }
             else
             {
@@ -116,6 +125,7 @@ namespace Electro.UI.ViewModels.DNS
             {
                 if (SuccessfullyCoonected ?? false)
                 {
+                    CanChangeServiceType = false;
                     IsGettingData = false;
                     IsTurnedOn = true;
                     this.ServiceText = serviceText;
@@ -124,6 +134,7 @@ namespace Electro.UI.ViewModels.DNS
                 }
                 else
                 {
+                    CanChangeServiceType = true;
                     IsGettingData = false;
                     IsTurnedOn = false;
                     ServiceUpdated?.Invoke(false);
@@ -132,7 +143,10 @@ namespace Electro.UI.ViewModels.DNS
 
             }
             else
+            {
                 this.ServiceText = serviceText;
+                CanChangeServiceType = true;
+            }
         }
         #endregion
 

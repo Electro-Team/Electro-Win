@@ -238,6 +238,7 @@ namespace Electro.UI.Services
             {
                 await GetDataFromServerAndSetDNS();
 
+                ElectroMessageBox.Show("Electro DNS set.");
                 //connectionObserver.ConnectionObserver(true, "● DNS Changed");
                 return true;
             }
@@ -250,7 +251,9 @@ namespace Electro.UI.Services
         public async void Dispose()
         {
             await UnsetDNS1();
-            //connectionObserver.ConnectionObserver(false, "");
+            ElectroMessageBox.Show("Electro DNS unset.");
+
+           // connectionObserver.ConnectionObserver(false, "");
         }
         #endregion
 

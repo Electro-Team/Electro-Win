@@ -13,6 +13,7 @@
                       VerticalAlignment="Center"
                       HorizontalAlignment="Center"
                       Margin="0,0,0,300"
+                      IsHitTestVisible="{Binding CanChangeServiceType}"
                       IsChecked="{Binding IsOpenVpn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       Style="{StaticResource SlidingCheckBoxStyle}"></CheckBox>
             <controls:PowerButton VerticalAlignment="Center"
