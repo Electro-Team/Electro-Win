@@ -111,11 +111,14 @@
                 </TextBox.Resources>
             </TextBox>
 
+            <StackPanel Grid.Row="11"  Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <Button  Margin="10,5"  HorizontalContentAlignment="Center" Width="200"  Background="Green" Grid.Row="11" Content="Register" Foreground="White">
+                </Button>
+                <Button  Style="{StaticResource GradientButtonStyle}" HorizontalContentAlignment="Center" Background="Green" Grid.Row="11" Content="Gmail" Foreground="White">
+                </Button>
+            </StackPanel>
 
-            <Button Margin="50,25,50,0" Padding="20"  HorizontalContentAlignment="Center" Background="Green" Grid.Row="11" Content="Register" Foreground="White">
-            </Button>
-
-            <TextBlock VerticalAlignment="Bottom" Grid.Row="12" Padding="10,0" HorizontalAlignment="Left" Text="All Copyrights Reserved By Electro" FontSize="15" Foreground="White" FontWeight="Medium">
+            <TextBlock VerticalAlignment="Bottom"  Grid.Row="12" Padding="10,0" HorizontalAlignment="Center" Text="All Copyrights Reserved By Electro" FontSize="12" Foreground="White" FontWeight="Medium">
             </TextBlock>
 
         </Grid>
