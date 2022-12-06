@@ -21,7 +21,7 @@ namespace Electro.UI.ViewModels
         private string sponsorLinkUrl;
         private readonly WindowState _windowState;
         private string selectedService = "OpenVpn";
-        private bool isComboEnabled = true;
+        //private bool formEnable = true;
 
         ///Commands
         private RelayCommand notifyCommand;
@@ -37,7 +37,7 @@ namespace Electro.UI.ViewModels
         {
             dnsViewModel = new DNSViewModel();
             dnsViewModel.ServiceUpdated += ServiceUpdated;
-            dnsViewModel.IsComboBoxEnabled += IsComboBoxEnabled;
+            //dnsViewModel.FreezeForm += FreezeForm;
             _ = GetSponsorInfo();
         }
 
@@ -74,8 +74,8 @@ namespace Electro.UI.ViewModels
                 Duration = 1000
             };
         }
-        private void IsComboBoxEnabled(bool isComboBoxEnabled)
-            => this.IsComboEnabled = isComboBoxEnabled;
+        //private void FreezeForm(bool freezeForm)
+        //    => this.FormEnable = !freezeForm;
 
         private void ElTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
         private void Discord(object obj) => Process.Start("https://discord.io/elteam");
@@ -226,15 +226,15 @@ namespace Electro.UI.ViewModels
         public IEnumerable<string> ServicesCombo
                 => new string[] { "OpenVpn", "PPTP", "DNS Changer" };
 
-        public bool IsComboEnabled
-        {
-            get => isComboEnabled;
-            set
-            {
-                isComboEnabled = value;
-                OnPropertyChanged();
-            }
-        }
+        //public bool FormEnable
+        //{
+        //    get => formEnable;
+        //    set
+        //    {
+        //        formEnable = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         #endregion
 

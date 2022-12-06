@@ -30,6 +30,9 @@ namespace Electro.UI.Services
                 connectionObserver.ConnectionObserver(false, "● Error");
                 MyLogger.GetInstance().Logger.Error(e.Error);
             }
+
+            //"The VPN connection between your computer and the VPN server could not be completed. The most common cause for this failure is that at least one Internet device (for example, a firewall or a router) between your computer and the VPN server is not configured to allow Generic Routing Encapsulation (GRE) protocol packets. If the problem persists, contact your network administrator or Internet Service Provider."
+
             else if (e.Connected)
             {
                 var routeBatch = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.Route12Bat);
@@ -110,8 +113,6 @@ namespace Electro.UI.Services
                     Entry.Options.RequireMSChap2 = true;
                     Entry.Options.RequireEncryptedPassword = false;
                     PhoneBook.Entries.Add(Entry);
-
-
 
                     dNSController.Dialer.EntryName = MyConnection._ConnectionName;
                     dNSController.Dialer.PhoneBookPath = RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers);

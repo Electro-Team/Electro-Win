@@ -238,7 +238,7 @@ namespace Electro.UI.Services
             {
                 await GetDataFromServerAndSetDNS();
 
-                connectionObserver.ConnectionObserver(true, "● DNS Changed");
+                //connectionObserver.ConnectionObserver(true, "● DNS Changed");
                 return true;
             }
             catch (Exception)
@@ -250,7 +250,7 @@ namespace Electro.UI.Services
         public async void Dispose()
         {
             await UnsetDNS1();
-            connectionObserver.ConnectionObserver(false, "");
+            //connectionObserver.ConnectionObserver(false, "");
         }
         #endregion
 

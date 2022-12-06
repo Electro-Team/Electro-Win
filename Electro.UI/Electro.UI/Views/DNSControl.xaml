@@ -9,7 +9,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Border>
         <Grid>
-            <CheckBox VerticalAlignment="Center"
+            <CheckBox IsEnabled="{Binding IsEnableToChangeService , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      VerticalAlignment="Center"
                       HorizontalAlignment="Center"
                       Margin="0,0,0,300"
                       IsChecked="{Binding IsOpenVpn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -54,7 +55,7 @@
                 </TextBlock.Effect>
             </TextBlock>
 
-            <Button Margin="0,220,0,0" Foreground="Transparent" Height="25" Width="60" HorizontalAlignment="Center" Command="{Binding SetDnsCommand}">
+            <Button IsEnabled="{Binding IsEnableToChangeService , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,220,0,0" Foreground="Transparent" Height="25" Width="60" HorizontalAlignment="Center" Command="{Binding SetDnsCommand}">
                 <TextBlock Text="Set Dns"
                            HorizontalAlignment="Center"
                        Foreground="{Binding SetDnsTextColor}"

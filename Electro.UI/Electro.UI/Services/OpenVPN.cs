@@ -15,7 +15,7 @@ namespace Electro.UI.Services
         //Fields
         private DNSController dNSController = DNSController.GetInstance();
         IConnectionObserver connectionObserver;
-        public string ServiceText { get => "● Connecting to OVPN..."; }
+        public string ServiceText => "● Connecting to OVPN..."; 
 
         //Constructor
         internal OpenVPN(IConnectionObserver connectionObserver)

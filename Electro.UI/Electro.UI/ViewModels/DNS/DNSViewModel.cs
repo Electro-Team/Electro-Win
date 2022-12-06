@@ -26,29 +26,30 @@ namespace Electro.UI.ViewModels.DNS
         private RelayCommand setDnsCommand;
 
         public Action<bool> ServiceUpdated;
-        public Action<bool> IsComboBoxEnabled;
+        //public Action<bool> FreezeForm;
+        private bool isEnableToChangeService = true;
 
         //Constructor
         public DNSViewModel()
         {
             serviceText = "● Not Connected";
             dNSController = DNSController.GetInstance();
-            service = new OpenVPN(this);
+            service = new PPTP(this);
         }
 
         #region Private Methods
 
         //Set DNS and start to connect to service.
-        private async void configureDns(object obj)
+        private async void Connect(object obj)
         {
             if (IsTurnedOn == false)
             {
                 IsGettingData = true;
                 ServiceText = service.ServiceText;
-                IsComboBoxEnabled?.Invoke(false);
+                IsEnableToChangeService = false;
                 bool result = await service.Connect();
                 isDnsChanged = true;
-                
+
                 if (!result)
                 {
                     ElectroMessageBox.Show("Connection can not be established.");
@@ -61,8 +62,9 @@ namespace Electro.UI.ViewModels.DNS
             else
             {
                 service.Dispose();
-                IsTurnedOn = false;
                 ServiceText = "● Not Connected";
+                IsTurnedOn = false;
+                IsEnableToChangeService = true;
                 isDnsChanged = false;
             }
             SetDnsTextColor = isDnsChanged ? Brushes.Green : Brushes.White;
@@ -71,34 +73,16 @@ namespace Electro.UI.ViewModels.DNS
         private async void SetDns(object obj)
         {
             isDnsChanged = !isDnsChanged;
-            
-            ChangeModel("DNS Changer");
             if (isDnsChanged)
             {
-                IsGettingData = true;
-                ServiceText = service.ServiceText;
-                IsComboBoxEnabled?.Invoke(false);
-                bool result = await service.Connect();
+                await dNSController.Connect();
                 isDnsChanged = true;
-                if (!result)
-                {
-                    ElectroMessageBox.Show("Connection can not be established.");
-                    IsGettingData = false;
-                    IsTurnedOn = false;
-                    ServiceText = "● Error";
-                }
             }
             else
             {
-                service.Dispose();
-                IsTurnedOn = false;
-                ServiceText = "● Not Connected";
+                dNSController.Dispose();
                 isDnsChanged = false;
             }
-            if(IsOpenVpn)
-                ChangeModel("OpenVpn");
-            else
-                ChangeModel("PPTP");
             SetDnsTextColor = isDnsChanged ? Brushes.Green : Brushes.White;
         }
         #endregion
@@ -136,14 +120,16 @@ namespace Electro.UI.ViewModels.DNS
                     IsTurnedOn = true;
                     this.ServiceText = serviceText;
                     ServiceUpdated?.Invoke(true);
+                    IsEnableToChangeService = false;
                 }
                 else
                 {
                     IsGettingData = false;
                     IsTurnedOn = false;
                     ServiceUpdated?.Invoke(false);
+                    IsEnableToChangeService = true;
                 }
-                IsComboBoxEnabled?.Invoke(true);
+
             }
             else
                 this.ServiceText = serviceText;
@@ -195,7 +181,7 @@ namespace Electro.UI.ViewModels.DNS
             }
         }
         public RelayCommand ConfigureDnsCommand => configureDnsCommand ??
-                                             (configureDnsCommand = new RelayCommand(configureDns));
+                                             (configureDnsCommand = new RelayCommand(Connect));
 
         public RelayCommand SetDnsCommand => setDnsCommand ??
                                              (setDnsCommand = new RelayCommand(SetDns));
@@ -224,6 +210,18 @@ namespace Electro.UI.ViewModels.DNS
                 OnPropertyChanged();
             }
 
+        }
+
+        public bool IsEnableToChangeService
+        {
+            get => isEnableToChangeService;
+            set
+            {
+                isEnableToChangeService = value;
+                //FreezeForm?.Invoke(value);
+                OnPropertyChanged();
+            }
+            
         }
         #endregion
     }
