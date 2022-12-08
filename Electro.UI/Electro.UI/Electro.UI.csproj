@@ -308,12 +308,14 @@
     <Compile Include="Tools\NotifyIconWrapper.cs" />
     <Compile Include="Tools\RelayCommand.cs" />
     <Compile Include="Tools\SponsorJsonData.cs" />
-    <Compile Include="ViewModels\AuthenticationViewModel.cs" />
+    <Compile Include="ViewModels\Authenticate\AuthenticationViewModel.cs" />
+    <Compile Include="ViewModels\Authenticate\LoginViewModel.cs" />
+    <Compile Include="ViewModels\Authenticate\SignupViewModel.cs" />
     <Compile Include="ViewModels\DNS\DNSViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="Views\AuthenticationView.xaml.cs">
-      <DependentUpon>AuthenticationView.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Views\Authenticate\AuthenticationView.xaml.cs" />
+    <Compile Include="Views\Authenticate\LoginView.xaml.cs" />
+    <Compile Include="Views\Authenticate\SignupView.xaml.cs" />
     <Compile Include="Views\DNSControl.xaml.cs">
       <DependentUpon>DNSControl.xaml</DependentUpon>
     </Compile>
@@ -355,9 +357,17 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\AuthenticationView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Views\Authenticate\AuthenticationView.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Authenticate\LoginView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Authenticate\SignupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\DNSControl.xaml">
       <SubType>Designer</SubType>

@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Electro.UI.Views
+namespace Electro.UI.Views.Authenticate
 {
     /// <summary>
-    /// Interaction logic for AuthenticationView.xaml
+    /// Interaction logic for SignUpView.xaml
     /// </summary>
-    public partial class AuthenticationView : Window
+    public partial class SignupView : UserControl
     {
-        public AuthenticationView()
+        public SignupView()
         {
             InitializeComponent();
         }

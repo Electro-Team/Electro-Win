@@ -27,6 +27,7 @@ using NLog;
 using Version = Electro.UI.Tools.Version;
 using System.IO;
 using Electro.UI.Tools;
+using Electro.UI.ViewModels.Authenticate;
 
 namespace Electro.UI
 {
