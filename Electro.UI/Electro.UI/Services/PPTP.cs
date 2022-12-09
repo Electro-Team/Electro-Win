@@ -50,22 +50,25 @@ namespace Electro.UI.Services
 
             else if (e.Connected)
             {
-                var tempDirectory = DirectoryHelperFunctions.GetTemporaryDirectory();
-                var routeBatch = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.Route12Bat);
-                await DirectoryHelperFunctions.WriteAsync(routeBatch, tempDirectory + "//route12.bat");
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.CreateNoWindow = true;
-                psi.UseShellExecute = false;
-                psi.FileName = @"cmd.exe";
-                psi.Verb = "runas";
+                Task.Factory.StartNew(async () =>
+                {
+                    var tempDirectory = DirectoryHelperFunctions.GetTemporaryDirectory();
+                    var routeBatch = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.Route12Bat);
+                    await DirectoryHelperFunctions.WriteAsync(routeBatch, tempDirectory + "//route12.bat");
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.CreateNoWindow = true;
+                    psi.UseShellExecute = false;
+                    psi.FileName = @"cmd.exe";
+                    psi.Verb = "runas";
 
-                psi.Arguments = "/C \"" + tempDirectory + "//route12.bat";
+                    psi.Arguments = "/C \"" + tempDirectory + "//route12.bat";
 
-                Process proc = new Process();
-                proc.StartInfo = psi;
-                proc.Start();
-                string deviceId = new DeviceIdBuilder().AddMacAddress().AddUserName().ToString();
-                await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.HardwareID + deviceId);
+                    Process proc = new Process();
+                    proc.StartInfo = psi;
+                    proc.Start();
+                    string deviceId = new DeviceIdBuilder().AddMacAddress().AddUserName().ToString();
+                    await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.HardwareID + deviceId);
+                });
                 connectionObserver.ConnectionObserver(true, "● Connected to PPTP");
             }
         }
@@ -123,7 +126,8 @@ namespace Electro.UI.Services
             try
             {
                 await dnsService?.GetDataFromServerAndSetDNS();
-
+                //make sure that there is no connection enabled.
+                await StopProcess();
                 var ServerIp = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.PptpIp);
                 using (RasPhoneBook PhoneBook = new RasPhoneBook())
                 {
@@ -175,7 +179,7 @@ namespace Electro.UI.Services
         {
             await dnsService.UnsetDNS();
             await StopProcess();
-            connectionObserver?.ConnectionObserver(false, "");
+            connectionObserver?.ConnectionObserver(false, "● Not Connected");
         }
         #endregion
     }

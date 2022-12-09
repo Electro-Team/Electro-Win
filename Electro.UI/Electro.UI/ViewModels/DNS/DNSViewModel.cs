@@ -196,6 +196,7 @@ namespace Electro.UI.ViewModels.DNS
                 {
                     IsGettingData = false;
                     IsTurnedOn = false;
+                    this.ServiceText = serviceText;
                     ServiceUpdated?.Invoke(false);
                     IsEnableToChangeService = true;
                 }

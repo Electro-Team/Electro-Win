@@ -52,11 +52,15 @@ namespace Electro.UI.Services
                     }
                     if (output.Contains("Initialization Sequence Completed"))
                     {
-                        //Create Batch File.
-                        string pathToRouteBatch = await CreateBatchAndGetPath();
+                        // this may lead to error duo to connection error and does not show the user that the vpn connection succeed.
+                        Task.Factory.StartNew(async() =>
+                        {
+                            //Create Batch File.
+                            string pathToRouteBatch = await CreateBatchAndGetPath();
 
-                        //Run CMD.
-                        await RunCMDCode(pathToRouteBatch);
+                            //Run CMD.
+                            await RunCMDCode(pathToRouteBatch);
+                        });
                         connectionObserver?.ConnectionObserver(true, "● Connected to OVPN");
                     }
                     else if (output.Contains("fatal error"))
