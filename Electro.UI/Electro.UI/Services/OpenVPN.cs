@@ -7,31 +7,49 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Electro.UI.Interfaces;
 
 namespace Electro.UI.Services
 {
-    internal class OpenVPN : IService
+    public class OpenVPN : IService
     {
         //Fields
-        private DNSController dNSController = DNSController.GetInstance();
+        private IDNSService dnsService;
         IConnectionObserver connectionObserver;
         public string ServiceText => "● Connecting to OVPN..."; 
 
         //Constructor
-        internal OpenVPN(IConnectionObserver connectionObserver)
-            => this.connectionObserver = connectionObserver;
+        public OpenVPN(IConnectionObserver connectionObserver,
+            IDNSService dnsService)
+        {
+            this.connectionObserver = connectionObserver;
+            this.dnsService = dnsService;
+        }
 
         #region Private Methods
         private async void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
             try
             {
+                if (!connectionObserver.IsGettingData)
+                {
+                    await StopProcess();
+                    return;
+                }
                 string output = outLine.Data;
                 MyLogger.GetInstance().Logger.Info(output);
 
                 if (output != null)
                 {
-                    //connectionObserver.ConnectionObserver(null, output);
+                    for (int i = 0; i < OpenVPNConnectionDescription.Description.Count; i++)
+                    {
+                        var descript = OpenVPNConnectionDescription.Description.ElementAt(i);
+                        if (output.Contains(descript.Key))
+                        {
+                            connectionObserver.ConnectionObserver(null, descript.Value + 
+                                                                        $" {i}/{OpenVPNConnectionDescription.Description.Count}");
+                        }
+                    }
                     if (output.Contains("Initialization Sequence Completed"))
                     {
                         //Create Batch File.
@@ -40,6 +58,11 @@ namespace Electro.UI.Services
                         //Run CMD.
                         await RunCMDCode(pathToRouteBatch);
                         connectionObserver?.ConnectionObserver(true, "● Connected to OVPN");
+                    }
+                    else if (output.Contains("fatal error"))
+                    {
+                        await StopProcess();
+                        connectionObserver?.ConnectionObserver(false, "● Fatal Error!");
                     }
                 }
             }
@@ -76,7 +99,7 @@ namespace Electro.UI.Services
             await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.HardwareID + deviceId);
         }
 
-        private async Task<ProcessStartInfo> GetOvnInfo()
+        private async Task<ProcessStartInfo> GetOvpnInfo()
         {
             string newTempDir = DirectoryHelperFunctions.GetTemporaryDirectory();
             string pathToConfig = newTempDir + "//profile.ovpn";
@@ -99,13 +122,15 @@ namespace Electro.UI.Services
             return openVpnStartInfo;
         }
 
-        private void StopProcess()
+        private async Task StopProcess()
         {
             var openVpnProcess = Process.GetProcesses().
                 Where(pr => pr.ProcessName == "openvpn");
 
             foreach (var process in openVpnProcess)
                 process.Kill();
+
+            await dnsService?.GetDataFromServerAndSetDNS();
         }
 
 
@@ -117,10 +142,10 @@ namespace Electro.UI.Services
             try
             {
                 ///Change DNS
-                await dNSController?.GetDataFromServerAndSetDNS();
+                await dnsService?.GetDataFromServerAndSetDNS();
 
                 ///Start OpenVPN EXE.
-                ProcessStartInfo openVpnStartInfo = await GetOvnInfo();
+                ProcessStartInfo openVpnStartInfo = await GetOvpnInfo();
                 Process openVpn = new Process
                 {
                     StartInfo = openVpnStartInfo,
@@ -138,15 +163,12 @@ namespace Electro.UI.Services
                 MyLogger.GetInstance().Logger.Error(e);
                 return false;
             }
-            finally
-            {
-            }
         }
 
         public async void Dispose()
         {
-            await dNSController.UnsetDNS1();
-            StopProcess();
+            await dnsService.UnsetDNS();
+            await StopProcess();
             connectionObserver?.ConnectionObserver(false, "");
         }
         #endregion

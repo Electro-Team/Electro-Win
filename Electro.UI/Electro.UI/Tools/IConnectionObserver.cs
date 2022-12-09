@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Electro.UI.Tools
 {
-    interface IConnectionObserver
+    public interface IConnectionObserver
     {
+        bool IsGettingData { get; set; }
+
         void ConnectionObserver(bool? SuccessfullyCoonected, string ServiceText);
     }
 }

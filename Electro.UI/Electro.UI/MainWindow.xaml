@@ -15,10 +15,7 @@
         Width="250"
         Style="{StaticResource BaseWindowStyle}"
         ContextMenu="{x:Null}">
-    <Window.Resources>
-        <viewModels:MainViewModel x:Key="MainViewModel"/>
-    </Window.Resources>
-    <Grid DataContext="{StaticResource MainViewModel}">
+    <Grid>
         <controls:HeaderControl  VerticalAlignment="Top" HorizontalAlignment="Stretch"
                                  Panel.ZIndex="10"
                                  />

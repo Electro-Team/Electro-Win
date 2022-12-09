@@ -36,34 +36,31 @@ namespace Electro.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        //Fields
-        private static string version = "1.0.0.0";
-
         //Constructor
         public MainWindow()
         {
-            _ = new AuthenticationViewModel();
-
-            //AutoUpdater.Start("http://elcdn.ir/dl/pc/update.xml");
-            //AutoUpdater.ShowSkipButton = false;
-            //AutoUpdater.Synchronous = true;
-            //AutoUpdater.Mandatory = true;
-            //AutoUpdater.UpdateMode = Mode.ForcedDownload;
-            try
-            {
-                string path = AppContext.BaseDirectory + @"openVPN\Batch.txt";
-                if (!File.Exists(path))
-                {
-                    InstallTapAdapter();
-                    File.Create(path);
-                }
-            }
-            catch (Exception ex)
-            {
-                MyLogger.GetInstance().Logger.Error(ex);
-            }
             InitializeComponent();
-            Loaded += MainWindow_Loaded;
+            ////_ = new AuthenticationViewModel();
+
+            ////AutoUpdater.Start("http://elcdn.ir/dl/pc/update.xml");
+            ////AutoUpdater.ShowSkipButton = false;
+            ////AutoUpdater.Synchronous = true;
+            ////AutoUpdater.Mandatory = true;
+            ////AutoUpdater.UpdateMode = Mode.ForcedDownload;
+            //try
+            //{
+            //    string path = AppContext.BaseDirectory + @"openVPN\Batch.txt";
+            //    if (!File.Exists(path))
+            //    {
+            //        InstallTapAdapter();
+            //        File.Create(path);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MyLogger.GetInstance().Logger.Error(ex);
+            //}
+            //Loaded += MainWindow_Loaded;
         }
         #region Private Methods
 

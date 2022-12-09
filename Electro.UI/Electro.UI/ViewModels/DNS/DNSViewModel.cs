@@ -3,6 +3,8 @@ using Electro.UI.Tools;
 using Electro.UI.Windows;
 using Electro.UI.Services;
 using System.Windows.Media;
+using Electro.UI.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Electro.UI.ViewModels.DNS
 {
@@ -14,14 +16,11 @@ namespace Electro.UI.ViewModels.DNS
         private bool isGettingData;
         private bool isTurnedOn;
         private bool isOpenVpn;
-        private bool isDnsChanged = false;
         private bool canChangeServiceType = true;
 
         private IService service;
-
-        private DNSController dNSController;
-        // Anti-pattern must remove.
-        private Brush setDnsTextColor = Brushes.White;
+        private IDNSService dnsService;
+        private IServiceProvider serviceProvider;
 
         ///Commands
         private RelayCommand configureDnsCommand;
@@ -30,118 +29,6 @@ namespace Electro.UI.ViewModels.DNS
         public Action<bool> ServiceUpdated;
         //public Action<bool> FreezeForm;
         private bool isEnableToChangeService = true;
-
-        //Constructor
-        public DNSViewModel()
-        {
-            serviceText = "● Not Connected";
-            dNSController = DNSController.GetInstance();
-            service = new PPTP(this);
-        }
-
-        #region Private Methods
-
-        //Set DNS and start to connect to service.
-        private async void Connect(object obj)
-        {
-            if (IsTurnedOn == false)
-            {
-                IsOpenVpn = IsOpenVpn;
-                IsGettingData = true;
-                ServiceText = service.ServiceText;
-                IsEnableToChangeService = false;
-                bool result = await service.Connect();
-                isDnsChanged = true;
-
-                if (!result)
-                {
-                    ElectroMessageBox.Show("Connection can not be established.");
-                    IsGettingData = false;
-                    IsTurnedOn = false;
-                    ServiceText = "● Error";
-                }
-
-            }
-            else
-            {
-                service.Dispose();
-                ServiceText = "● Not Connected";
-                IsTurnedOn = false;
-                IsEnableToChangeService = true;
-                isDnsChanged = false;
-            }
-            SetDnsTextColor = isDnsChanged ? Brushes.Green : Brushes.White;
-        }
-
-        private async void SetDns(object obj)
-        {
-            isDnsChanged = !isDnsChanged;
-            if (isDnsChanged)
-            {
-                await dNSController.Connect();
-                isDnsChanged = true;
-               
-            }
-            else
-            {
-                dNSController.Dispose();
-                isDnsChanged = false;
-            }
-            SetDnsTextColor = isDnsChanged ? Brushes.Green : Brushes.White;
-        }
-        #endregion
-
-        #region Public Methods
-        public static void UnsetDnsEvent()
-           => DNSController.UnsetDnsEvent();
-
-        public void ChangeModel(string service)
-        {
-            switch (service)
-            {
-                case "OpenVpn":
-                    this.service = new OpenVPN(this);
-                    break;
-                case "PPTP":
-                    this.service = new PPTP(this);
-                    break;
-                case "DNS Changer":
-                    this.service = DNSController.GetInstance(this);
-                    break;
-                default:
-                    this.service = new OpenVPN(this);
-                    break;
-            }
-        }
-
-        public void ConnectionObserver(bool? SuccessfullyCoonected, string serviceText)
-        {
-            if (SuccessfullyCoonected != null)
-            {
-                if (SuccessfullyCoonected ?? false)
-                {
-                    IsGettingData = false;
-                    IsTurnedOn = true;
-                    this.ServiceText = serviceText;
-                    ServiceUpdated?.Invoke(true);
-                    IsEnableToChangeService = false;
-                }
-                else
-                {
-                    IsGettingData = false;
-                    IsTurnedOn = false;
-                    ServiceUpdated?.Invoke(false);
-                    IsEnableToChangeService = true;
-                }
-
-            }
-            else
-            {
-                this.ServiceText = serviceText;
-                IsEnableToChangeService = true;
-            }
-        }
-        #endregion
 
         #region Properties(Getter, Setter)
 
@@ -188,7 +75,7 @@ namespace Electro.UI.ViewModels.DNS
             }
         }
         public RelayCommand ConfigureDnsCommand => configureDnsCommand ??
-                                             (configureDnsCommand = new RelayCommand(Connect));
+                                                   (configureDnsCommand = new RelayCommand(Connect));
 
         public RelayCommand SetDnsCommand => setDnsCommand ??
                                              (setDnsCommand = new RelayCommand(SetDns));
@@ -207,18 +94,6 @@ namespace Electro.UI.ViewModels.DNS
                 OnPropertyChanged();
             }
         }
-
-        public Brush SetDnsTextColor
-        {
-            get => setDnsTextColor;
-            set
-            {
-                setDnsTextColor = value;
-                OnPropertyChanged();
-            }
-
-        }
-
         public bool IsEnableToChangeService
         {
             get => isEnableToChangeService;
@@ -228,7 +103,108 @@ namespace Electro.UI.ViewModels.DNS
                 //FreezeForm?.Invoke(value);
                 OnPropertyChanged();
             }
-            
+
+        }
+        #endregion
+
+        //Constructor
+        public DNSViewModel(IDNSService dnsService,
+            IServiceProvider serviceProvider)
+        {
+            serviceText = "● Not Connected";
+            this.dnsService = dnsService;
+            this.serviceProvider = serviceProvider;
+        }
+
+        #region Private Methods
+
+        //Set DNS and start to connect to service.
+        private async void Connect(object obj)
+        {
+            if (IsGettingData == true && IsTurnedOn == false)
+            {
+                service.Dispose();
+                ServiceText = "● Not Connected";
+                IsTurnedOn = false;
+                IsGettingData = false;
+                IsEnableToChangeService = true;
+            }
+            else if (IsTurnedOn == false)
+            {
+                IsOpenVpn = IsOpenVpn;
+                IsGettingData = true;
+                ServiceText = service.ServiceText;
+                IsEnableToChangeService = false;
+                bool result = await service.Connect();
+
+                if (!result)
+                {
+                    IsGettingData = false;
+                    IsTurnedOn = false;
+                    ServiceText = "● Error";
+                }
+
+            }
+            else
+            {
+                service.Dispose();
+                ServiceText = "● Not Connected";
+                IsTurnedOn = false;
+                IsEnableToChangeService = true;
+            }
+        }
+
+        private async void SetDns(object obj)
+        {
+            await dnsService.Connect();
+        }
+        #endregion
+
+        #region Public Methods
+        public static void UnsetDnsEvent()
+           => DNSService.UnsetDnsEvent();
+
+        public void ChangeModel(string service)
+        {
+            switch (service)
+            {
+                case "OpenVpn":
+                    this.service = serviceProvider.GetRequiredService<OpenVPN>();
+                    break;
+                case "PPTP":
+                    this.service = serviceProvider.GetRequiredService<PPTP>();
+                    break;
+                default:
+                    this.service = serviceProvider.GetRequiredService<PPTP>();
+                    break;
+            }
+        }
+
+        public void ConnectionObserver(bool? SuccessfullyCoonected, string serviceText)
+        {
+            if (SuccessfullyCoonected != null)
+            {
+                if (SuccessfullyCoonected ?? false)
+                {
+                    IsGettingData = false;
+                    IsTurnedOn = true;
+                    this.ServiceText = serviceText;
+                    ServiceUpdated?.Invoke(true);
+                    IsEnableToChangeService = false;
+                }
+                else
+                {
+                    IsGettingData = false;
+                    IsTurnedOn = false;
+                    ServiceUpdated?.Invoke(false);
+                    IsEnableToChangeService = true;
+                }
+
+            }
+            else
+            {
+                this.ServiceText = serviceText;
+            }
         }
         #endregion
     }

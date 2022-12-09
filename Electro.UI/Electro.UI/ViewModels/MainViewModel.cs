@@ -31,85 +31,6 @@ namespace Electro.UI.ViewModels
         private RelayCommand instagramCommand;
         private RelayCommand donateCommand;
         private RelayCommand sponsorCommand;
-
-        //Constructor
-        public MainViewModel()
-        {
-            dnsViewModel = new DNSViewModel();
-            dnsViewModel.ServiceUpdated += ServiceUpdated;
-            //dnsViewModel.FreezeForm += FreezeForm;
-            _ = GetSponsorInfo();
-        }
-
-        #region Private Methods
-
-        #region Command Handler
-        private void Notify(object obj)
-        {
-            if (DnsViewModel.IsTurnedOn)
-            {
-                NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
-                {
-                    Title = "Electro",
-                    Text = "Electro is still running!",
-                    Duration = 1000
-                };
-            }
-        }
-        private void ServiceUpdated(bool isTurnedOn)
-        {
-            string description;
-            if (isTurnedOn)
-            {
-                description = "Electro service turned on.";
-            }
-            else
-            {
-                description = "Electro service turned off.";
-            }
-            NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
-            {
-                Title = "Electro",
-                Text = description,
-                Duration = 1000
-            };
-        }
-        //private void FreezeForm(bool freezeForm)
-        //    => this.FormEnable = !freezeForm;
-
-        private void ElTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
-        private void Discord(object obj) => Process.Start("https://discord.io/elteam");
-        private void Telegram(object obj) => Process.Start("https://t.me/elteam_IR");
-        private void Instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
-        private void Donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
-        private void Sponsor(object obj) => Process.Start(sponsorLinkUrl);
-        #endregion
-
-        private async Task GetSponsorInfo()
-        {
-            try
-            {
-                var data = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.SettingsJson2);
-                if (data != null)
-                {
-                    var sponsorJsonData = JsonConvert.DeserializeObject<SponsorJsonData>(data);
-                    SponsorImageUrl = sponsorJsonData.adPictureUrl;
-                    sponsorLinkUrl = sponsorJsonData.adLinkUrl;
-                }
-
-            }
-            catch (Exception e)
-            {
-                //MessageBox.Show(e.Message);
-                //logger must add
-            }
-        }
-        #endregion
-
-        #region Public Methods
-
-        #endregion
-
         #region Properties(Getter, Setter)
 
         #region Commands 
@@ -237,6 +158,82 @@ namespace Electro.UI.ViewModels
         //}
 
         #endregion
+        //Constructor
+        public MainViewModel(DNSViewModel dnsViewModel)
+        {
+            this.dnsViewModel = dnsViewModel;
+            dnsViewModel.ServiceUpdated += ServiceUpdated;
+            //dnsViewModel.FreezeForm += FreezeForm;
+            _ = GetSponsorInfo();
+        }
 
+        #region Private Methods
+
+        #region Command Handler
+        private void Notify(object obj)
+        {
+            if (DnsViewModel.IsTurnedOn)
+            {
+                NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
+                {
+                    Title = "Electro",
+                    Text = "Electro is still running!",
+                    Duration = 1000
+                };
+            }
+        }
+        private void ServiceUpdated(bool isTurnedOn)
+        {
+            string description;
+            if (isTurnedOn)
+            {
+                description = "Electro service turned on.";
+            }
+            else
+            {
+                description = "Electro service turned off.";
+            }
+            NotifyRequest = new NotifyIconWrapper.NotifyRequestRecord
+            {
+                Title = "Electro",
+                Text = description,
+                Duration = 1000
+            };
+        }
+        //private void FreezeForm(bool freezeForm)
+        //    => this.FormEnable = !freezeForm;
+
+        private void ElTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
+        private void Discord(object obj) => Process.Start("https://discord.io/elteam");
+        private void Telegram(object obj) => Process.Start("https://t.me/elteam_IR");
+        private void Instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
+        private void Donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
+        private void Sponsor(object obj) => Process.Start(sponsorLinkUrl);
+        #endregion
+
+        private async Task GetSponsorInfo()
+        {
+            try
+            {
+                var data = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.SettingsJson2);
+                if (data != null)
+                {
+                    var sponsorJsonData = JsonConvert.DeserializeObject<SponsorJsonData>(data);
+                    SponsorImageUrl = sponsorJsonData.adPictureUrl;
+                    sponsorLinkUrl = sponsorJsonData.adLinkUrl;
+                }
+
+            }
+            catch (Exception e)
+            {
+                //MessageBox.Show(e.Message);
+                //logger must add
+            }
+        }
+        #endregion
+
+        #region Public Methods
+
+        #endregion
     }
 }

@@ -11,60 +11,37 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using Electro.UI.Interfaces;
 
 namespace Electro.UI.Services
 {
-    internal sealed class DNSController : IService
+    public class DNSService : IDNSService
     {
         //Fields
-        private static DNSController _instance;
-        private static IConnectionObserver connectionObserver;
-        public string ServiceText => "● Changing DNS...";
-
-        private static readonly string PrimaryDNS = "185.231.182.126";
-        private static readonly string SecondaryDNS = "37.152.182.112";
+        private static readonly string PrimaryDNS = "78.157.42.100";
+        private static readonly string SecondaryDNS = "78.157.42.101";
         private static string[] dns = { PrimaryDNS, SecondaryDNS };
-        private static string[] googleDns = { "8.8.8.8", "8.8.4.4" };
         private static string[] currentDns;
 
-        private RasDialer _dialer = new RasDialer();
-        private RasHandle _handle;
+        #region Properties(Getter, Setter)
+
+        #endregion
 
         //Constructor
-        private DNSController() => Load();
-        public static DNSController GetInstance(IConnectionObserver connectionObserver = null)
-        {
-            if (DNSController.connectionObserver == null && connectionObserver != null)
-                DNSController.connectionObserver = connectionObserver;
-
-            if (_instance == null)
-                _instance = new DNSController();
-
-            return _instance;
-        }
-
+        public DNSService() => Load();
         #region Private Methods
         private async void Load()
         {
             try
             {
-                CheckDNS();
+                await CheckDNS();
             }
             catch (Exception e)
             {
-                //TODO: MainWindow LoadedEvent and this method runs together which shows 2 messageBoxes at the same time if there is no connection. a better way must be provided to solve this issue.
-                //ElectroMessageBox.Show("Could not connect to server!", "Error");
-                //Application.Current.Shutdown();
-                try
-                {
-                    CheckDNS();
-                }
-                catch (Exception)
-                {
-                }
+                MyLogger.GetInstance().Logger.Error(e);
             }
         }
-        private async void CheckDNS()
+        private async Task CheckDNS()
         {
             var data = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.SettingsJson);
             if (data == null)
@@ -95,20 +72,27 @@ namespace Electro.UI.Services
         {
             NetworkInterface networkInterface = await GetActiveEthernetOrWifiNetworkInterface();
             List<string> addresses = new List<string>();
-            IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
-            IPAddressCollection dnsAddresses = ipProperties.DnsAddresses;
-            IPAddressCollection dhcpAddressCollection = ipProperties.DhcpServerAddresses;
-
-            foreach (var dns in dnsAddresses)
+            if (networkInterface == null)
             {
-                if (dhcpAddressCollection.Any(s => Equals(s, dns)))
-                {
-                    return null;
-                }
+                ElectroMessageBox.Show("Turn Off other VPN");
             }
-            foreach (IPAddress dnsAddress in dnsAddresses)
+            else
             {
-                addresses.Add(dnsAddress.ToString());
+                IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
+                IPAddressCollection dnsAddresses = ipProperties.DnsAddresses;
+                IPAddressCollection dhcpAddressCollection = ipProperties.DhcpServerAddresses;
+
+                foreach (var dns in dnsAddresses)
+                {
+                    if (dhcpAddressCollection.Any(s => Equals(s, dns)))
+                    {
+                        return null;
+                    }
+                }
+                foreach (IPAddress dnsAddress in dnsAddresses)
+                {
+                    addresses.Add(dnsAddress.ToString());
+                }
             }
             return addresses;
         }
@@ -123,47 +107,7 @@ namespace Electro.UI.Services
                 return Nic;
             });
         }
-        #endregion
-
-        #region public Methods
-        public async Task SetDNS(string[] DnsString)
-        {
-            var CurrentInterface = await GetActiveEthernetOrWifiNetworkInterface();
-            if (CurrentInterface == null) return;
-
-            ManagementClass objMC = new ManagementClass("Win32_NetworkAdapterConfiguration");
-            ManagementObjectCollection objMOC = objMC.GetInstances();
-
-            foreach (ManagementObject objMO in objMOC)
-            {
-                if ((bool)objMO["IPEnabled"])
-                {
-                    if (objMO["Caption"].ToString().Contains(CurrentInterface.Description))
-                    {
-                        ManagementBaseObject objdns = objMO.GetMethodParameters("SetDNSServerSearchOrder");
-                        if (objdns != null)
-                        {
-                            ElectroMessageBox.Show($"{objdns["DNSServerSearchOrder"]}");
-                            objdns["DNSServerSearchOrder"] = DnsString;
-                            ManagementBaseObject setDNS = objMO.InvokeMethod("SetDNSServerSearchOrder", objdns, null);
-                        }
-                    }
-                }
-            }
-        }
-
-        public async Task GetDataFromServerAndSetDNS()
-        {
-            var data = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.SettingsJson);
-            if (data == null)
-            {
-                data = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.SettingsJson);
-            }
-            var objects = JsonConvert.DeserializeObject<Rootobject>(data);
-            await SetDNS1(objects?.dns.electro);
-        }
-
-        public async Task SetDNS1(string[] Dns)
+        private async Task SetDNS(string[] Dns)
         {
             NetworkInterface networkInterface = await GetActiveEthernetOrWifiNetworkInterface();
             if (networkInterface == null)
@@ -181,10 +125,25 @@ namespace Electro.UI.Services
                 }
             }
         }
-        public async Task UnsetDNS1()
+        #endregion
+
+        #region public Methods
+        public async Task GetDataFromServerAndSetDNS()
+        {
+            var data = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.SettingsJson);
+            if (data == null)
+            {
+                data = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.SettingsJson);
+            }
+            var objects = JsonConvert.DeserializeObject<Rootobject>(data);
+            dns = objects?.dns.electro;
+            await SetDNS(objects?.dns.electro);
+        }
+
+        public async Task UnsetDNS()
         {
             if (currentDns == null)
-                currentDns = googleDns;
+                currentDns = dns;
             NetworkInterface networkInterface = await GetActiveEthernetOrWifiNetworkInterface();
             if (networkInterface == null)
                 return;
@@ -195,7 +154,7 @@ namespace Electro.UI.Services
                     ManagementBaseObject methodParameters = instance.GetMethodParameters("SetDNSServerSearchOrder");
                     if (methodParameters != null)
                     {
-                        methodParameters["DNSServerSearchOrder"] = currentDns;
+                        methodParameters["DNSServerSearchOrder"] = dns;
                         instance.InvokeMethod("SetDNSServerSearchOrder", methodParameters, (InvokeMethodOptions)null);
                     }
                 }
@@ -205,7 +164,7 @@ namespace Electro.UI.Services
         public static void UnsetDnsEvent()
         {
             if (currentDns == null)
-                currentDns = googleDns;
+                currentDns = dns;
             var networkInterface = NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(
                 a => a.OperationalStatus == OperationalStatus.Up &&
                      (a.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || a.NetworkInterfaceType == NetworkInterfaceType.Ethernet) &&
@@ -219,7 +178,7 @@ namespace Electro.UI.Services
                     ManagementBaseObject methodParameters = instance.GetMethodParameters("SetDNSServerSearchOrder");
                     if (methodParameters != null)
                     {
-                        methodParameters["DNSServerSearchOrder"] = currentDns;
+                        methodParameters["DNSServerSearchOrder"] = dns;
                         instance.InvokeMethod("SetDNSServerSearchOrder", methodParameters, (InvokeMethodOptions)null);
                     }
                 }
@@ -239,34 +198,19 @@ namespace Electro.UI.Services
                 await GetDataFromServerAndSetDNS();
 
                 ElectroMessageBox.Show("Electro DNS set.");
-                //connectionObserver.ConnectionObserver(true, "● DNS Changed");
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                MyLogger.GetInstance().Logger.Error(e);
                 return false;
             }
         }
 
         public async void Dispose()
         {
-            await UnsetDNS1();
+            await UnsetDNS();
             ElectroMessageBox.Show("Electro DNS unset.");
-
-           // connectionObserver.ConnectionObserver(false, "");
-        }
-        #endregion
-
-        #region Properties(Getter, Setter)
-        public RasDialer Dialer
-        {
-            get => _dialer;
-            set => _dialer = value;
-        }
-        public RasHandle Handle
-        {
-            get => _handle;
-            set => _handle = value;
         }
         #endregion
     }
