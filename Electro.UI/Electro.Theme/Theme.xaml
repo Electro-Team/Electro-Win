@@ -19,5 +19,7 @@
         <ResourceDictionary Source="Style/CheckBoxStyles/BaseCheckBoxStyle.xaml"/>
         <ResourceDictionary Source="Style/CheckBoxStyles/SlidingCheckBoxStyle.xaml"/>
         <ResourceDictionary Source="Style/CheckBoxStyles/LoginCheckBoxStyle.xaml"/>
+        <ResourceDictionary Source="Style/CheckBoxStyles/ProtocolsCheckBoxStyle.xaml"/>
+        <ResourceDictionary Source="Style/CustomStyle/LeftSlidingControlStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

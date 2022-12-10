@@ -35,7 +35,7 @@ namespace Electro.UI
             Startup += App_Startup;
         }
 
-        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e) 
         {
             MyLogger.GetInstance().Logger.Error(e.Exception);
             //If we have a main window continue working unless let the exception go 
@@ -92,6 +92,7 @@ namespace Electro.UI
             serviceCollection.AddSingleton<IConnectionObserver>(s => s.GetRequiredService<DNSViewModel>());
             serviceCollection.AddSingleton<PPTP>();
             serviceCollection.AddSingleton<OpenVPN>();
+            serviceCollection.AddSingleton<Socks5>();
 
             serviceCollection.AddScoped<MainViewModel>();
             serviceCollection.AddScoped<MainWindow>();

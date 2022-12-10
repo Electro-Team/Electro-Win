@@ -32,7 +32,6 @@ namespace Electro.UI.Services
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }

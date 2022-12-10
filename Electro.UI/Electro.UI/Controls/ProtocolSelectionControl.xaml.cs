@@ -20,6 +20,33 @@ namespace Electro.UI.Controls
     /// </summary>
     public partial class ProtocolSelectionControl : UserControl
     {
+        public static readonly DependencyProperty PPTPCommandProperty = DependencyProperty.Register(
+            "PPTPCommand", typeof(ICommand), typeof(ProtocolSelectionControl), new PropertyMetadata(default(ICommand)));
+
+        public ICommand PPTPCommand
+        {
+            get { return (ICommand)GetValue(PPTPCommandProperty); }
+            set { SetValue(PPTPCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty OpenVPNCommandProperty = DependencyProperty.Register(
+            "OpenVPNCommand", typeof(ICommand), typeof(ProtocolSelectionControl), new PropertyMetadata(default(ICommand)));
+
+        public ICommand OpenVPNCommand
+        {
+            get { return (ICommand)GetValue(OpenVPNCommandProperty); }
+            set { SetValue(OpenVPNCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty SoftEtherCommandProperty = DependencyProperty.Register(
+            "SoftEtherCommand", typeof(ICommand), typeof(ProtocolSelectionControl), new PropertyMetadata(default(ICommand)));
+
+        public ICommand SoftEtherCommand
+        {
+            get { return (ICommand)GetValue(SoftEtherCommandProperty); }
+            set { SetValue(SoftEtherCommandProperty, value); }
+        }
+
         public ProtocolSelectionControl()
         {
             InitializeComponent();

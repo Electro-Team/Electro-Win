@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Electro.Theme;component/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <converters:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
+            <converters:ProtocolTypeToIconConverter x:Key="ProtocolTypeToIconConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

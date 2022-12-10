@@ -49,5 +49,26 @@ namespace Electro.UI.Converters
         { }
     }
 
+    public class ProtocolTypeToIconConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch ((string)value)
+            {
+                case "PPTP":
+                    return Application.Current.Resources["PPTPIcon"];
+                case "OpenVPN":
+                    return Application.Current.Resources["OpenVPNIcon"];
+                case "SoftEther":
+                    return Application.Current.Resources["SoftEtherIcon"];
+            }
 
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

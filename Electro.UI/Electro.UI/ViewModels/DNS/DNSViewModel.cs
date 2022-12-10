@@ -12,10 +12,11 @@ namespace Electro.UI.ViewModels.DNS
     {
         //Fields
         private string serviceText;
+        private string protocolType;
         private bool configObtained;
         private bool isGettingData;
         private bool isTurnedOn;
-        private bool isOpenVpn;
+        private bool isSliderOpen;
         private bool canChangeServiceType = true;
 
         private IService service;
@@ -25,6 +26,7 @@ namespace Electro.UI.ViewModels.DNS
         ///Commands
         private RelayCommand configureDnsCommand;
         private RelayCommand setDnsCommand;
+        private RelayCommand changeProtocolCommand;
 
         public Action<bool> ServiceUpdated;
         //public Action<bool> FreezeForm;
@@ -42,6 +44,24 @@ namespace Electro.UI.ViewModels.DNS
             }
         }
 
+        public bool IsSliderOpen
+        {
+            get => isSliderOpen;
+            set
+            {
+                isSliderOpen = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ProtocolType
+        {
+            get => protocolType;
+            set
+            {
+                protocolType = value;
+                OnPropertyChanged();
+            }
+        }
         public bool IsGettingData
         {
             get => isGettingData;
@@ -76,24 +96,10 @@ namespace Electro.UI.ViewModels.DNS
         }
         public RelayCommand ConfigureDnsCommand => configureDnsCommand ??
                                                    (configureDnsCommand = new RelayCommand(Connect));
-
         public RelayCommand SetDnsCommand => setDnsCommand ??
                                              (setDnsCommand = new RelayCommand(SetDns));
-
-        public bool IsOpenVpn
-        {
-            get => isOpenVpn;
-            set
-            {
-                if (value)
-                    ChangeModel("OpenVpn");
-                else
-                    ChangeModel("PPTP");
-
-                isOpenVpn = value;
-                OnPropertyChanged();
-            }
-        }
+        public RelayCommand ChangeProtocolCommand => changeProtocolCommand ??
+                                             (changeProtocolCommand = new RelayCommand(changeProtocol));
         public bool IsEnableToChangeService
         {
             get => isEnableToChangeService;
@@ -121,6 +127,7 @@ namespace Electro.UI.ViewModels.DNS
         //Set DNS and start to connect to service.
         private async void Connect(object obj)
         {
+            IsSliderOpen = false;
             if (IsGettingData == true && IsTurnedOn == false)
             {
                 service.Dispose();
@@ -131,7 +138,10 @@ namespace Electro.UI.ViewModels.DNS
             }
             else if (IsTurnedOn == false)
             {
-                IsOpenVpn = IsOpenVpn;
+                if (service == null)
+                {
+                    ChangeModel("");
+                }
                 IsGettingData = true;
                 ServiceText = service.ServiceText;
                 IsEnableToChangeService = false;
@@ -158,6 +168,12 @@ namespace Electro.UI.ViewModels.DNS
         {
             await dnsService.Connect();
         }
+
+        private void changeProtocol(object obj)
+        {
+            var type = (string)obj;
+            ChangeModel(type);
+        }
         #endregion
 
         #region Public Methods
@@ -168,14 +184,21 @@ namespace Electro.UI.ViewModels.DNS
         {
             switch (service)
             {
-                case "OpenVpn":
+                case "OpenVPN":
                     this.service = serviceProvider.GetRequiredService<OpenVPN>();
+                    ProtocolType = service;
                     break;
                 case "PPTP":
                     this.service = serviceProvider.GetRequiredService<PPTP>();
+                    ProtocolType = service;
+                    break;
+                case "SoftEther":
+                    this.service = serviceProvider.GetRequiredService<Socks5>();
+                    ProtocolType = service;
                     break;
                 default:
                     this.service = serviceProvider.GetRequiredService<PPTP>();
+                    ProtocolType = "PPTP";
                     break;
             }
         }
