@@ -53,7 +53,7 @@ namespace Electro.UI.Services
                     if (output.Contains("Initialization Sequence Completed"))
                     {
                         // this may lead to error duo to connection error and does not show the user that the vpn connection succeed.
-                        Task.Factory.StartNew(async() =>
+                        await Task.Factory.StartNew(async() =>
                         {
                             //Create Batch File.
                             string pathToRouteBatch = await CreateBatchAndGetPath();

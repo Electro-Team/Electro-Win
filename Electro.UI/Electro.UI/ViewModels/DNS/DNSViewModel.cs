@@ -18,7 +18,7 @@ namespace Electro.UI.ViewModels.DNS
         private bool isOpenVpn;
         private bool canChangeServiceType = true;
 
-        private IService service;
+        private IService service = new Softether();
         private IDNSService dnsService;
         private IServiceProvider serviceProvider;
 
@@ -131,7 +131,8 @@ namespace Electro.UI.ViewModels.DNS
             }
             else if (IsTurnedOn == false)
             {
-                IsOpenVpn = IsOpenVpn;
+                //IsOpenVpn = IsOpenVpn;
+                OnPropertyChanged("IsOpenVpn");
                 IsGettingData = true;
                 ServiceText = service.ServiceText;
                 IsEnableToChangeService = false;
@@ -172,7 +173,11 @@ namespace Electro.UI.ViewModels.DNS
                     this.service = serviceProvider.GetRequiredService<OpenVPN>();
                     break;
                 case "PPTP":
-                    this.service = serviceProvider.GetRequiredService<PPTP>();
+                    //this.service = serviceProvider.GetRequiredService<PPTP>();
+                    this.service = serviceProvider.GetRequiredService<Softether>();
+                    break;
+                case "Softether":
+                    this.service = serviceProvider.GetRequiredService<Softether>();
                     break;
                 default:
                     this.service = serviceProvider.GetRequiredService<PPTP>();

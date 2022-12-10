@@ -305,6 +305,7 @@
     <Compile Include="Services\OpenVPN.cs" />
     <Compile Include="Services\PPTP.cs" />
     <Compile Include="Services\Socks5.cs" />
+    <Compile Include="Services\Softether.cs" />
     <Compile Include="Services\WireGuard.cs" />
     <Compile Include="Tools\BaseModel.cs" />
     <Compile Include="Tools\DirectoryHelperFunctions.cs" />
