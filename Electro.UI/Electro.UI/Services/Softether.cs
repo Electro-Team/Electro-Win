@@ -1,4 +1,5 @@
 ﻿using Electro.UI.Interfaces;
+using Electro.UI.Models;
 using Electro.UI.Tools;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
@@ -93,23 +94,27 @@ namespace Electro.UI.Services
             }
         }
 
-        private async void GetUserSoftEtherInfoFromServer()
+        private async Task GetUserSoftEtherInfoFromServer()
         {
-            string response = await HttpRequestHandler.SoftEtherConfigRequestAndGetResponse(UniqueId);
-            dynamic response_dynamic = JsonConvert.DeserializeObject(response);
-            string status = response_dynamic.status;
-            if (status == "Ok")
+            try
             {
-                string[] stringSeparators = new string[] { "*[]*" };
-                string[] result = response.Split(stringSeparators, StringSplitOptions.None);
-                hostName = result[0];
-                hubName = result[1];
-                username = result[2];
-                password = result[3];
-                accountName = result[4];
+                string response = await HttpRequestHandler.SoftEtherConfigRequestAndGetResponse(/*UniqueId*/);
+                dynamic response_dynamic = JsonConvert.DeserializeObject(response);
+
+                hostName = response_dynamic.domainandport;
+                hubName = response_dynamic.hubname;
+                accountName = response_dynamic.accountname;
+
+                User user = User.GetUser();
+                //username = user.UniqueId;
+                //password = user.Password;
+                username = "vpn";
+                password = "electame";
             }
-            else
+            catch (Exception)
+            {
                 ElectroMessageBox.Show("error occurred.");
+            }
 
         }
 
@@ -124,7 +129,7 @@ namespace Electro.UI.Services
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardInput = true;
 
-            psi.FileName = AppContext.BaseDirectory + "/vpncmd/nic64.exe";
+            psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
 
             Process proc = new Process
             {
@@ -132,9 +137,9 @@ namespace Electro.UI.Services
                 EnableRaisingEvents = true
             };
 
-            proc.Start();
-            Thread.Sleep(30);
-            proc.WaitForExit();
+            //proc.Start();
+            //Thread.Sleep(30);
+            //proc.WaitForExit();
 
             using (StreamWriter sw = proc.StandardInput)
             {
@@ -162,27 +167,40 @@ namespace Electro.UI.Services
 
         private void DeleteElectroAccount()
         {
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.CreateNoWindow = true;
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
-            psi.Verb = "runas";
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardInput = true;
-
-            psi.FileName = AppContext.BaseDirectory + "/vpncmd/nic64.exe";
-            psi.Arguments = "accountdelete electro";
-
-            Process proc = new Process
+            try
             {
-                StartInfo = psi,
-                EnableRaisingEvents = true
-            };
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.CreateNoWindow = true;
+                psi.UseShellExecute = false;
+                psi.CreateNoWindow = true;
+                psi.WindowStyle = ProcessWindowStyle.Hidden;
+                psi.Verb = "runas";
+                psi.RedirectStandardOutput = true;
+                psi.RedirectStandardInput = true;
 
-            proc.Start();
-            Thread.Sleep(30);
-            proc.WaitForExit();
+                psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
+                psi.Arguments = "accountdelete electro";
+
+                Process proc = new Process
+                {
+                    StartInfo = psi,
+                    EnableRaisingEvents = true
+                };
+
+                proc.Start();
+                Thread.Sleep(30);
+                proc.WaitForExit();
+                while (!proc.StandardOutput.EndOfStream)
+                {
+                    string line = proc.StandardOutput.ReadLine();
+                    // do something with line
+                }
+            }
+            catch (Exception)
+            {
+                ElectroMessageBox.Show("error occurred.");
+                throw;
+            }
         }
 
         private void SoftEtherConnctVPNCMD()
@@ -196,7 +214,7 @@ namespace Electro.UI.Services
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardInput = true;
 
-            psi.FileName = AppContext.BaseDirectory + "/vpncmd/nic64.exe";
+            psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
             psi.Arguments = "accountconnect " + accountName;
 
             Process proc = new Process
@@ -221,21 +239,21 @@ namespace Electro.UI.Services
             return true;
         }
 
-        private void FirstTimeConnection()
+        private async Task FirstTimeConnection()
         {
-            IstallationVPNClientCMDCode(false);
-            IstallationVPNClientCMDCode(true);
-            SetNicAdapter();
-            GetUserSoftEtherInfoFromServer();
-            RunInitialVpnCMDCommands();
+            //IstallationVPNClientCMDCode(false);
+            //IstallationVPNClientCMDCode(true);
+            //SetNicAdapter();
+            await GetUserSoftEtherInfoFromServer();
             DeleteElectroAccount();
+            RunInitialVpnCMDCommands();
         }
 
 
         public async Task<bool> Connect()
         {
             if (CheckFirstTimeConnection())
-                FirstTimeConnection();
+                await FirstTimeConnection();
 
             SoftEtherConnctVPNCMD();
             return true;
@@ -252,7 +270,7 @@ namespace Electro.UI.Services
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardInput = true;
 
-            psi.FileName = AppContext.BaseDirectory + "/vpncmd/nic64.exe";
+            psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
             psi.Arguments = "accountdisconnect " + accountName;
 
             Process proc = new Process

@@ -299,6 +299,7 @@
     </Compile>
     <Compile Include="Converters\InvertBooleanConverter.cs" />
     <Compile Include="Interfaces\IDNSService.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Services\DNSService.cs" />
     <Compile Include="Interfaces\IService.cs" />
@@ -430,9 +431,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Electro.Theme\Electro.Theme.csproj">
       <Project>{0f58737e-e2cd-430e-b2a2-d8a3f3bb40aa}</Project>

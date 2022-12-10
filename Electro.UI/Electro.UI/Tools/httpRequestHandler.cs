@@ -11,12 +11,12 @@ namespace Electro.UI.Tools
 {
     public class HttpRequestHandler
     {
-        private const string serverPath = "";
+        private const string serverPath = "http://elcdn.ir/app/vpn/";
 
         private const string userCheckRegistry = "check_user";
         private const string addNewUser = "new_user";
         private const string change_pass = "change_pass";
-        private const string softEtherConfig = "change_pass";
+        private const string softEtherConfig = "softether.json";
 
         private static string SendGetRequest(string uri)
         {
@@ -31,10 +31,12 @@ namespace Electro.UI.Tools
             }
         }
 
-        private async static Task<string> SendPostRequest(string uri, string uniqueId, string pass = "", string username = "")
+        private async static Task<string> SendPostRequest(string uri, string uniqueId = "", string pass = "", string username = "")
         {
             var values = new Dictionary<string, string>();
-            values.Add("UniqueId", uniqueId);
+
+            if (uniqueId != "")
+                values.Add("UniqueId", uniqueId);
             if (pass != "")
                 values.Add("Password", uniqueId);
             if (username != "")
@@ -48,10 +50,10 @@ namespace Electro.UI.Tools
             return responseString;
         }
 
-        public static async Task<string> SoftEtherConfigRequestAndGetResponse(string uniqueId)
+        public static async Task<string> SoftEtherConfigRequestAndGetResponse(/*string uniqueId*/)
         {
-            string uri = serverPath + userCheckRegistry;
-            return await SendPostRequest(uri, uniqueId);
+            string uri = serverPath + softEtherConfig;
+            return await SendPostRequest(uri/*, uniqueId*/);
         }
 
         public static async Task<string> SendCheckUserRegistryRequestAndGetResponse(string uniqueId, string pass)
@@ -63,7 +65,7 @@ namespace Electro.UI.Tools
         public static async Task<string> NewUserSignupRequestAndGetResponse(string uniqueId, string pass, string username)
         {
 
-            string uri = serverPath + softEtherConfig;
+            string uri = serverPath + addNewUser;
 
             return await SendPostRequest(uri, uniqueId, pass, username);
         }
