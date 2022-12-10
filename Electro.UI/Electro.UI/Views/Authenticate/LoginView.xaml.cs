@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Electro.UI.ViewModels.Authenticate;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,8 @@ namespace Electro.UI.Views.Authenticate
     {
         public LoginView()
         {
+            LoginViewModel viewModel = new LoginViewModel();
+            this.DataContext = viewModel;
             InitializeComponent();
         }
     }

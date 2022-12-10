@@ -308,6 +308,7 @@
     <Compile Include="Services\WireGuard.cs" />
     <Compile Include="Tools\BaseModel.cs" />
     <Compile Include="Tools\DirectoryHelperFunctions.cs" />
+    <Compile Include="Tools\httpRequestHandler.cs" />
     <Compile Include="Tools\IConnectionObserver.cs" />
     <Compile Include="Tools\JasonDatas.cs" />
     <Compile Include="Tools\MyConnection.cs" />
