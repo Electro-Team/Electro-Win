@@ -38,8 +38,8 @@
                   HorizontalAlignment="Center"
                   Fill="White"
                   Stretch="Uniform"
-                  Height="50"
-                  Width="50"
+                  Height="30"
+                  Width="30"
                   Data="{Binding ProtocolType, Converter={StaticResource ProtocolTypeToIconConverter}}"></Path>
             <!--<CheckBox IsEnabled="{Binding IsEnableToChangeService , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       Grid.Row="1"
@@ -93,8 +93,8 @@
                     Grid.Row="4"
                     Margin="0,10,0,0" 
                     Foreground="Transparent" 
-                    Height="30" 
-                    Width="30"
+                    Height="40" 
+                    Width="40"
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Top"
                     Command="{Binding SetDnsCommand}">
