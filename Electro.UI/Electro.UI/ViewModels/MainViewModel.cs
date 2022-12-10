@@ -1,12 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Http;
-using System.Reflection;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
-using AutoUpdaterDotNET;
 using Electro.UI.Tools;
 using Electro.UI.ViewModels.DNS;
 using Newtonsoft.Json;
@@ -15,9 +11,19 @@ namespace Electro.UI.ViewModels
 {
     public class MainViewModel : BaseModel
     {
-        private DNSViewModel dnsViewModel;
-        private bool isServiceOn;
+        //Fields
+        private readonly DNSViewModel dnsViewModel;
         private NotifyIconWrapper.NotifyRequestRecord _notifyRequest;
+        private bool isServiceOn;
+        private bool _showInTaskbar;
+        private bool isStartup;
+        private string sponsorImageUrl;
+        private string sponsorLinkUrl;
+        private readonly WindowState _windowState;
+        private string selectedService = "OpenVpn";
+        //private bool formEnable = true;
+
+        ///Commands
         private RelayCommand notifyCommand;
         private RelayCommand elTeamSiteCommand;
         private RelayCommand discordCommand;
@@ -25,41 +31,32 @@ namespace Electro.UI.ViewModels
         private RelayCommand instagramCommand;
         private RelayCommand donateCommand;
         private RelayCommand sponsorCommand;
-        private bool _showInTaskbar;
-        private bool isStartup;
-        private string sponsorImageUrl;
-        private string sponsorLinkUrl;
-        private HttpClient client = new HttpClient();
-        private WindowState _windowState;
-        public MainViewModel()
-        {
-            dnsViewModel = new DNSViewModel();
-            dnsViewModel.ServiceUpdated += ServiceUpdated;
-            _ = getSponsorInfo();
-        }
+        #region Properties(Getter, Setter)
 
-        public DNSViewModel DnsViewModel => dnsViewModel;
-
+        #region Commands 
         public RelayCommand NotifyCommand => notifyCommand ??
                                              (notifyCommand = new RelayCommand(Notify));
 
         public RelayCommand ElTeamSiteCommand => elTeamSiteCommand ??
-                                                 (elTeamSiteCommand = new RelayCommand(elTeamSite));
+                                                 (elTeamSiteCommand = new RelayCommand(ElTeamSite));
 
         public RelayCommand DiscordCommand => discordCommand ??
-                                              (discordCommand = new RelayCommand(discord));
+                                              (discordCommand = new RelayCommand(Discord));
 
         public RelayCommand TelegramCommand => telegramCommand ??
-                                               (telegramCommand = new RelayCommand(telegram));
+                                               (telegramCommand = new RelayCommand(Telegram));
 
         public RelayCommand InstagramCommand => instagramCommand ??
-                                                (instagramCommand = new RelayCommand(instagram));
+                                                (instagramCommand = new RelayCommand(Instagram));
 
         public RelayCommand DonateCommand => donateCommand ??
-                                             (donateCommand = new RelayCommand(donate));
+                                             (donateCommand = new RelayCommand(Donate));
 
         public RelayCommand SponsorCommand => sponsorCommand ??
-                                              (sponsorCommand = new RelayCommand(sponsor));
+                                              (sponsorCommand = new RelayCommand(Sponsor));
+        #endregion
+
+        public DNSViewModel DnsViewModel => dnsViewModel;
         public bool IsServiceOn
         {
             get => isServiceOn;
@@ -133,6 +130,46 @@ namespace Electro.UI.ViewModels
             }
         }
 
+        public string SelectedService
+        {
+            get => selectedService;
+            set
+            {
+                if (selectedService != value)
+                {
+                    dnsViewModel.ChangeModel(value);
+                    selectedService = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public IEnumerable<string> ServicesCombo
+                => new string[] { "OpenVpn", "PPTP", "DNS Changer" };
+
+        //public bool FormEnable
+        //{
+        //    get => formEnable;
+        //    set
+        //    {
+        //        formEnable = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+
+        #endregion
+        //Constructor
+        public MainViewModel(DNSViewModel dnsViewModel)
+        {
+            this.dnsViewModel = dnsViewModel;
+            dnsViewModel.ServiceUpdated += ServiceUpdated;
+            //dnsViewModel.FreezeForm += FreezeForm;
+            _ = GetSponsorInfo();
+        }
+
+        #region Private Methods
+
+        #region Command Handler
         private void Notify(object obj)
         {
             if (DnsViewModel.IsTurnedOn)
@@ -163,22 +200,22 @@ namespace Electro.UI.ViewModels
                 Duration = 1000
             };
         }
-        private void elTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
-        private void discord(object obj) => Process.Start("https://discord.io/elteam");
-        private void telegram(object obj) => Process.Start("https://t.me/elteam_IR");
-        private void instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
-        private void donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
+        //private void FreezeForm(bool freezeForm)
+        //    => this.FormEnable = !freezeForm;
 
-        private void sponsor(object obj)
-        {
-            Process.Start(sponsorLinkUrl);
-        }
+        private void ElTeamSite(object obj) => Process.Start("http://www.Electrotm.org");
+        private void Discord(object obj) => Process.Start("https://discord.io/elteam");
+        private void Telegram(object obj) => Process.Start("https://t.me/elteam_IR");
+        private void Instagram(object obj) => Process.Start("https://www.instagram.com/irelectro/");
+        private void Donate(object obj) => Process.Start("https://donateon.ir/MaxisAmir");
+        private void Sponsor(object obj) => Process.Start(sponsorLinkUrl);
+        #endregion
 
-        private async Task getSponsorInfo()
+        private async Task GetSponsorInfo()
         {
             try
             {
-                var data = await client.GetStringAsync("https://elcdn.ir/app/pc/win/etc/settings2.json");
+                var data = await MyHttpClient.GetInstance().Client.GetStringAsync(MyUrls.SettingsJson2);
                 if (data != null)
                 {
                     var sponsorJsonData = JsonConvert.DeserializeObject<SponsorJsonData>(data);
@@ -189,8 +226,14 @@ namespace Electro.UI.ViewModels
             }
             catch (Exception e)
             {
+                //MessageBox.Show(e.Message);
                 //logger must add
             }
         }
+        #endregion
+
+        #region Public Methods
+
+        #endregion
     }
 }

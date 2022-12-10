@@ -31,9 +31,9 @@ namespace Electro.Updater
         private static Logger logger = LogManager.GetCurrentClassLogger();
         public UpdaterMainWindow()
         {
-            InitializeComponent();
-            Loaded += UpdaterMainWindow_Loaded;
-            webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
+            //InitializeComponent();
+           // Loaded += UpdaterMainWindow_Loaded;
+          //  webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
         }
 
         private async void UpdaterMainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -46,13 +46,14 @@ namespace Electro.Updater
                 var objects = JsonConvert.DeserializeObject<Version>(data);
                 if (objects != null)
                 {
-                    if (!Directory.Exists("temp"))
+                    if (Directory.Exists("temp"))
                     {
-                        Directory.CreateDirectory("temp");
+                        Directory.Delete("temp");
+                  //      Directory.CreateDirectory("temp");
                     }
-                    File.Move("Electro.exe", @"temp\Electro.exe");
-                    UriBuilder uriBuilder = new UriBuilder(objects.downloadPath);
-                    await webClient.DownloadFileTaskAsync(uriBuilder.Uri, "Electro.exe");
+                  //  File.Move("Electro.exe", @"temp\Electro.exe");
+                   // UriBuilder uriBuilder = new UriBuilder(objects.downloadPath);
+                    //await webClient.DownloadFileTaskAsync(uriBuilder.Uri, "Electro.exe");
                 }
             }
             catch (Exception exception)

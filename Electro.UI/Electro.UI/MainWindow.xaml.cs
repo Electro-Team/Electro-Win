@@ -18,11 +18,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AutoUpdaterDotNET;
 using Electro.UI.ViewModels;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
+using AutoUpdaterDotNET;
 using NLog;
 using Version = Electro.UI.Tools.Version;
+using System.IO;
+using Electro.UI.Tools;
+using Electro.UI.ViewModels.Authenticate;
 
 namespace Electro.UI
 {
@@ -31,153 +36,128 @@ namespace Electro.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private static string version = "1.0.0.0";
+        //Constructor
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += MainWindow_Loaded;
+            ////_ = new AuthenticationViewModel();
+
+            ////AutoUpdater.Start("http://elcdn.ir/dl/pc/update.xml");
+            ////AutoUpdater.ShowSkipButton = false;
+            ////AutoUpdater.Synchronous = true;
+            ////AutoUpdater.Mandatory = true;
+            ////AutoUpdater.UpdateMode = Mode.ForcedDownload;
+            //try
+            //{
+            //    string path = AppContext.BaseDirectory + @"openVPN\Batch.txt";
+            //    if (!File.Exists(path))
+            //    {
+            //        InstallTapAdapter();
+            //        File.Create(path);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MyLogger.GetInstance().Logger.Error(ex);
+            //}
+            //Loaded += MainWindow_Loaded;
         }
+        #region Private Methods
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                this.IsHitTestVisible = false;
-                HttpClient client = new HttpClient();
+            //try
+            //{
+            //    this.IsHitTestVisible = false;
+            //    HttpClient client = new HttpClient();
 
-                var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/versionnew.json");
-                var objects = JsonConvert.DeserializeObject<Version>(data);
-                if (objects != null)
-                {
-                    if (!objects.lastVersion.Equals(Assembly.GetEntryAssembly()?.GetName().Version.ToString()))
-                    {
-                        try
-                        {
-                            var p = new Process();
-                            p.StartInfo.FileName = "Electro.Updater.exe";
-                            p.StartInfo.Arguments = "update";
-                            p.StartInfo.UseShellExecute = true;
-                            p.Start();
-                            Application.Current.Shutdown();
-                        }
-                        catch (Exception exception)
-                        {
-                            ElectroMessageBox.Show("Electro Updater file does not exist!", "Warning");
-                            Application.Current.Shutdown();
-                        }
-                    }
-                }
+            //    var data = await client.GetStringAsync("http://elcdn.ir/app/pc/win/ver/versionnew.json");
+            //    var objects = JsonConvert.DeserializeObject<Version>(data);
+            //    if (objects != null)
+            //    {
+            //       // if (!objects.lastVersion.Equals(Assembly.GetEntryAssembly()?.GetName().Version.ToString()))
+            //       // {
+            //        //    try
+            //         //   {
+            //            //    var p = new Process();
+            //             //   p.StartInfo.FileName = "Electro.Updater.exe";
+            //            //    p.StartInfo.Arguments = "update";
+            //              //  p.StartInfo.UseShellExecute = true;
+            //               // p.Start();
+            //             //   Application.Current.Shutdown();
+            //          //  }
+            //          //  catch (Exception exception)
+            //          //  {
+            //            //    ElectroMessageBox.Show("Electro Updater file does not exist!", "Warning");
+            //             //   Application.Current.Shutdown();
+            //           // }
+            //       // }
+            //    }
 
-                //if (!Properties.Settings.Default.InitializeTAP)
-                //{
-                //    var installed = InstallTapAdapter();
-                //}
-                this.IsHitTestVisible = true;
-            }
-            catch (Exception exception)
-            {
-                ElectroMessageBox.Show("Could not connect to server!", "Error");
-                Application.Current.Shutdown();
-            }
+            //    //if (!Properties.Settings.Default.InitializeTAP)
+            //    //{
+            //    //    var installed = InstallTapAdapter();
+            //    //}
+            //    this.IsHitTestVisible = true;
+            //}
+            //catch (Exception exception)
+            //{
+            //    ElectroMessageBox.Show("Could not connect to server!", "Error");
+            //    Application.Current.Shutdown();
+            //}
         }
+        #region Public Methods
+
+        #endregion
         public bool InstallTapAdapter()
-
         {
-
             bool installed = false;
-
             ProcessStartInfo processInfo = null;
-
-            Process process = null;
-
+            Process proc = new System.Diagnostics.Process();
             try
-
             {
-
-                string command = "";
-
-
-
-                command = "tapinstall.exe install \"OemWin2k.inf\" tap0901";
-
-
-
-                processInfo = new ProcessStartInfo("cmd.exe", "/C " + command);
-
-                processInfo.UseShellExecute = false;
-
-                processInfo.RedirectStandardOutput = true;
-
-                processInfo.RedirectStandardError = true;
-
-                processInfo.CreateNoWindow = true;
-                processInfo.WorkingDirectory = "C:\\Program Files\\TAP-Windows\\bin";
-
-
-                process = new Process();
-
-                process.StartInfo = processInfo;
-
-                process.Start();
-
-
-
-                string str = process.StandardOutput.ReadToEnd();
-
-                string err = process.StandardError.ReadToEnd();
-
-                int exitCode = process.ExitCode;
-
-
+                /*
+                proc.StartInfo.FileName = AppContext.BaseDirectory+"\\openVPN\\Driver\\addtap.bat";
+                proc.StartInfo.Verb = "runas";
+                proc.StartInfo.WorkingDirectory = AppContext.BaseDirectory + "\\openVPN\\Driver";
+                proc.Start();
+                */
+                string str = proc.StandardOutput.ReadToEnd();
+                string err = proc.StandardError.ReadToEnd();
+                int exitCode = proc.ExitCode;
 
                 if (err.Length > 0)
-
                     throw new Exception(err);
 
-
                 // Write into logs
-                logger.Info("COMPLETED Installing tap Exit code = " + exitCode);
+                MyLogger.GetInstance().Logger.Info("COMPLETED Installing tap Exit code = " + exitCode);
 
                 if (str.IndexOf("Drivers installed successfully") > -1)
 
                 {
-
                     installed = true;
                     // Write into logs  
-                    logger.Info("Tap Adapter Installed Successfully");
-
+                    MyLogger.GetInstance().Logger.Info("Tap Adapter Installed Successfully");
                 }
-
-
-
                 // Write into logs
-                logger.Info("Finished TAP");
-
+                MyLogger.GetInstance().Logger.Info("Finished TAP");
             }
-
             catch (Exception e)
-
             {
                 // Write into logs
-                logger.Error("Error Installing Tap Adapter : " + e.Message);
-
+                MyLogger.GetInstance().Logger.Error("Error Installing Tap Adapter : " + e.Message);
             }
-
             finally
-
             {
                 processInfo = null;
-                if (process != null)
-
+                if (proc != null)
                 {
-                    process.Close();
-                    process = null;
+                    proc.Close();
+                    proc = null;
                 }
             }
-
             return installed;
-
-        }
+        } 
+        #endregion
     }
 }

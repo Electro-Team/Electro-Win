@@ -11,9 +11,13 @@
         <ResourceDictionary Source="Style/ButtonStyles/PowerButtonStyle.xaml"/>
         <ResourceDictionary Source="Style/ButtonStyles/ImageButtonStyle.xaml"/>
         <ResourceDictionary Source="Style/ButtonStyles/NeonButtonStyle.xaml"/>
+        <ResourceDictionary Source="Style/ButtonStyles/RoundButtonStyle.xaml"/>
+        <ResourceDictionary Source="Style/ButtonStyles/DNSButtonStyle.xaml"/>
         <ResourceDictionary Source="Style/ToolTipStyle.xaml"/>
         <ResourceDictionary Source="Assests/PathAndGeometries.xaml"/>
         <ResourceDictionary Source="Style/ToggleButtonStyles/PathImageToggleButtonStyle.xaml"/>
         <ResourceDictionary Source="Style/CheckBoxStyles/BaseCheckBoxStyle.xaml"/>
+        <ResourceDictionary Source="Style/CheckBoxStyles/SlidingCheckBoxStyle.xaml"/>
+        <ResourceDictionary Source="Style/CheckBoxStyles/LoginCheckBoxStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

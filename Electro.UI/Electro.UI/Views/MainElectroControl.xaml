@@ -122,16 +122,14 @@
                           Margin="3,0"></Path>
                 </Button.Content>
             </Button>
+
         </StackPanel>
         <StackPanel
             VerticalAlignment="Bottom"
             Margin="20,40"
             HorizontalAlignment="Center">
-            <TextBlock Text="Sponsor"
-                       Foreground="White"
-                       VerticalAlignment="Center"
-                       Margin="80,0,0,5">
-            </TextBlock>
+           
+            
             <Button Style="{StaticResource ImageButtonStyle}"
                     Width="200"
                     Height="100"
