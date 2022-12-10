@@ -40,7 +40,7 @@ namespace Electro.UI
         public MainWindow()
         {
             InitializeComponent();
-            ////_ = new AuthenticationViewModel();
+            _ = new AuthenticationViewModel();
 
             ////AutoUpdater.Start("http://elcdn.ir/dl/pc/update.xml");
             ////AutoUpdater.ShowSkipButton = false;

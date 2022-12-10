@@ -52,8 +52,8 @@
             </CheckBox>
 
             <StackPanel Grid.Row="3" >
-                <local:LoginView Visibility="{Binding IsChecked,ElementName=chk,Converter={StaticResource booleanToVisibilityConvertor}}" DataContext="{Binding LoginViewModel}"/>
-                <local:SignupView Visibility="{Binding IsChecked,ElementName=chk,Converter={StaticResource reverseBooleanToVisibilityConvertor}}" DataContext="{Binding SignupViewModel}"/>
+                <local:LoginView Visibility="{Binding IsChecked,ElementName=chk,Converter={StaticResource booleanToVisibilityConvertor}}"/>
+                <local:SignupView Visibility="{Binding IsChecked,ElementName=chk,Converter={StaticResource reverseBooleanToVisibilityConvertor}}"/>
             </StackPanel>
 
             <StackPanel Grid.Row="4"  Orientation="Horizontal" HorizontalAlignment="Center">

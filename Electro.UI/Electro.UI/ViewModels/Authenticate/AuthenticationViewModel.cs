@@ -10,16 +10,28 @@ namespace Electro.UI.ViewModels.Authenticate
 {
     public class AuthenticationViewModel
     {
-        private AuthenticationView view;
+        private static AuthenticationViewModel instatnce;
+        private  AuthenticationView view;
 
         public AuthenticationViewModel()
         {
-            this.view = new AuthenticationView();
-            this.view.DataContext = this;
+            Instatnce = this;
+            view = new AuthenticationView();
+            view.DataContext = this;
 
 
-            this.view.ShowDialog();
+            view.ShowDialog();
         }
 
+        public void ShotDown()
+        {
+            view.Close();
+        }
+
+        public static AuthenticationViewModel Instatnce
+        {
+            get => instatnce;
+            set => instatnce = value;
+        }
     }
 }
