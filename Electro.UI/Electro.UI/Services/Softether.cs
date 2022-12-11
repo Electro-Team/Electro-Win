@@ -2,6 +2,7 @@
 using Electro.UI.Models;
 using Electro.UI.Tools;
 using Electro.UI.Windows;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -111,9 +112,10 @@ namespace Electro.UI.Services
                 username = "vpn";
                 password = "electame";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 ElectroMessageBox.Show("error occurred.");
+                ElectroMessageBox.Show(ex.Message);
             }
 
         }
@@ -121,10 +123,11 @@ namespace Electro.UI.Services
         private void RunInitialVpnCMDCommands()
         {
             ProcessStartInfo psi = new ProcessStartInfo();
-            psi.CreateNoWindow = true;
+            psi.CreateNoWindow = false;
             psi.UseShellExecute = false;
+            
             psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
+            psi.WindowStyle = ProcessWindowStyle.Normal;
             psi.Verb = "runas";
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardInput = true;
@@ -137,14 +140,17 @@ namespace Electro.UI.Services
                 EnableRaisingEvents = true
             };
 
-            //proc.Start();
             //Thread.Sleep(30);
             //proc.WaitForExit();
 
+            proc.Start();
             using (StreamWriter sw = proc.StandardInput)
             {
                 if (sw.BaseStream.CanWrite)
                 {
+                    sw.WriteLine("2");
+                    sw.WriteLine("");
+
                     sw.WriteLine("accountcreate " + accountName);
 
                     //hostname and port:
@@ -203,19 +209,50 @@ namespace Electro.UI.Services
             }
         }
 
+        //private void SoftEtherConnctVPNCMD()
+        //{
+        //    ProcessStartInfo psi = new ProcessStartInfo();
+        //    psi.CreateNoWindow = true;
+        //    psi.UseShellExecute = false;
+        //    psi.CreateNoWindow = true;
+        //    psi.WindowStyle = ProcessWindowStyle.Hidden;
+        //    psi.Verb = "runas";
+        //    psi.RedirectStandardOutput = true;
+        //    psi.RedirectStandardInput = true;
+
+        //    psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
+        //    psi.Arguments = "accountconnect " + accountName;
+
+        //    Process proc = new Process
+        //    {
+        //        StartInfo = psi,
+        //        EnableRaisingEvents = true
+        //    };
+
+        //    proc.Start();
+        //    Thread.Sleep(30);
+        //    proc.WaitForExit();
+
+        //    psi.Arguments = "accountstatusget " + accountName;
+
+        //    proc.Start();
+        //    Thread.Sleep(30);
+        //    proc.WaitForExit();
+        //}
+
         private void SoftEtherConnctVPNCMD()
         {
             ProcessStartInfo psi = new ProcessStartInfo();
-            psi.CreateNoWindow = true;
+            psi.CreateNoWindow = false;
             psi.UseShellExecute = false;
+
             psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
+            psi.WindowStyle = ProcessWindowStyle.Normal;
             psi.Verb = "runas";
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardInput = true;
 
             psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
-            psi.Arguments = "accountconnect " + accountName;
 
             Process proc = new Process
             {
@@ -223,20 +260,79 @@ namespace Electro.UI.Services
                 EnableRaisingEvents = true
             };
 
-            proc.Start();
-            Thread.Sleep(30);
-            proc.WaitForExit();
-
-            psi.Arguments = "accountstatusget " + accountName;
+            //Thread.Sleep(30);
+            //proc.WaitForExit();
 
             proc.Start();
-            Thread.Sleep(30);
+            using (StreamWriter sw = proc.StandardInput)
+            {
+                if (sw.BaseStream.CanWrite)
+                {
+                    sw.WriteLine("2");
+                    sw.WriteLine("");
+
+                    sw.WriteLine("accountconnect " + accountName);
+                   
+                }
+            }
             proc.WaitForExit();
+
+
+            //ProcessStartInfo psi = new ProcessStartInfo();
+            //psi.CreateNoWindow = true;
+            //psi.UseShellExecute = false;
+            //psi.CreateNoWindow = true;
+            //psi.WindowStyle = ProcessWindowStyle.Hidden;
+            //psi.Verb = "runas";
+            //psi.RedirectStandardOutput = true;
+            //psi.RedirectStandardInput = true;
+
+            //psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
+            //psi.Arguments = "accountconnect " + accountName;
+
+            //Process proc = new Process
+            //{
+            //    StartInfo = psi,
+            //    EnableRaisingEvents = true
+            //};
+
+            //proc.Start();
+            //Thread.Sleep(30);
+            //proc.WaitForExit();
+
+            //psi.Arguments = "accountstatusget " + accountName;
+
+            //proc.Start();
+            //Thread.Sleep(30);
+            //proc.WaitForExit();
         }
 
-        private bool CheckFirstTimeConnection()
+        private void SaveSoftEtherConfigs()
+            => Registry.SetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node", "softether", "configured");
+
+        public bool IsFirstTime()
         {
-            return true;
+            bool result = true;
+            try
+            {
+                if (Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Electro\", "softether", null) == null)
+                {
+                    Registry.SetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node", "softether", "configured");
+                    //code if key Not Exist
+                }
+                else
+                {
+                    string SoftEthervalue = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Electro\",
+                             "softether", "NULL").ToString();
+                    if (SoftEthervalue == "configured")
+                        result = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                ElectroMessageBox.Show(ex.Message);
+            }
+            return result;
         }
 
         private async Task FirstTimeConnection()
@@ -245,14 +341,15 @@ namespace Electro.UI.Services
             //IstallationVPNClientCMDCode(true);
             //SetNicAdapter();
             await GetUserSoftEtherInfoFromServer();
-            DeleteElectroAccount();
             RunInitialVpnCMDCommands();
+            //DeleteElectroAccount();
+            SaveSoftEtherConfigs();
         }
 
 
         public async Task<bool> Connect()
         {
-            if (CheckFirstTimeConnection())
+            if (true || IsFirstTime())
                 await FirstTimeConnection();
 
             SoftEtherConnctVPNCMD();

@@ -53,7 +53,8 @@ namespace Electro.UI.Tools
         public static async Task<string> SoftEtherConfigRequestAndGetResponse(/*string uniqueId*/)
         {
             string uri = serverPath + softEtherConfig;
-            return await SendPostRequest(uri/*, uniqueId*/);
+            //return await SendPostRequest(uri/*, uniqueId*/);
+            return SendGetRequest(uri/*, uniqueId*/);
         }
 
         public static async Task<string> SendCheckUserRegistryRequestAndGetResponse(string uniqueId, string pass)
