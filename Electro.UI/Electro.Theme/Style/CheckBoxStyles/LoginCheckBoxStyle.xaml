@@ -22,37 +22,26 @@
                                            x:Name="TexTType"
                                            Panel.ZIndex="10"
                                            Foreground="White"
-                                           FontSize="16 "
-                                           Margin="10,0,0,0"
+                                           FontSize="14 "
+                                           Margin="94,10,0,0"
                                            FontWeight="Bold">
-                                    <TextBlock.Effect>
-                                    <DropShadowEffect ShadowDepth="0"
-                                                      BlurRadius="10"
-                                                      Color="White"
-                                                      Opacity="0.5" />
-                                </TextBlock.Effect>
                                 </TextBlock>
-
-                                <Border Height="35"
+                                <TextBlock Text="Login" 
+                                           x:Name="TexTType1"
+                                           Panel.ZIndex="10"
+                                           Foreground="White"
+                                           FontSize="14 "
+                                           Margin="19,10,0,0"
+                                           FontWeight="Bold"></TextBlock>
+                                <Border Height="40"
                                         Name="Bd"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Width="120"
+                                        Width="160"
                                         ClipToBounds="True"
-                                        CornerRadius="10"
-                                        SnapsToDevicePixels="true">
-                                    <Border.Background>
-                                        <RadialGradientBrush GradientOrigin="0.5,0.5"
-                                                             RadiusX="0.8"
-                                                             RadiusY="0.8">
-                                            <GradientStop
-                                                x:Name="GradientStopGreen"
-                                                Color="{DynamicResource MoreDarkElectroGreyColor}" Offset="0"/>
-                                            <GradientStop
-                                                x:Name="GradientStopPurple"
-                                                Color="{DynamicResource DarkElectroGreyColor}" Offset="2"/>
-                                        </RadialGradientBrush>
-                                    </Border.Background>
+                                        CornerRadius="20"
+                                        SnapsToDevicePixels="true"
+                                        Background="Black">
                                     <Border.Clip>
                                         <CombinedGeometry GeometryCombineMode="Union">
                                             <CombinedGeometry.Geometry1>
@@ -62,7 +51,7 @@
                                                 <CombinedGeometry>
                                                     <CombinedGeometry.Geometry1>
                                                         <EllipseGeometry Center="20,20"
-																		 RadiusX="120"
+																		 RadiusX="180"
 																		 RadiusY="80" />
                                                     </CombinedGeometry.Geometry1>
                                                     <CombinedGeometry.Geometry2>
@@ -78,20 +67,19 @@
                                         <Border
                                             x:Name="disabledBorder"
                                             Background="Transparent"/>
-                                        <Border Width="32"
+                                        <Border Width="70"
 												Name="thumb"
-                                                Panel.ZIndex="11"
 												HorizontalAlignment="Left"
-												Margin="2"
+												Margin="5,2,5,2"
 												Grid.Column="1"
 												CornerRadius="16"
 												SnapsToDevicePixels="True"
-                                                Background="White"
+                                                Background="DimGray"
 												Height="32">
                                             <Border.Effect>
                                                 <DropShadowEffect ShadowDepth="0"
                                                                   BlurRadius="10"
-																  Color="White"
+																  Color="{StaticResource DarkElectroGreyColor}"
 																  Opacity="0.1" />
                                             </Border.Effect>
                                         </Border>
@@ -135,48 +123,18 @@
                             <VisualStateGroup x:Name="CheckStates">
                                 <VisualState x:Name="Checked">
                                     <Storyboard>
-                                        <ThicknessAnimation Duration="0:0:0.5"
+                                        <ThicknessAnimation Duration="0:0:0.2"
 															Storyboard.TargetName="thumb"
 															Storyboard.TargetProperty="Margin"
-															To="80,0,3,0" />
-                                        <ThicknessAnimation Duration="0:0:0.5"
-                                                            Storyboard.TargetName="TexTType"
-                                                            Storyboard.TargetProperty="Margin"
-                                                            To="10,7,0,0" />
-                                        <DoubleAnimation Duration="0:0:1"
-                                                         Storyboard.TargetName="GradientStopGreen"
-                                                         Storyboard.TargetProperty="Offset"
-                                                         To="3"/>
-                                        <DoubleAnimation Duration="0:0:0"
-                                                         Storyboard.TargetName="GradientStopPurple"
-                                                         Storyboard.TargetProperty="Offset"
-                                                         To="0"/>
-                                        <StringAnimationUsingKeyFrames Duration="0"
-                                                                       Storyboard.TargetName="TexTType"
-                                                                       Storyboard.TargetProperty="Text">
-                                            <DiscreteStringKeyFrame 
-                                                                    Value="Login"></DiscreteStringKeyFrame>
-                                        </StringAnimationUsingKeyFrames>
+															To="85,0,3,0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Unchecked">
                                     <Storyboard>
-                                        <ThicknessAnimation Duration="0:0:0.5"
+                                        <ThicknessAnimation Duration="0:0:0.2"
 															Storyboard.TargetName="thumb"
 															Storyboard.TargetProperty="Margin"
 															To="3,0,42,0" />
-                                        <ThicknessAnimation Duration="0:0:0.5"
-                                                            Storyboard.TargetName="TexTType"
-                                                            Storyboard.TargetProperty="Margin"
-                                                            To="50,7,0,0" />
-                                        <DoubleAnimation Duration="0:0:0"
-                                                         Storyboard.TargetName="GradientStopGreen"
-                                                         Storyboard.TargetProperty="Offset"
-                                                         To="0"/>
-                                        <DoubleAnimation Duration="0:0:1"
-                                                         Storyboard.TargetName="GradientStopPurple"
-                                                         Storyboard.TargetProperty="Offset"
-                                                         To="2"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Indeterminate" />

@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Electro.UI.Views.Authenticate"
         xmlns:Converter="clr-namespace:Electro.UI.Converters"
-        mc:Ignorable="d" Background="Transparent" WindowStartupLocation="CenterScreen"
-        Height="600" Width="350" ResizeMode="NoResize">
+        xmlns:controls="clr-namespace:Electro.UI.Controls"
+        mc:Ignorable="d" 
+        Style="{StaticResource BaseWindowStyle}"
+        Background="Transparent" 
+        WindowStartupLocation="CenterScreen"
+        Height="530" Width="280" 
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConvertor" />
@@ -14,18 +19,9 @@
         False="Visible" x:Key="reverseBooleanToVisibilityConvertor" />
     </Window.Resources>
 
-    <Grid  Background="{StaticResource MainBackgroundGradientBrush2}" >
-        <Grid Margin="30, 10">
-            <Grid.Background>
-                <ImageBrush ImageSource="/Electro.Theme;component/Images/WorldElectro2 .png"
-               RenderOptions.BitmapScalingMode="Fant" Stretch="Uniform"
-               Opacity="0.3">
-                    <ImageBrush.Transform>
-                        <ScaleTransform ScaleX="1" ScaleY="1"/>
-                    </ImageBrush.Transform>
-                </ImageBrush>
-            </Grid.Background>
-
+        <Grid 
+              Background="{StaticResource MainBackgroundGradientBrush2}">
+            
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="1.2*"/>
@@ -34,11 +30,28 @@
                 <RowDefinition Height="5.3*"/>
                 <RowDefinition Height="0.4*"/>
             </Grid.RowDefinitions>
-
-            <Path Grid.Row="0" Data="{StaticResource ELogo}"
+            <controls:HeaderControl  
+                VerticalAlignment="Top" 
+                HorizontalAlignment="Stretch"
+                Panel.ZIndex="10"
+            />
+            <Image Source="/Electro.Theme;component/Images/WorldElectro2 .png"
+                   VerticalAlignment="Top"
+                   RenderOptions.BitmapScalingMode="Fant"
+                   Height="600"
+                   Grid.RowSpan="15"
+                   Opacity="0.2"
+                   Margin="-52,-6,-58,0"
+                   RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <RotateTransform Angle="-30"/>
+                </Image.RenderTransform>
+            </Image>
+        <Path Grid.Row="0" Data="{StaticResource ELogo}"
                   Stretch="Uniform"
                   Fill="White"
-                  Width="60"
+                  Width="50"
+                  Margin="0,15,0,0"
                   HorizontalAlignment="Center">
             </Path>
 
@@ -52,17 +65,30 @@
             </CheckBox>
 
             <StackPanel Grid.Row="3" >
-                <local:LoginView Visibility="{Binding IsChecked,ElementName=chk,Converter={StaticResource booleanToVisibilityConvertor}}"/>
-                <local:SignupView Visibility="{Binding IsChecked,ElementName=chk,Converter={StaticResource reverseBooleanToVisibilityConvertor}}"/>
+                <local:SignupView Visibility="{Binding IsChecked,ElementName=chk,Converter={StaticResource booleanToVisibilityConvertor}}"/>
+                <local:LoginView Visibility="{Binding IsChecked,ElementName=chk,Converter={StaticResource reverseBooleanToVisibilityConvertor}}"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="4"  Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock VerticalAlignment="Bottom"  Padding="10,0,0,0" HorizontalAlignment="Center" Text="All Copyrights Reserved By" FontSize="12" Foreground="White" FontWeight="Medium">
+            <StackPanel Grid.Row="4" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Center"
+                        Margin="0,6">
+                <TextBlock VerticalAlignment="Bottom" 
+                           Padding="10,0,0,0" 
+                           HorizontalAlignment="Center"
+                           Text="All Copyrights Reserved By" 
+                           FontSize="12" 
+                           Foreground="White" 
+                           FontWeight="Medium">
                 </TextBlock>
-                <TextBlock VerticalAlignment="Bottom"  HorizontalAlignment="Center" Text=" Electro" FontSize="12" Foreground="LightBlue" FontWeight="Medium">
+                <TextBlock VerticalAlignment="Bottom"  
+                           HorizontalAlignment="Center" 
+                           Text=" Electro" 
+                           FontSize="12" 
+                           Foreground="LightBlue" 
+                           FontWeight="Medium">
                 </TextBlock>
             </StackPanel>
 
         </Grid>
-    </Grid>
 </Window>

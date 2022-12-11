@@ -12,16 +12,17 @@
                     <Grid x:Name="grid">
                         <Border x:Name="border" CornerRadius="20" BorderBrush="Transparent" BorderThickness="0">
                             <Border.Background>
-                                <RadialGradientBrush GradientOrigin="0.496,1.052">
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" 
-                                                        ScaleX="1.5" ScaleY="1.5"/>
-                                            <TranslateTransform X="0.02" Y="0.3"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Offset="1" Color="#1E9D70"/>
-                                    <GradientStop Offset="0.3" Color="#1E9D70"/>
+                                <RadialGradientBrush GradientOrigin="0.5,0.5"
+                                                     RadiusX="0.8"
+                                                     RadiusY="0.8"
+                                                     Center="0.5,0.5">
+                                    
+                                    <GradientStop
+                                        x:Name="GradientStopGreen"
+                                        Color="{DynamicResource PowerContentGreenColor2}" Offset="0"/>
+                                    <GradientStop
+                                        x:Name="GradientStopPurple"
+                                        Color="{DynamicResource DarkPurpleColor}" Offset="3"/>
                                 </RadialGradientBrush>
                             </Border.Background>
                             <ContentPresenter HorizontalAlignment="Center"
@@ -29,28 +30,40 @@
                                           TextElement.FontWeight="Bold">
                             </ContentPresenter>
                         </Border>
-
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0"
+                                                         Storyboard.TargetName="GradientStopGreen"
+                                                         Storyboard.TargetProperty="Offset"
+                                                         From="3"
+                                                         To="0"
+                                                         />
+                                        <DoubleAnimation Duration="0:0:1"
+                                                         Storyboard.TargetName="GradientStopPurple"
+                                                         Storyboard.TargetProperty="Offset"
+                                                         From="0"
+                                                         To="2"
+                                                         />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard SlipBehavior="Slip">
+                                        <DoubleAnimation Duration="0:0:1"
+                                                         Storyboard.TargetName="GradientStopGreen"
+                                                         Storyboard.TargetProperty="Offset"
+                                                         To="2"/>
+                                        <DoubleAnimation Duration="0:0:0"
+                                                         Storyboard.TargetName="GradientStopPurple"
+                                                         Storyboard.TargetProperty="Offset"
+                                                         To="0"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" TargetName="border">
-                                <Setter.Value>
-                                    <RadialGradientBrush GradientOrigin="0.496,1.052">
-                                        <RadialGradientBrush.RelativeTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
-                                                <TranslateTransform X="0.02" Y="0.3"/>
-                                            </TransformGroup>
-                                        </RadialGradientBrush.RelativeTransform>
-                                        <GradientStop Color="#00000000" Offset="1"/>
-                                        <GradientStop Color="#FF303030" Offset="0.3"/>
-                                    </RadialGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="BorderBrush" TargetName="border" Value="#FF33962B"/>
-                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
                         </Trigger>

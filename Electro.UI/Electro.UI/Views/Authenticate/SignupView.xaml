@@ -18,9 +18,23 @@
             <RowDefinition Height="0.9*"/>
         </Grid.RowDefinitions>
         <!--UserName-->
-        <TextBlock VerticalAlignment="Bottom" Grid.Row="0" Padding="30,0" HorizontalAlignment="Left" Text="USERNAME" FontSize="15" Foreground="White" FontWeight="Medium">
+        <TextBlock VerticalAlignment="Bottom" 
+                   Grid.Row="0" 
+                   Padding="30,0" 
+                   HorizontalAlignment="Left"
+                   Text="USERNAME" 
+                   FontSize="15" 
+                   Foreground="White" 
+                   FontWeight="Medium">
         </TextBlock>
-        <TextBox  Margin="20,0,0,0" Padding="22,7" VerticalContentAlignment="Center" FontSize="13" Grid.Row="1"  Background="Black" Foreground="Gray" Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox  Margin="20,0"
+                  Padding="22,7" 
+                  VerticalContentAlignment="Center" 
+                  FontSize="13" 
+                  Grid.Row="1"  
+                  Background="Black" 
+                  Foreground="Gray" 
+                  Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="20"/>
@@ -30,9 +44,23 @@
         </TextBox>
 
         <!--Email-->
-        <TextBlock VerticalAlignment="Bottom" Grid.Row="2" Padding="30,0" HorizontalAlignment="Left" Text="EMAIL OR PHONE NUMBER" FontSize="15" Foreground="White" FontWeight="Medium">
+        <TextBlock VerticalAlignment="Bottom" 
+                   Grid.Row="2" 
+                   Padding="30,0"
+                   HorizontalAlignment="Left" 
+                   Text="EMAIL OR PHONE NUMBER"
+                   FontSize="15" 
+                   Foreground="White" 
+                   FontWeight="Medium">
         </TextBlock>
-        <TextBox  Margin="20,0,0,0" Padding="22,7" VerticalContentAlignment="Center" FontSize="13" Grid.Row="3"  Background="Black" Foreground="Gray" Text="{Binding UniqueId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox  Margin="20,0" 
+                  Padding="22,7" 
+                  VerticalContentAlignment="Center" 
+                  FontSize="13" 
+                  Grid.Row="3" 
+                  Background="Black" 
+                  Foreground="Gray"
+                  Text="{Binding UniqueId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="20"/>
@@ -43,9 +71,23 @@
 
 
         <!--Pass-->
-        <TextBlock VerticalAlignment="Bottom" Grid.Row="4" Padding="30,0" HorizontalAlignment="Left" Text="PASSWORD" FontSize="15" Foreground="White" FontWeight="Medium">
+        <TextBlock VerticalAlignment="Bottom" 
+                   Grid.Row="4" 
+                   Padding="30,0" 
+                   HorizontalAlignment="Left" 
+                   Text="PASSWORD" 
+                   FontSize="15"
+                   Foreground="White" 
+                   FontWeight="Medium">
         </TextBlock>
-        <TextBox  Margin="20,0,0,0" Padding="22,7" VerticalContentAlignment="Center" FontSize="13" Grid.Row="5"  Background="Black" Foreground="Gray" Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox  Margin="20,0" 
+                  Padding="22,7"
+                  VerticalContentAlignment="Center"
+                  FontSize="13" 
+                  Grid.Row="5"  
+                  Background="Black" 
+                  Foreground="Gray" 
+                  Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="20"/>
@@ -55,9 +97,23 @@
         </TextBox>
 
         <!--Repeat Pass-->
-        <TextBlock VerticalAlignment="Bottom" Grid.Row="6" Padding="30,0" HorizontalAlignment="Left" Text="REPEAT PASSWORD" FontSize="15" Foreground="White" FontWeight="Medium">
+        <TextBlock VerticalAlignment="Bottom"
+                   Grid.Row="6" 
+                   Padding="30,0" 
+                   HorizontalAlignment="Left" 
+                   Text="REPEAT PASSWORD" 
+                   FontSize="15" 
+                   Foreground="White"
+                   FontWeight="Medium">
         </TextBlock>
-        <TextBox  Margin="20,0,0,0" Padding="22,7" VerticalContentAlignment="Center" FontSize="13" Grid.Row="7"  Background="Black" Foreground="Gray" Text="{Binding Password2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox  Margin="20,0" 
+                  Padding="22,7" 
+                  VerticalContentAlignment="Center" 
+                  FontSize="13" 
+                  Grid.Row="7" 
+                  Background="Black" 
+                  Foreground="Gray" 
+                  Text="{Binding Password2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="20"/>
@@ -66,11 +122,20 @@
             </TextBox.Resources>
         </TextBox>
 
-        <StackPanel Grid.Row="8"  Margin="15,10,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch">
-            <Button  Style="{StaticResource RoundButtonStyle }"  Margin="5,5" Command="{Binding SignupCommand}"  HorizontalContentAlignment="Center" Width="200"  Background="Green" Grid.Row="11" Content="Register" Foreground="White">
+        <StackPanel Grid.Row="8" 
+                    Margin="15,10,0,0" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Stretch">
+            <Button  Style="{StaticResource RoundButtonStyle }"
+                     Margin="5,5" 
+                     Command="{Binding SignupCommand}"
+                     HorizontalContentAlignment="Center" 
+                     Width="238"  
+                     Background="Green" 
+                     Grid.Row="11" 
+                     Content="Register" 
+                     Foreground="White">
             </Button>
-                <Image Source="/Electro.Theme;component/Images/gmail2.png" Height="40" Width="40" >
-                </Image>
         </StackPanel>
     </Grid>
 </UserControl>

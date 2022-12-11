@@ -54,7 +54,7 @@ namespace Electro.UI.Controls
         private void MinimizeToTrayButton_MinimizeToTray(object sender, RoutedEventArgs e)
         {
             Window parentWindow = Window.GetWindow(this);
-            if (((parentWindow.Content as Grid).DataContext as MainViewModel).DnsViewModel.IsTurnedOn)
+            if ((parentWindow.Content as Grid).DataContext is MainViewModel mainViewModel && mainViewModel.DnsViewModel.IsTurnedOn)
             {
                 parentWindow.Hide();
             }
