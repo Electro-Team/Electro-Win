@@ -24,7 +24,9 @@ namespace Electro.UI.Services
         private string password;
         private string hubName;
         private string hostName;
+        protected const string hostport = "443";
 
+        private const int timeout = 10000;
 
         public string ServiceText => "● Connecting to Softether...";
 
@@ -122,52 +124,17 @@ namespace Electro.UI.Services
 
         private void RunInitialVpnCMDCommands()
         {
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.CreateNoWindow = false;
-            psi.UseShellExecute = false;
-            
-            psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Normal;
-            psi.Verb = "runas";
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardInput = true;
-
-            psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
-
-            Process proc = new Process
+            try
             {
-                StartInfo = psi,
-                EnableRaisingEvents = true
-            };
+                //Create Account.
+                bool createAcountResult = GeneralCommand("AccountCreate " + accountName, " /SERVER:" + hostName + " /HUB:" + hubName + " /USERNAME:" + username);
 
-            //Thread.Sleep(30);
-            //proc.WaitForExit();
-
-            proc.Start();
-            using (StreamWriter sw = proc.StandardInput)
+                //Set Password.
+                bool setPassResult = GeneralCommand("AccountPasswordSet " + accountName, " /PASSWORD:" + password + " /TYPE:" + "radius");
+            }
+            catch (Exception ex)
             {
-                if (sw.BaseStream.CanWrite)
-                {
-                    sw.WriteLine("2");
-                    sw.WriteLine("");
-
-                    sw.WriteLine("accountcreate " + accountName);
-
-                    //hostname and port:
-                    sw.WriteLine("" + hostName);
-
-                    //destination virtual hub name :
-                    sw.WriteLine("" + hostName);
-
-                    //connecting user name :
-                    sw.WriteLine("" + username);
-
-                    //pass
-                    sw.WriteLine(password);
-                    sw.WriteLine(password);
-
-                    sw.WriteLine("radius");
-                }
+                ElectroMessageBox.Show(ex.Message);
             }
         }
 
@@ -175,137 +142,63 @@ namespace Electro.UI.Services
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.CreateNoWindow = true;
-                psi.UseShellExecute = false;
-                psi.CreateNoWindow = true;
-                psi.WindowStyle = ProcessWindowStyle.Hidden;
-                psi.Verb = "runas";
-                psi.RedirectStandardOutput = true;
-                psi.RedirectStandardInput = true;
-
-                psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
-                psi.Arguments = "accountdelete electro";
-
-                Process proc = new Process
-                {
-                    StartInfo = psi,
-                    EnableRaisingEvents = true
-                };
-
-                proc.Start();
-                Thread.Sleep(30);
-                proc.WaitForExit();
-                while (!proc.StandardOutput.EndOfStream)
-                {
-                    string line = proc.StandardOutput.ReadLine();
-                    // do something with line
-                }
+                //Delete Account.
+                bool createAcountResult = GeneralCommand("AccountDelete " + accountName, "");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ElectroMessageBox.Show("error occurred.");
-                throw;
+                ElectroMessageBox.Show(ex.Message);
             }
         }
 
-        //private void SoftEtherConnctVPNCMD()
-        //{
-        //    ProcessStartInfo psi = new ProcessStartInfo();
-        //    psi.CreateNoWindow = true;
-        //    psi.UseShellExecute = false;
-        //    psi.CreateNoWindow = true;
-        //    psi.WindowStyle = ProcessWindowStyle.Hidden;
-        //    psi.Verb = "runas";
-        //    psi.RedirectStandardOutput = true;
-        //    psi.RedirectStandardInput = true;
-
-        //    psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
-        //    psi.Arguments = "accountconnect " + accountName;
-
-        //    Process proc = new Process
-        //    {
-        //        StartInfo = psi,
-        //        EnableRaisingEvents = true
-        //    };
-
-        //    proc.Start();
-        //    Thread.Sleep(30);
-        //    proc.WaitForExit();
-
-        //    psi.Arguments = "accountstatusget " + accountName;
-
-        //    proc.Start();
-        //    Thread.Sleep(30);
-        //    proc.WaitForExit();
-        //}
 
         private void SoftEtherConnctVPNCMD()
         {
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.CreateNoWindow = false;
-            psi.UseShellExecute = false;
-
-            psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Normal;
-            psi.Verb = "runas";
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardInput = true;
-
-            psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
-
-            Process proc = new Process
+            try
             {
-                StartInfo = psi,
-                EnableRaisingEvents = true
-            };
+                //Account Connect.
+                bool createAcountResult = GeneralCommand("AccountConnect " + accountName, "");
 
-            //Thread.Sleep(30);
-            //proc.WaitForExit();
-
-            proc.Start();
-            using (StreamWriter sw = proc.StandardInput)
-            {
-                if (sw.BaseStream.CanWrite)
-                {
-                    sw.WriteLine("2");
-                    sw.WriteLine("");
-
-                    sw.WriteLine("accountconnect " + accountName);
-                   
-                }
+                //Check Connection.
+                bool setPassResult = GeneralCommand("AccountStatusGet " + accountName, "");
             }
-            proc.WaitForExit();
-
-
-            //ProcessStartInfo psi = new ProcessStartInfo();
-            //psi.CreateNoWindow = true;
-            //psi.UseShellExecute = false;
-            //psi.CreateNoWindow = true;
-            //psi.WindowStyle = ProcessWindowStyle.Hidden;
-            //psi.Verb = "runas";
-            //psi.RedirectStandardOutput = true;
-            //psi.RedirectStandardInput = true;
-
-            //psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
-            //psi.Arguments = "accountconnect " + accountName;
-
-            //Process proc = new Process
-            //{
-            //    StartInfo = psi,
-            //    EnableRaisingEvents = true
-            //};
-
-            //proc.Start();
-            //Thread.Sleep(30);
-            //proc.WaitForExit();
-
-            //psi.Arguments = "accountstatusget " + accountName;
-
-            //proc.Start();
-            //Thread.Sleep(30);
-            //proc.WaitForExit();
+            catch (Exception ex)
+            {
+                ElectroMessageBox.Show(ex.Message);
+            }
         }
+
+
+        private bool GeneralCommand(string cmd, string arguments)
+        {
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+
+            processStartInfo.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64";
+            processStartInfo.UseShellExecute = false;
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.WindowStyle = ProcessWindowStyle.Normal;
+            processStartInfo.CreateNoWindow = true;
+
+            Process app = new Process();
+            app.StartInfo = processStartInfo;
+            app.StartInfo.Arguments = "vpncmd" + " /CLIENT localhost " + " /CMD " + cmd + arguments;
+            app.Start();
+
+            Timer t = new Timer(f => { app.Kill(); }, null, timeout, Timeout.Infinite);
+
+            string output = app.StandardOutput.ReadToEnd();
+            var words = output.Split(' ', '\n', '\r', '\t');
+            var matchquery = from string word in words where word.ToLowerInvariant() == "Error".ToLowerInvariant() select word;
+
+            if (matchquery.Count() >= 1)
+                return false;
+
+            app.WaitForExit(timeout);
+
+
+            return true;
+        }
+
 
         private void SaveSoftEtherConfigs()
             => Registry.SetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node", "softether", "configured");
@@ -337,12 +230,12 @@ namespace Electro.UI.Services
 
         private async Task FirstTimeConnection()
         {
-            //IstallationVPNClientCMDCode(false);
-            //IstallationVPNClientCMDCode(true);
-            //SetNicAdapter();
+            IstallationVPNClientCMDCode(false);
+            IstallationVPNClientCMDCode(true);
+            SetNicAdapter();
             await GetUserSoftEtherInfoFromServer();
             RunInitialVpnCMDCommands();
-            //DeleteElectroAccount();
+            DeleteElectroAccount();
             SaveSoftEtherConfigs();
         }
 
@@ -358,27 +251,8 @@ namespace Electro.UI.Services
 
         public void Dispose()
         {
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.CreateNoWindow = true;
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
-            psi.Verb = "runas";
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardInput = true;
-
-            psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
-            psi.Arguments = "accountdisconnect " + accountName;
-
-            Process proc = new Process
-            {
-                StartInfo = psi,
-                EnableRaisingEvents = true
-            };
-
-            proc.Start();
-            Thread.Sleep(30);
-            proc.WaitForExit();
+            //Account DisConnection.
+            bool setPassResult = GeneralCommand("AccountDisconnect " + accountName, "");
         }
 
         public string UniqueId
