@@ -157,10 +157,16 @@ namespace Electro.UI.Services
                     sw.WriteLine("" + hostName);
 
                     //destination virtual hub name :
-                    sw.WriteLine("" + hostName);
+                    sw.WriteLine("" + hubName);
 
                     //connecting user name :
                     sw.WriteLine("" + username);
+                    //NAT
+                    sw.WriteLine("vpn");
+
+                    sw.WriteLine("accountpasswordset");
+
+                    sw.WriteLine("" + accountName);
 
                     //pass
                     sw.WriteLine(password);
@@ -358,27 +364,27 @@ namespace Electro.UI.Services
 
         public void Dispose()
         {
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.CreateNoWindow = true;
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
-            psi.Verb = "runas";
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardInput = true;
+            //ProcessStartInfo psi = new ProcessStartInfo();
+            //psi.CreateNoWindow = true;
+            //psi.UseShellExecute = false;
+            //psi.CreateNoWindow = true;
+            //psi.WindowStyle = ProcessWindowStyle.Hidden;
+            //psi.Verb = "runas";
+            //psi.RedirectStandardOutput = true;
+            //psi.RedirectStandardInput = true;
 
-            psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
-            psi.Arguments = "accountdisconnect " + accountName;
+            //psi.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
+            //psi.Arguments = "accountdisconnect " + accountName;
 
-            Process proc = new Process
-            {
-                StartInfo = psi,
-                EnableRaisingEvents = true
-            };
+            //Process proc = new Process
+            //{
+            //    StartInfo = psi,
+            //    EnableRaisingEvents = true
+            //};
 
-            proc.Start();
-            Thread.Sleep(30);
-            proc.WaitForExit();
+            //proc.Start();
+            ////Thread.Sleep(30);
+            //proc.WaitForExit();
         }
 
         public string UniqueId

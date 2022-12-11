@@ -138,15 +138,10 @@ namespace Electro.UI.ViewModels.DNS
             }
             else if (IsTurnedOn == false)
             {
-<<<<<<< HEAD
                 if (service == null)
                 {
                     ChangeModel("");
                 }
-=======
-                //IsOpenVpn = IsOpenVpn;
-                OnPropertyChanged("IsOpenVpn");
->>>>>>> origin/developers
                 IsGettingData = true;
                 ServiceText = service.ServiceText;
                 IsEnableToChangeService = false;
@@ -194,20 +189,15 @@ namespace Electro.UI.ViewModels.DNS
                     ProtocolType = service;
                     break;
                 case "PPTP":
-<<<<<<< HEAD
                     this.service = serviceProvider.GetRequiredService<PPTP>();
                     ProtocolType = service;
                     break;
                 case "SoftEther":
-                    this.service = serviceProvider.GetRequiredService<Socks5>();
                     ProtocolType = service;
-=======
-                    //this.service = serviceProvider.GetRequiredService<PPTP>();
                     this.service = serviceProvider.GetRequiredService<Softether>();
                     break;
                 case "Softether":
                     this.service = serviceProvider.GetRequiredService<Softether>();
->>>>>>> origin/developers
                     break;
                 default:
                     this.service = serviceProvider.GetRequiredService<PPTP>();
