@@ -299,12 +299,14 @@
     </Compile>
     <Compile Include="Converters\InvertBooleanConverter.cs" />
     <Compile Include="Interfaces\IDNSService.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Services\DNSService.cs" />
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Services\OpenVPN.cs" />
     <Compile Include="Services\PPTP.cs" />
     <Compile Include="Services\Socks5.cs" />
+    <Compile Include="Services\Softether.cs" />
     <Compile Include="Services\WireGuard.cs" />
     <Compile Include="Tools\BaseModel.cs" />
     <Compile Include="Tools\DirectoryHelperFunctions.cs" />
@@ -429,9 +431,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Electro.Theme\Electro.Theme.csproj">
       <Project>{0f58737e-e2cd-430e-b2a2-d8a3f3bb40aa}</Project>

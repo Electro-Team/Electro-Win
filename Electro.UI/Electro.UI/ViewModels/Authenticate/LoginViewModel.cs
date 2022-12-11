@@ -1,4 +1,5 @@
-﻿using Electro.UI.Tools;
+﻿using Electro.UI.Models;
+using Electro.UI.Tools;
 using Electro.UI.Windows;
 using Newtonsoft.Json;
 using System;
@@ -34,6 +35,9 @@ namespace Electro.UI.ViewModels.Authenticate
 
                 if (status == "Ok")
                 {
+                    User user = User.GetUser();
+                    user.UniqueId = uniqueId;
+                    user.Password = password;
                     AuthenticationViewModel.Instatnce.ShotDown();
                 }
 
