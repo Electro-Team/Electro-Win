@@ -18,7 +18,7 @@
 									 VerticalAlignment="Top">
                         <BulletDecorator.Bullet>
                             <Grid>
-                                <TextBlock Text="PPTP" 
+                                <TextBlock Text="SoftEther" 
                                            x:Name="TexTType"
                                            Panel.ZIndex="10"
                                            Foreground="White"

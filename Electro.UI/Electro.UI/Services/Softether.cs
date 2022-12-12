@@ -4,6 +4,7 @@ using Electro.UI.Tools;
 using Electro.UI.Windows;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using SoftEtherVPNCmdNET;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +26,8 @@ namespace Electro.UI.Services
         private string hubName;
         private string hostName;
         protected const string hostport = "443";
+        Response vpnCmdResponse;
+        VpnCmdClient vpnClient = new VpnCmdClient("localhost");
 
         private const int timeout = 10000;
 
@@ -34,6 +37,7 @@ namespace Electro.UI.Services
         {
             try
             {
+
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.CreateNoWindow = true;
                 psi.UseShellExecute = false;
@@ -116,7 +120,7 @@ namespace Electro.UI.Services
             }
             catch (Exception ex)
             {
-                ElectroMessageBox.Show("error occurred.");
+                ElectroMessageBox.Show("connection error occurred.");
                 ElectroMessageBox.Show(ex.Message);
             }
 
@@ -127,10 +131,12 @@ namespace Electro.UI.Services
             try
             {
                 //Create Account.
-                bool createAcountResult = GeneralCommand("AccountCreate " + accountName, " /SERVER:" + hostName + " /HUB:" + hubName + " /USERNAME:" + username);
+                //bool createAcountResult = GeneralCommand("AccountCreate " + accountName, " /SERVER:" + hostName + " /HUB:" + hubName + " /USERNAME:" + username);
+                //vpnCmdResponse = vpnClient.AccountCreate(accountName, hostName, hubName, username, "random");
 
                 //Set Password.
-                bool setPassResult = GeneralCommand("AccountPasswordSet " + accountName, " /PASSWORD:" + password + " /TYPE:" + "radius");
+                // bool setPassResult = GeneralCommand("AccountPasswordSet " + accountName, " /PASSWORD:" + password + " /TYPE:" + "radius");
+                //vpnCmdResponse = vpnClient.PasswordSet(password);
             }
             catch (Exception ex)
             {
@@ -143,7 +149,8 @@ namespace Electro.UI.Services
             try
             {
                 //Delete Account.
-                bool createAcountResult = GeneralCommand("AccountDelete " + accountName, "");
+                //bool createAcountResult = GeneralCommand("AccountDelete " + accountName, "");
+                //vpnCmdResponse = vpnClient.delete(password);
             }
             catch (Exception ex)
             {
@@ -152,20 +159,26 @@ namespace Electro.UI.Services
         }
 
 
-        private void SoftEtherConnctVPNCMD()
+        private bool SoftEtherConnctVPNCMD()
         {
+            bool result = false;
             try
             {
+
                 //Account Connect.
-                bool createAcountResult = GeneralCommand("AccountConnect " + accountName, "");
+                //bool createAcountResult = GeneralCommand("AccountConnect " + accountName, "");
+                vpnCmdResponse = vpnClient.AccountConnect(accountName);
 
                 //Check Connection.
-                bool setPassResult = GeneralCommand("AccountStatusGet " + accountName, "");
+                //bool setPassResult = GeneralCommand("AccountStatusGet " + accountName, "");
+                vpnCmdResponse = vpnClient.AccountStatus(accountName);
+                result = vpnCmdResponse.Success;
             }
             catch (Exception ex)
             {
                 ElectroMessageBox.Show(ex.Message);
             }
+            return result;
         }
 
 
@@ -228,12 +241,11 @@ namespace Electro.UI.Services
             return result;
         }
 
-        private async Task FirstTimeConnection()
+        private void FirstTimeConnection()
         {
-            IstallationVPNClientCMDCode(false);
+            //IstallationVPNClientCMDCode(false);
             IstallationVPNClientCMDCode(true);
             SetNicAdapter();
-            await GetUserSoftEtherInfoFromServer();
             RunInitialVpnCMDCommands();
             DeleteElectroAccount();
             SaveSoftEtherConfigs();
@@ -242,17 +254,19 @@ namespace Electro.UI.Services
 
         public async Task<bool> Connect()
         {
-            if (true || IsFirstTime())
-                await FirstTimeConnection();
+            await GetUserSoftEtherInfoFromServer();
 
-            SoftEtherConnctVPNCMD();
-            return true;
+            if (true || IsFirstTime())
+                FirstTimeConnection();
+             
+            return SoftEtherConnctVPNCMD();
         }
 
         public void Dispose()
         {
             //Account DisConnection.
-            bool setPassResult = GeneralCommand("AccountDisconnect " + accountName, "");
+            //bool setPassResult = GeneralCommand("AccountDisconnect " + accountName, "");
+            vpnCmdResponse = vpnClient.AccountDisconnect(accountName);
         }
 
         public string UniqueId
