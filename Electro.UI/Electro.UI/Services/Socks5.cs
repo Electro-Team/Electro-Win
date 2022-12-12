@@ -30,7 +30,7 @@ namespace Electro.UI.Services
             }
         }
 
-        public void Dispose()
+        public async Task Dispose()
         {
         }
     }

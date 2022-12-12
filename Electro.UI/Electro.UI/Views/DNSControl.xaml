@@ -24,7 +24,7 @@
                       Style="{StaticResource ProtocolsCheckBoxStyle}"></CheckBox>
             <controls:ProtocolSelectionControl Grid.Row="1"
                                                Width="50"
-                                               Height="160"
+                                               Height="110"
                                                VerticalAlignment="Top"
                                                HorizontalAlignment="Left"
                                                SoftEtherCommand="{Binding ChangeProtocolCommand}"

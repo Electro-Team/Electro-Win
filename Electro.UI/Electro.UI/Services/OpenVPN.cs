@@ -169,8 +169,9 @@ namespace Electro.UI.Services
             }
         }
 
-        public async void Dispose()
+        public async Task Dispose()
         {
+            connectionObserver?.ConnectionObserver(null, "● Disconnecting...");
             await dnsService.UnsetDNS();
             await StopProcess();
             connectionObserver?.ConnectionObserver(false, "");

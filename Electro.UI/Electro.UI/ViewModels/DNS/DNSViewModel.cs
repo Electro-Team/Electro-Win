@@ -19,7 +19,7 @@ namespace Electro.UI.ViewModels.DNS
         private bool isSliderOpen;
         private bool canChangeServiceType = true;
 
-        private IService service = new Softether();
+        private IService service;
         private IDNSService dnsService;
         private IServiceProvider serviceProvider;
 
@@ -130,7 +130,7 @@ namespace Electro.UI.ViewModels.DNS
             IsSliderOpen = false;
             if (IsGettingData == true && IsTurnedOn == false)
             {
-                service.Dispose();
+                await service.Dispose();
                 ServiceText = "● Not Connected";
                 IsTurnedOn = false;
                 IsGettingData = false;
@@ -157,7 +157,7 @@ namespace Electro.UI.ViewModels.DNS
             }
             else
             {
-                service.Dispose();
+                await service.Dispose();
                 ServiceText = "● Not Connected";
                 IsTurnedOn = false;
                 IsEnableToChangeService = true;

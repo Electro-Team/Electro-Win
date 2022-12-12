@@ -11,6 +11,6 @@ namespace Electro.UI.Interfaces
     {
         string ServiceText { get;}
         Task<bool> Connect();
-        void Dispose();
+        Task Dispose();
     }
 }

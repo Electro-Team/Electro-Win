@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Electro.UI.Views.Authenticate;
+using SoftEtherApi;
 
 namespace Electro.UI.Services
 {
@@ -120,7 +122,7 @@ namespace Electro.UI.Services
 
         }
 
-        private void RunInitialVpnCMDCommands()
+        private async Task RunInitialVpnCMDCommands()
         {
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.CreateNoWindow = false;
@@ -163,18 +165,62 @@ namespace Electro.UI.Services
                     sw.WriteLine("" + username);
                     //NAT
                     sw.WriteLine("vpn");
+                }
+            }
 
-                    sw.WriteLine("accountpasswordset");
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            processStartInfo.UseShellExecute = false;
 
-                    sw.WriteLine("" + accountName);
+            processStartInfo.CreateNoWindow = true;
+            processStartInfo.WindowStyle = ProcessWindowStyle.Normal;
+            processStartInfo.Verb = "runas";
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardInput = true;
+
+            processStartInfo.FileName = AppContext.BaseDirectory + "/vpncmd/vpncmd_x64.exe";
+
+            Process process = new Process
+            {
+                StartInfo = processStartInfo,
+                EnableRaisingEvents = true
+            };
+            var s = SoftEther.CreatePasswordHash("electame");
+
+            //Thread.Sleep(30);
+            //proc.WaitForExit();
+            process.OutputDataReceived += ProcessOnOutputDataReceived;
+            process.ErrorDataReceived += ProcessOnOutputDataReceived;
+            process.Start();
+           
+            using (StreamWriter sw = process.StandardInput)
+            {
+                if (sw.BaseStream.CanWrite)
+                {
+                    sw.WriteLine("2");
+                    sw.WriteLine("");
+                    sw.WriteLine("accountpassword " + accountName);
+
+                    //sw.WriteLine("" + accountName);
 
                     //pass
-                    sw.WriteLine(password);
-                    sw.WriteLine(password);
 
+                    sw.WriteLine();
+                    sw.WriteLine();
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
                     sw.WriteLine("radius");
                 }
             }
+        }
+
+        private void ProcessOnOutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            var s = e.Data;
+        }
+
+        private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            var s = e.Data;
         }
 
         private void DeleteElectroAccount()
@@ -347,7 +393,7 @@ namespace Electro.UI.Services
             //IstallationVPNClientCMDCode(true);
             //SetNicAdapter();
             await GetUserSoftEtherInfoFromServer();
-            RunInitialVpnCMDCommands();
+            await RunInitialVpnCMDCommands();
             //DeleteElectroAccount();
             SaveSoftEtherConfigs();
         }
@@ -362,7 +408,7 @@ namespace Electro.UI.Services
             return true;
         }
 
-        public void Dispose()
+        public async Task Dispose()
         {
             //ProcessStartInfo psi = new ProcessStartInfo();
             //psi.CreateNoWindow = true;

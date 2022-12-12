@@ -23,7 +23,7 @@ namespace Electro.UI.Services
             throw new NotImplementedException();
         }
 
-        public void Dispose()
+        public async Task Dispose()
         {
             throw new NotImplementedException();
         }

@@ -60,7 +60,7 @@
                            Margin="0,2,0,0"
                            FontWeight="Bold"/>
             </StackPanel>
-            <StackPanel Grid.Row="2"
+            <!--<StackPanel Grid.Row="2"
                         Margin="5">
                 <Button
                     Width="30"
@@ -82,7 +82,7 @@
                            Margin="0,2,0,0"
                            Foreground="White"
                            FontWeight="Bold"/>
-            </StackPanel>
+            </StackPanel>-->
         </Grid>
     </Border>
 </UserControl>
