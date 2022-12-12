@@ -132,7 +132,7 @@ namespace Electro.UI.Services
             {
                 //Create Account.
                 //bool createAcountResult = GeneralCommand("AccountCreate " + accountName, " /SERVER:" + hostName + " /HUB:" + hubName + " /USERNAME:" + username);
-                //vpnCmdResponse = vpnClient.AccountCreate(accountName, hostName, hubName, username, "random");
+                vpnCmdResponse = vpnClient.AccountCreate(accountName, hostName, hubName, username, "random");
 
                 //Set Password.
                 // bool setPassResult = GeneralCommand("AccountPasswordSet " + accountName, " /PASSWORD:" + password + " /TYPE:" + "radius");
